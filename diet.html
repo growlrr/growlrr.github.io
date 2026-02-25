@@ -1,72 +1,667 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Growlrr Diet System | Growlrr Foods Pvt Ltd</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growlrr Stress Test v10.2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      font-family: "Segoe UI", Helvetica, Arial, sans-serif;
-      margin: 0;
-      background: #fff8f5;
-      color: #222;
-      line-height: 1.6;
-    }
-    header {
-      background: #ff9b50;
-      color: white;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    main {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-    a { color: #d45100; text-decoration: none; }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #666;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
   </style>
 </head>
+<body class="bg-slate-50 text-slate-900 pb-20">
 
-<body>
-  <header>
-    <h1>Growlrr Diet System</h1>
-    <p>Structured Rotation for Health and Balance</p>
+  <!-- Header -->
+  <header class="bg-emerald-900 text-white py-6 px-4 shadow-lg sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-emerald-100 p-2 rounded-lg text-emerald-900">
+          <i data-lucide="activity" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v10.2</h1>
+          <div class="text-[10px] text-emerald-300 uppercase tracking-wider font-mono mt-0.5">BOM v3.2 &bull; Science v2.2-fork &bull; Protocol v2.1-fork</div>
+        </div>
+      </div>
+      <div class="flex bg-emerald-800/50 rounded-full p-1 border border-emerald-700">
+        <button id="btn-dog" onclick="setSpecies('dog')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-emerald-100">
+          <i data-lucide="dog" class="w-[18px] h-[18px]"></i> Dog
+        </button>
+        <button id="btn-cat" onclick="setSpecies('cat')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-emerald-100">
+          <i data-lucide="cat" class="w-[18px] h-[18px]"></i> Cat
+        </button>
+      </div>
+    </div>
   </header>
 
-  <main>
-    <p>
-      The Growlrr Diet System is built on rotation and precision. Each meal pouch—Heart, Liver, Lamb, Kidney,
-      Gizzard, or Sardine—is designed as part of a complete weekly cycle.
-      Cats and dogs receive nutrient balance not by repetition but by rhythm.
-    </p>
+  <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
+    
+    <!-- Controls -->
+    <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-2 text-slate-500 font-medium">
+          <i data-lucide="scale" class="w-5 h-5"></i>
+          <span>Target Weight Class</span>
+        </div>
+        <div class="text-3xl font-black text-emerald-800"><span id="weight-display">5</span> <span class="text-lg text-slate-400">kg</span></div>
+      </div>
+      <input 
+        type="range" 
+        id="weight-slider"
+        min="1" max="15" step="0.1" value="5"
+        oninput="setWeight(this.value)"
+        class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600 mb-2"
+      />
+      <div class="flex justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest px-1">
+        <span>Toy</span>
+        <span>Medium</span>
+        <span>Large</span>
+        <span>Giant</span>
+      </div>
+    </section>
 
-    <p>
-      <strong>Cats:</strong> six color-coded SKUs form three AM–PM pairs.
-      This rotation smooths Vitamin A peaks, delivers complete amino acid profiles,
-      and prevents sensory fatigue.
-    </p>
+    <!-- Metabolic Analysis Grid -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute top-0 right-0 p-4 opacity-10">
+          <i data-lucide="zap" class="w-16 h-16"></i>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Metabolic Balance</h3>
+          <div class="flex justify-between items-end mb-1">
+            <span class="text-slate-600 font-semibold">Modified Kleiber Target</span>
+            <span id="mer-display" class="text-xl font-bold text-slate-900">
+              <!-- Populated by JS -->
+            </span>
+          </div>
+          <div id="mer-formula-display" class="text-xs text-slate-400 font-serif italic mb-4">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div>
+          <div class="h-2 bg-slate-100 rounded-full overflow-hidden flex mb-2" id="progress-bar-container">
+            <!-- Populated by JS -->
+          </div>
+          <div class="flex gap-4 text-[11px] font-medium" id="energy-breakdown-display">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
 
-    <p>
-      <strong>Dogs:</strong> modular feeding uses our DogCore base pouch with home-added rice and curd.
-      The result is fresh energy from familiar staples plus science-backed protein precision.
-    </p>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 relative overflow-hidden flex flex-col justify-between">
+         <div class="absolute top-0 right-0 p-4 opacity-10">
+          <i data-lucide="microscope" class="w-16 h-16"></i>
+        </div>
+        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Core Block Adjustments</h3>
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-3xl font-black text-blue-700"><span id="units-display"></span> <span class="text-sm font-normal text-slate-400">Units</span></div>
+              <div class="flex items-center bg-blue-50 border border-blue-100 rounded-lg p-0.5 relative z-10">
+                <button onclick="setBlockModifier(-1)" class="p-1.5 hover:bg-white text-blue-600 rounded transition-colors" title="Decrease block count">
+                  <i data-lucide="minus" class="w-4 h-4"></i>
+                </button>
+                <div id="block-modifier-display" class="w-8 text-center text-xs font-bold text-blue-900 border-x border-blue-100/50">0</div>
+                <button onclick="setBlockModifier(1)" class="p-1.5 hover:bg-white text-blue-600 rounded transition-colors" title="Increase block count">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+            <div id="mass-display" class="text-xs text-slate-500 mt-2">Scale: 16g Total Mass</div>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+           <span class="text-xs font-bold text-blue-600 uppercase">Custom Rounding Logic</span>
+           <span class="text-[11px] text-slate-400 font-serif italic">floor(Theory + 0.65)</span>
+        </div>
+      </div>
+    </div>
 
-    <p>
-      Each pouch is retort-sterilized for stability and safety, enabling shelf-stable nutrition without preservatives
-      or refrigeration.
-    </p>
+    <!-- Grocery List -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2">
+          <i data-lucide="clipboard-list" class="text-emerald-700 w-5 h-5"></i>
+          <h3 class="font-bold">Calculated Daily Grocery List</h3>
+        </div>
+        <div id="reset-overrides-container"></div>
+      </div>
+      <div id="grocery-list-container" class="divide-y divide-slate-100">
+        <!-- Populated by JS -->
+      </div>
+    </section>
 
-    <p><a href="/">← Back to About Us</a></p>
+    <!-- NRC Performance Table -->
+    <section class="bg-slate-900 rounded-3xl p-8 shadow-xl text-white">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="bg-white/10 p-2 rounded-xl text-emerald-400">
+          <i data-lucide="zap" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
+          <p class="text-slate-400 text-sm">Real-time dynamic verification against exact BOM v3.2 dosings</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
+              <th class="pb-4 font-bold">Metric</th>
+              <th class="pb-4 font-bold">Delivery</th>
+              <th class="pb-4 font-bold text-center">Status</th>
+              <th class="pb-4 font-bold text-right">Block Share</th>
+            </tr>
+          </thead>
+          <tbody id="nutrient-table-body" class="divide-y divide-slate-800">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-amber-950/40 p-4 rounded-2xl border border-amber-900/50">
+           <div class="text-amber-400 mb-2"><i data-lucide="scale" class="w-[18px] h-[18px]"></i></div>
+           <div class="text-xs font-bold uppercase tracking-wider mb-1">Meat Auto-Scaling & 10% Buffer</div>
+           <p class="text-[11px] text-slate-400 leading-relaxed">
+             The meat pool automatically reverse-scales to hit exactly <strong>110% of the MER target</strong>. This 10% structural buffer ensures the animal does not go into calorie-deficit under normal variance (cooking loss, weighing, activity).
+           </p>
+        </div>
+        <div class="bg-emerald-950/40 p-4 rounded-2xl border border-emerald-900/50">
+           <div class="text-emerald-400 mb-2"><i data-lucide="activity" class="w-[18px] h-[18px]"></i></div>
+           <div class="text-xs font-bold uppercase tracking-wider mb-1">BOM v3.2 Engine Sync</div>
+           <p class="text-[11px] text-slate-400 leading-relaxed">
+             Calculations are no longer hardcoded approximations. The app parses the JSON payload directly, factoring the true elemental mass of the new Buffalo &amp; Chicken Liver additions in real-time.
+           </p>
+        </div>
+        <div class="bg-purple-950/40 p-4 rounded-2xl border border-purple-900/50">
+           <div class="text-purple-400 mb-2"><i data-lucide="microscope" class="w-[18px] h-[18px]"></i></div>
+           <div class="text-xs font-bold uppercase tracking-wider mb-1">Stochastic Buffer</div>
+           <p class="text-[11px] text-slate-400 leading-relaxed">
+             You can manually bias individual grocery items up or down by 10% to stress test the formula constraints. Block mass remains structurally intact providing a hard nutritional floor.
+           </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOM Formulation Display -->
+    <section class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-slate-100 p-2 rounded-xl text-slate-600">
+          <i data-lucide="microscope" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold">BOM Formulation (% Unit Mass)</h2>
+          <p id="bom-title-display" class="text-slate-500 text-sm">Unit size: 4000 mg (CatCore)</p>
+        </div>
+      </div>
+      
+      <div id="bom-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
   </main>
 
-  <footer>
-    &copy; 2025 Growlrr Foods Pvt Ltd
-  </footer>
+  <script>
+    // --- V10.2 EMBEDDED DATA ---
+    const DD = {
+      nrc: {
+        cat_adult: { nutrients: { protein_g:5.0, fat_g:2.5, calcium_mg:180.0, phosphorus_mg:160.0, magnesium_mg:25.0, sodium_mg:85.0, potassium_mg:330.0, iron_mg:2.5, copper_mg:0.3, zinc_mg:1.8, manganese_mg:0.3, iodine_ug:35.0, selenium_ug:19.0, vitamin_a_ug:63.0, vitamin_d_ug:0.44, vitamin_e_mg:2.5, thiamine_b1_mg:0.33, riboflavin_b2_mg:0.45, pantothenic_b5_mg:0.4, pyridoxine_b6_mg:0.16, folate_b9_ug:47.0, cobalamin_b12_ug:1.4, choline_mg:85.0, taurine_mg:22.5, arginine_mg:250.0, lysine_mg:170.0, methionine_mg:170.0, dha_mg:50.0, epa_mg:25.0 } },
+        dog_adult: { nutrients: { protein_g:50.0, fat_g:14.0, calcium_mg:1400.0, phosphorus_mg:1000.0, magnesium_mg:150.0, sodium_mg:400.0, potassium_mg:1100.0, iron_mg:7.6, copper_mg:1.5, zinc_mg:9.0, manganese_mg:1.2, iodine_ug:220.0, selenium_ug:95.0, vitamin_a_ug:379.0, vitamin_d_ug:3.4, vitamin_e_mg:8.0, thiamine_b1_mg:2.25, riboflavin_b2_mg:1.3, pantothenic_b5_mg:4.0, pyridoxine_b6_mg:0.38, folate_b9_ug:68.0, cobalamin_b12_ug:8.8, choline_mg:425.0, taurine_mg:0, arginine_mg:1040.0, lysine_mg:870.0, methionine_mg:480.0, dha_mg:100.0, epa_mg:50.0 } }
+      },
+      hrf: { vitamin_a:0.82, vitamin_d:0.85, vitamin_e:0.8, thiamine_b1:0.0, riboflavin_b2:0.85, pantothenic_b5:0.8, pyridoxine_b6:0.8, folate_b9:0.68, cobalamin_b12:0.75, iron:0.97, copper:0.97, zinc:0.97, selenium:0.93, potassium:0.96, sodium:0.96, magnesium:0.97, phosphorus:0.97, calcium:0.97, taurine:0.0, arginine:0.85, lysine:0.85, methionine:0.85, choline:0.9 },
+      ingredients: {
+        mutton_boneless: { kcal_per_100g:122, nutrients_per_100g: { protein_g:20.5, fat_g:4.5, vitamin_a_ug:2.0, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.22, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.35, folate_b9_ug:5.0, cobalamin_b12_ug:1.5, iron_mg:2.8, copper_mg:0.15, zinc_mg:4.5, selenium_ug:8.0, phosphorus_mg:185.0, potassium_mg:385.0, sodium_mg:75.0, magnesium_mg:22.0, taurine_mg:50.0, arginine_mg:1380.0, lysine_mg:1820.0, methionine_mg:540.0, la_mg:160, iodine_ug:5.0 } },
+        chicken_breast: { kcal_per_100g:110, nutrients_per_100g: { protein_g:22.5, fat_g:2.5, vitamin_a_ug:8.0, thiamine_b1_mg:0.08, riboflavin_b2_mg:0.12, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.6, folate_b9_ug:4.0, cobalamin_b12_ug:0.3, iron_mg:0.85, copper_mg:0.05, zinc_mg:0.8, selenium_ug:18.0, phosphorus_mg:200.0, potassium_mg:340.0, sodium_mg:65.0, magnesium_mg:25.0, arginine_mg:1400.0, lysine_mg:1900.0, methionine_mg:590.0, la_mg:570, iodine_ug:7.0 } },
+        egg_whole: { kcal_per_100g:143, nutrients_per_100g: { protein_g:13.0, fat_g:10.5, vitamin_a_ug:140.0, vitamin_d_ug:1.1, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.42, pantothenic_b5_mg:1.4, pyridoxine_b6_mg:0.14, folate_b9_ug:44.0, cobalamin_b12_ug:1.2, choline_mg:294.0, iron_mg:1.8, copper_mg:0.08, zinc_mg:1.1, selenium_ug:27.0, phosphorus_mg:195.0, potassium_mg:130.0, sodium_mg:140.0, magnesium_mg:12.0, arachidonic_acid_mg:150.0, arginine_mg:820.0, lysine_mg:910.0, methionine_mg:390.0, la_mg:1188, iodine_ug:28.0 } },
+        curd_dahi: { kcal_per_100g:61, nutrients_per_100g: { protein_g:3.5, fat_g:4.0, vitamin_a_ug:30.0, riboflavin_b2_mg:0.18, pantothenic_b5_mg:0.3, folate_b9_ug:12.0, cobalamin_b12_ug:0.35, calcium_mg:120.0, phosphorus_mg:95.0, potassium_mg:140.0, sodium_mg:45.0, magnesium_mg:12.0, selenium_ug:2.5, arginine_mg:120.0, lysine_mg:270.0, methionine_mg:80.0, la_mg:60, iodine_ug:5.0 } },
+        steamed_veg_mix: { kcal_per_100g:35, nutrients_per_100g: { vitamin_a_ug:0.0, folate_b9_ug:13.5, pyridoxine_b6_mg:0.09, potassium_mg:215.0, magnesium_mg:11.5, iron_mg:0.38, copper_mg:0.04, zinc_mg:0.17, selenium_ug:0.4, calcium_mg:28.0, phosphorus_mg:32.0, la_mg:50 } },
+        mutton_tallow: { kcal_per_100g:902, nutrients_per_100g: { fat_g:99.5, vitamin_a_ug:35.0, vitamin_d_ug:0.7, vitamin_e_mg:2.7, la_mg:3360 } },
+        glycerine_usp: { kcal_per_100g:312, nutrients_per_100g: { la_mg:0 } },
+        silicates: { kcal_per_100g:0, nutrients_per_100g: { la_mg:0 } },
+        antioxidant_blend: { kcal_per_100g:50, nutrients_per_100g: { vitamin_e_mg:0, la_mg:0 } },
+        carrier_blend: { kcal_per_100g:380, nutrients_per_100g: { la_mg:0 } },
+        buffalo_liver_powder: { kcal_per_100g:450, nutrients_per_100g: { protein_g:78.0, fat_g:12.0, calcium_mg:110.0, phosphorus_mg:1556.0, magnesium_mg:72.0, iron_mg:26.4, copper_mg:58.0, zinc_mg:18.0, selenium_ug:100.0, manganese_mg:0.8, iodine_ug:4.0, vitamin_a_ug:34000.0, vitamin_d_ug:4.8, vitamin_e_mg:1.6, thiamine_b1_mg:0.72, riboflavin_b2_mg:11.2, pantothenic_b5_mg:23.6, pyridoxine_b6_mg:4.2, folate_b9_ug:1160.0, cobalamin_b12_ug:260.0, choline_mg:1332.0, taurine_mg:180.0, la_mg:520 } },
+        chicken_liver_powder: { kcal_per_100g:380, nutrients_per_100g: { protein_g:67.6, fat_g:12.0, calcium_mg:48.0, phosphorus_mg:1188.0, magnesium_mg:80.0, iron_mg:45.6, copper_mg:2.0, zinc_mg:15.6, selenium_ug:120.0, manganese_mg:1.2, vitamin_a_ug:17930.0, vitamin_d_ug:5.2, vitamin_e_mg:2.4, thiamine_b1_mg:1.12, riboflavin_b2_mg:7.0, pantothenic_b5_mg:27.0, pyridoxine_b6_mg:3.4, folate_b9_ug:2352.0, cobalamin_b12_ug:66.4, choline_mg:1160.0, taurine_mg:240.0, la_mg:1600, iodine_ug:152.0 } },
+        bsfl: { kcal_per_100g:270, nutrients_per_100g: { protein_g:42.0, fat_g:15.0, thiamine_b1_mg:0.25, riboflavin_b2_mg:1.8, folate_b9_ug:40.0, cobalamin_b12_ug:0.0, iron_mg:5.0, copper_mg:0.8, zinc_mg:11.0, manganese_mg:14.5, selenium_ug:12, calcium_mg:900.0, phosphorus_mg:900.0, magnesium_mg:80.0, la_mg:1200 } },
+        egg_yolk_powder: { kcal_per_100g:669, nutrients_per_100g: { protein_g:34.0, fat_g:60.0, vitamin_a_ug:765.0, vitamin_d_ug:5.4, vitamin_e_mg:5.5, thiamine_b1_mg:0.19, riboflavin_b2_mg:1.08, pantothenic_b5_mg:5.2, pyridoxine_b6_mg:0.35, folate_b9_ug:146.0, cobalamin_b12_ug:3.1, choline_mg:1190.0, iron_mg:6.0, copper_mg:0.47, zinc_mg:3.9, selenium_ug:55.0, la_mg:7080, iodine_ug:48.0 } },
+        algal_oil_powder: { kcal_per_100g:225, nutrients_per_100g: { fat_g:25.0, dha_mg:20000.0, epa_mg:1000.0, la_mg:0 } },
+        lecithin: { kcal_per_100g:405, nutrients_per_100g: { fat_g:45.0, choline_mg:3975.0, la_mg:24750 } },
+        ca_lactate_gluconate: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:13000.0, la_mg:0 } },
+        ca_citrate_malate: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:24000.0, la_mg:0 } },
+        bone_mcha: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:22500.0, phosphorus_mg:11000.0, magnesium_mg:800.0, protein_g:22.0, iron_mg:0.5, zinc_mg:0.4, copper_mg:0.05, la_mg:0 } },
+        potassium_iodide: { kcal_per_100g:0, nutrients_per_100g: { iodine_ug:76450000.0, la_mg:0 } },
+        taurine_pure: { kcal_per_100g:0, nutrients_per_100g: { taurine_mg:100000.0, la_mg:0 } },
+        vitamin_e_natural: { kcal_per_100g:0, nutrients_per_100g: { vitamin_e_mg:100000.0, la_mg:0 } },
+        thiamine_hcl: { kcal_per_100g:0, nutrients_per_100g: { thiamine_b1_mg:100000.0, la_mg:0 } },
+        cholecalciferol_d3: { kcal_per_100g:0, nutrients_per_100g: { vitamin_d_ug:2500000.0, la_mg:0 } },
+        msm: { kcal_per_100g:0, nutrients_per_100g: { sulphur_mg:34040, la_mg:0 } },
+        mos: { kcal_per_100g:0, nutrients_per_100g: {} },
+        yucca_schidigera: { kcal_per_100g:0, nutrients_per_100g: {} }
+      },
+      bom: {
+        catcore: {
+          units_per_day: 4,
+          ingredients: { bsfl: { dose_mg_per_unit:619.2 }, mutton_tallow: { dose_mg_per_unit:640.0 }, chicken_liver_powder: { dose_mg_per_unit:513.2 }, ca_lactate_gluconate: { dose_mg_per_unit:622.8 }, algal_oil_powder: { dose_mg_per_unit:297.6 }, carrier_blend: { dose_mg_per_unit:240.0 }, bone_mcha: { dose_mg_per_unit:288.8 }, egg_yolk_powder: { dose_mg_per_unit:200.0 }, lecithin: { dose_mg_per_unit:88.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, buffalo_liver_powder: { dose_mg_per_unit:73.6 }, msm: { dose_mg_per_unit:60.0 }, antioxidant_blend: { dose_mg_per_unit:61.6 }, ca_citrate_malate: { dose_mg_per_unit:104.4 }, silicates: { dose_mg_per_unit:40.264 }, mos: { dose_mg_per_unit:40.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, taurine_pure: { dose_mg_per_unit:7.6 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.01157 }, cholecalciferol_d3: { dose_mg_per_unit:0.004 } }
+        },
+        dogcore: {
+          units_per_day: 10,
+          ingredients: { bsfl: { dose_mg_per_unit:920.0 }, mutton_tallow: { dose_mg_per_unit:640.0 }, chicken_liver_powder: { dose_mg_per_unit:440.0 }, ca_citrate_malate: { dose_mg_per_unit:714.0 }, algal_oil_powder: { dose_mg_per_unit:360.0 }, carrier_blend: { dose_mg_per_unit:240.0 }, ca_lactate_gluconate: { dose_mg_per_unit:40.8 }, bone_mcha: { dose_mg_per_unit:120.0 }, buffalo_liver_powder: { dose_mg_per_unit:150.0 }, lecithin: { dose_mg_per_unit:88.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:70.0 }, msm: { dose_mg_per_unit:46.0 }, silicates: { dose_mg_per_unit:40.081 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:13.2 }, taurine_pure: { dose_mg_per_unit:6.0 }, vitamin_e_natural: { dose_mg_per_unit:3.6 }, thiamine_hcl: { dose_mg_per_unit:0.28 }, potassium_iodide: { dose_mg_per_unit:0.03077 }, cholecalciferol_d3: { dose_mg_per_unit:0.008 } }
+        }
+      }
+    };
+
+    const HRF_MAP = {
+      calcium_mg:'calcium', phosphorus_mg:'phosphorus', magnesium_mg:'magnesium',
+      sodium_mg:'sodium', potassium_mg:'potassium', iron_mg:'iron', copper_mg:'copper',
+      zinc_mg:'zinc', selenium_ug:'selenium', vitamin_a_ug:'vitamin_a', vitamin_d_ug:'vitamin_d',
+      vitamin_e_mg:'vitamin_e', thiamine_b1_mg:'thiamine_b1', riboflavin_b2_mg:'riboflavin_b2',
+      pantothenic_b5_mg:'pantothenic_b5', pyridoxine_b6_mg:'pyridoxine_b6',
+      folate_b9_ug:'folate_b9', cobalamin_b12_ug:'cobalamin_b12', choline_mg:'choline',
+      taurine_mg:'taurine', arginine_mg:'arginine', lysine_mg:'lysine', methionine_mg:'methionine'
+    };
+
+    const SCIENCE_CONSTANTS = {
+      dog: { coefficient: 110, exponent: 0.64, anchorWeight: 32 },
+      cat: { coefficient: 75, exponent: 0.75, anchorWeight: 5 }
+    };
+
+    const nutrientRowsConfig = [
+      { key: 'kcal', label: 'Energy (MER)', unit: 'kcal' },
+      { key: 'protein_g', label: 'Protein', unit: 'g' },
+      { key: 'fat_g', label: 'Fat', unit: 'g' },
+      { key: 'calcium_mg', label: 'Calcium', unit: 'mg' },
+      { key: 'phosphorus_mg', label: 'Phosphorus', unit: 'mg' },
+      { key: 'magnesium_mg', label: 'Magnesium', unit: 'mg' },
+      { key: 'zinc_mg', label: 'Zinc', unit: 'mg' },
+      { key: 'copper_mg', label: 'Copper', unit: 'mg' },
+      { key: 'iron_mg', label: 'Iron', unit: 'mg' },
+      { key: 'manganese_mg', label: 'Manganese', unit: 'mg' },
+      { key: 'selenium_ug', label: 'Selenium', unit: 'µg' },
+      { key: 'iodine_ug', label: 'Iodine', unit: 'µg' },
+      { key: 'vitamin_a_ug', label: 'Vitamin A', unit: 'µg' },
+      { key: 'vitamin_e_mg', label: 'Vitamin E', unit: 'mg' },
+      { key: 'thiamine_b1_mg', label: 'Thiamine (B1)', unit: 'mg' },
+      { key: 'choline_mg', label: 'Choline', unit: 'mg' },
+      { key: 'taurine_mg', label: 'Taurine', unit: 'mg' },
+      { key: 'dha_mg', label: 'DHA', unit: 'mg' }
+    ];
+
+    // --- STATE ---
+    let state = {
+      species: 'cat',
+      weight: 5,
+      blockModifier: 0,
+      eggMod: 0,
+      groceryMods: { mutton_boneless: 1, chicken_breast: 1, curd_dahi: 1, steamed_veg_mix: 1 }
+    };
+
+    // --- UTILS ---
+    const formatScientific = (num, isKcal = false) => {
+      if (num === 0) return '0.00';
+      if (isKcal) return Math.round(num).toString();
+      if (Math.abs(num) < 0.1) {
+        const exp = Math.floor(Math.log10(Math.abs(num)));
+        const mantissa = (num / Math.pow(10, exp)).toFixed(2);
+        return `<span class="font-serif whitespace-nowrap"><span class="italic">${mantissa}</span> &times; 10<sup class="text-[10px] ml-[1px]">${exp}</sup></span>`;
+      }
+      return num.toFixed(2);
+    };
+
+    // --- ACTIONS ---
+    window.setSpecies = (newSpecies) => {
+      state.species = newSpecies;
+      state.weight = newSpecies === 'dog' ? 20 : 5;
+      
+      // Update toggle UI
+      document.getElementById('btn-dog').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'dog' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-100'}`;
+      document.getElementById('btn-cat').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'cat' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-100'}`;
+      
+      // Update slider bounds
+      const slider = document.getElementById('weight-slider');
+      slider.min = state.species === 'dog' ? 2 : 1;
+      slider.max = state.species === 'dog' ? 80 : 15;
+      slider.value = state.weight;
+      
+      window.resetVariance();
+    };
+
+    window.setWeight = (val) => {
+      state.weight = parseFloat(val);
+      render();
+    };
+
+    window.setBlockModifier = (delta) => {
+      state.blockModifier += delta;
+      render();
+    };
+
+    window.setEggMod = (delta) => {
+      state.eggMod += delta;
+      render();
+    };
+
+    window.updateGroceryMod = (id, delta) => {
+      const current = state.groceryMods[id] || 1;
+      state.groceryMods[id] = Math.max(0, parseFloat((current + delta).toFixed(2)));
+      render();
+    };
+
+    window.resetVariance = () => {
+      state.blockModifier = 0;
+      state.eggMod = 0;
+      state.groceryMods = { mutton_boneless: 1, chicken_breast: 1, curd_dahi: 1, steamed_veg_mix: 1 };
+      render();
+    };
+
+    // --- CALCULATIONS & RENDER ---
+    function calculateStats() {
+      const isDog = state.species === 'dog';
+      const config = SCIENCE_CONSTANTS[state.species];
+      const nrcKey = isDog ? 'dog_adult' : 'cat_adult';
+      const nrcBase = DD.nrc[nrcKey].nutrients;
+      
+      // 1. Modified Kleiber MER Calculation
+      const mer = config.coefficient * Math.pow(state.weight, config.exponent);
+      const targetKcal = mer * 1.10; // 10% Design Buffer
+      
+      // 2. Block Scaling
+      const theoryUnits = isDog 
+        ? 10 * Math.pow(state.weight / config.anchorWeight, 0.64)
+        : 4 * Math.pow(state.weight / config.anchorWeight, 0.75);
+      const actualUnits = Math.floor(theoryUnits + 0.65);
+      const finalUnits = Math.max(0, actualUnits + state.blockModifier);
+      
+      // Dynamic Block Content & Kcal Calculator
+      const spKey = isDog ? 'dogcore' : 'catcore';
+      const bomObj = DD.bom[spKey].ingredients;
+      const blockContentPerUnit = {};
+      let blockKcalPerUnit = 0;
+
+      for (const [ingKey, data] of Object.entries(bomObj)) {
+          const p = DD.ingredients[ingKey] || DD.ingredients[ingKey.replace('_powder', '')];
+          if (!p || !p.nutrients_per_100g) continue;
+          
+          if (p.kcal_per_100g) {
+              blockKcalPerUnit += (data.dose_mg_per_unit / 100000) * p.kcal_per_100g;
+          }
+          
+          for (const [nutKey, val] of Object.entries(p.nutrients_per_100g)) {
+              blockContentPerUnit[nutKey] = (blockContentPerUnit[nutKey] || 0) + (data.dose_mg_per_unit / 100000) * val;
+          }
+      }
+      
+      const blockEnergy = finalUnits * blockKcalPerUnit;
+
+      // 3. Allometric Scaling Factors
+      const scaleFactor = isDog 
+          ? (mer / 1000) 
+          : Math.pow(state.weight / config.anchorWeight, 0.75);
+
+      // 4. Base Continuous Targets
+      const theoryMuttonG = isDog ? 135 * scaleFactor : 65 * scaleFactor;
+      const theoryChickenG = isDog ? 270 * scaleFactor : 105 * scaleFactor;
+      const theoryCurdG = isDog ? 150 * scaleFactor : 0;
+      const theoryVegG = isDog ? 400 * scaleFactor : 0;
+      
+      const theoryMuttonKcal = (theoryMuttonG / 100) * DD.ingredients.mutton_boneless.kcal_per_100g;
+      const theoryChickenKcal = (theoryChickenG / 100) * DD.ingredients.chicken_breast.kcal_per_100g;
+      const theoryMeatKcal = theoryMuttonKcal + theoryChickenKcal;
+      const theoryCurdKcal = isDog ? (theoryCurdG / 100) * DD.ingredients.curd_dahi.kcal_per_100g : 0;
+      const theoryVegKcal = isDog ? (theoryVegG / 100) * DD.ingredients.steamed_veg_mix.kcal_per_100g : 0;
+
+      // 5. Egg Ceiling Logic
+      const theoryEggs = isDog ? 4 * scaleFactor : 0.5 * scaleFactor;
+      const roundedEggs = Math.ceil(theoryEggs * 4) / 4; 
+      const finalEggs = Math.max(0, roundedEggs + state.eggMod);
+      const actualEggGrams = finalEggs * 50;
+      const actualEggKcal = (actualEggGrams / 100) * DD.ingredients.egg_whole.kcal_per_100g;
+
+      // 6. Meat Pool Re-scaling
+      const targetMeatKcal = Math.max(0, targetKcal - blockEnergy - actualEggKcal - theoryCurdKcal - theoryVegKcal);
+      const meatCorrection = theoryMeatKcal > 0 ? targetMeatKcal / theoryMeatKcal : 0;
+
+      const finalMuttonG = theoryMuttonG * meatCorrection;
+      const finalChickenG = theoryChickenG * meatCorrection;
+
+      // 7. Grocery List Assembly
+      let groceryList = [];
+      if (isDog) {
+        groceryList = [
+          { id: 'mutton_boneless', label: 'Mutton (Boneless)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
+          { id: 'chicken_breast', label: 'Chicken Breast', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
+          { id: 'egg_whole', label: 'Whole Egg', g: actualEggGrams, count: finalEggs, isEgg: true }, 
+          { id: 'curd_dahi', label: 'Curd (Dahi)', g: theoryCurdG, baseG: theoryCurdG },
+          { id: 'steamed_veg_mix', label: 'Steamed Veg Mix', g: theoryVegG, baseG: theoryVegG }
+        ];
+      } else {
+        groceryList = [
+          { id: 'mutton_boneless', label: 'Mutton (Boneless)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
+          { id: 'chicken_breast', label: 'Chicken Breast', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
+          { id: 'egg_whole', label: 'Whole Egg', g: actualEggGrams, count: finalEggs, isEgg: true }
+        ];
+      }
+
+      // 8. Nutrient Summation
+      const totals = {};
+      const deliveryGroceryKcal = groceryList.reduce((sum, item) => {
+        const modifier = item.isEgg ? 1 : (state.groceryMods[item.id] || 1);
+        return sum + ((item.g * modifier) / 100 * DD.ingredients[item.id].kcal_per_100g);
+      }, 0);
+      const deliveryTotalKcal = deliveryGroceryKcal + blockEnergy;
+
+      Object.keys(nrcBase).forEach(key => {
+        let grocerySum = 0;
+        groceryList.forEach(item => {
+          const modifier = item.isEgg ? 1 : (state.groceryMods[item.id] || 1);
+          const baseNutrient = DD.ingredients[item.id].nutrients_per_100g[key] || 0;
+          
+          let hrfValue = 1.0;
+          if (HRF_MAP[key] && DD.hrf[HRF_MAP[key]] !== undefined) {
+             hrfValue = DD.hrf[HRF_MAP[key]];
+          }
+          
+          grocerySum += ((item.g * modifier) / 100) * baseNutrient * hrfValue;
+        });
+
+        const blockSum = finalUnits * (blockContentPerUnit[key] || 0);
+        totals[key] = grocerySum + blockSum;
+      });
+
+      totals['kcal'] = deliveryTotalKcal;
+
+      return {
+        mer, targetKcal, finalUnits, blockEnergy, groceryList, totals,
+        deliveryGroceryKcal, deliveryTotalKcal, theoryEggs, blockContentPerUnit
+      };
+    }
+
+    function render() {
+      const stats = calculateStats();
+      const isDog = state.species === 'dog';
+      const nrcKey = isDog ? 'dog_adult' : 'cat_adult';
+      
+      // Update Basic DOM
+      document.getElementById('weight-display').innerText = state.weight;
+      document.getElementById('block-modifier-display').innerText = state.blockModifier > 0 ? `+${state.blockModifier}` : state.blockModifier;
+      
+      const isAmber = Math.abs(stats.deliveryTotalKcal - stats.targetKcal) > stats.targetKcal * 0.1;
+      document.getElementById('mer-display').className = `text-xl font-bold ${isAmber ? 'text-amber-600' : 'text-slate-900'}`;
+      document.getElementById('mer-display').innerHTML = `${Math.round(stats.deliveryTotalKcal)} <small class="text-slate-400">/ ${Math.round(stats.targetKcal)} target (+10% buffer)</small>`;
+      
+      document.getElementById('mer-formula-display').innerHTML = isDog 
+        ? `<span>MER = 110 &times; W<sup class="text-[10px] ml-[1px]">0.64</sup></span>`
+        : `<span>MER = 75 &times; W<sup class="text-[10px] ml-[1px]">0.75</sup></span>`;
+
+      // Progress Bar
+      const blockPct = (stats.blockEnergy / stats.deliveryTotalKcal) * 100;
+      const grocPct = (stats.deliveryGroceryKcal / stats.deliveryTotalKcal) * 100;
+      document.getElementById('progress-bar-container').innerHTML = `
+        <div style="width: ${blockPct}%" class="bg-blue-500 h-full transition-all"></div>
+        <div style="width: ${grocPct}%" class="bg-emerald-500 h-full transition-all"></div>
+      `;
+      document.getElementById('energy-breakdown-display').innerHTML = `
+        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Blocks (${Math.round(stats.blockEnergy)} kcal)</div>
+        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Grocery (${Math.round(stats.deliveryGroceryKcal)} kcal)</div>
+      `;
+
+      // Block Units
+      document.getElementById('units-display').innerText = stats.finalUnits;
+      document.getElementById('mass-display').innerText = `Scale: ${Math.round(4000 * stats.finalUnits) / 1000}g Total Mass`;
+
+      // Reset Button
+      const hasOverrides = Object.values(state.groceryMods).some(v => v !== 1) || state.eggMod !== 0 || state.blockModifier !== 0;
+      document.getElementById('reset-overrides-container').innerHTML = hasOverrides ? `
+        <button onclick="resetVariance()" class="flex items-center gap-1.5 text-xs text-emerald-700 hover:text-emerald-800 font-bold px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 rounded-full transition-colors">
+          <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reset Overrides
+        </button>
+      ` : '';
+
+      // Grocery List
+      let groceryHtml = '';
+      stats.groceryList.forEach(item => {
+        const currentMod = item.isEgg ? 1 : (state.groceryMods[item.id] || 1);
+        const modifiedGrams = item.g * currentMod;
+        
+        groceryHtml += `
+          <div class="px-6 py-5 flex justify-between items-center group hover:bg-emerald-50/30 transition-colors">
+            <div>
+              <div class="font-semibold text-slate-700 flex items-center gap-2 flex-wrap">
+                ${item.label} 
+                ${item.isMeat ? `<span class="text-[9px] uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded font-bold">Auto-Scaled</span>` : ''}
+              </div>
+              ${item.isEgg 
+                ? `<div class="text-xs text-slate-400 mt-1">Continuous theory: ${stats.theoryEggs.toFixed(2)} eggs</div>`
+                : `<div class="text-xs text-slate-400 mt-1">Allometric base target: ${Math.round(item.baseG)}g</div>`
+              }
+            </div>
+            
+            <div class="flex items-center gap-4">
+              ${item.isEgg 
+                ? `
+                <div class="flex items-center bg-amber-50 border border-amber-200 rounded-md p-1 shadow-sm">
+                  <button onclick="setEggMod(-0.25)" class="px-2 py-1 hover:bg-white text-amber-700 rounded transition-colors text-xs font-black">-0.25</button>
+                  <span class="w-20 text-center text-xs font-mono font-bold text-amber-900">${state.eggMod > 0 ? '+' : ''}${state.eggMod.toFixed(2)} Mod</span>
+                  <button onclick="setEggMod(0.25)" class="px-2 py-1 hover:bg-white text-amber-700 rounded transition-colors text-xs font-black">+0.25</button>
+                </div>
+                ` : `
+                <div class="flex items-center bg-slate-100 border border-slate-200 rounded-md p-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <button onclick="updateGroceryMod('${item.id}', -0.1)" class="px-2 py-1 hover:bg-white text-slate-600 rounded shadow-sm transition-colors text-xs font-bold">-10%</button>
+                  <span class="w-12 text-center text-xs font-mono font-bold text-slate-700">${Math.round(currentMod * 100)}%</span>
+                  <button onclick="updateGroceryMod('${item.id}', 0.1)" class="px-2 py-1 hover:bg-white text-slate-600 rounded shadow-sm transition-colors text-xs font-bold">+10%</button>
+                </div>
+                `
+              }
+              <div class="text-right w-24">
+                ${item.isEgg 
+                  ? `<div class="text-xl font-black text-emerald-800">${item.count.toFixed(2)} <span class="text-xs font-bold uppercase tracking-wider text-slate-400 ml-0.5">Eggs</span></div>`
+                  : `<div class="text-xl font-black text-emerald-800">${Math.round(modifiedGrams)}<span class="text-xs font-normal text-slate-400 ml-0.5">g</span></div>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('grocery-list-container').innerHTML = groceryHtml;
+
+      // Nutrient Table
+      let tableHtml = '';
+      nutrientRowsConfig.forEach(row => {
+        const val = stats.totals[row.key];
+        if (val === undefined) return;
+        
+        const isKcal = row.key === 'kcal';
+        const nrcBase = isKcal ? (isDog ? 1000 : 250) : DD.nrc[nrcKey].nutrients[row.key];
+        const anchorKcal = isDog ? 1000 : 250;
+        const weightRatio = stats.mer / anchorKcal;
+        
+        const dynamicTarget = nrcBase * weightRatio;
+        const pct = dynamicTarget ? (val / dynamicTarget) * 100 : 0;
+
+        const blockVal = isKcal ? stats.blockEnergy : stats.finalUnits * (stats.blockContentPerUnit[row.key] || 0);
+        const blockPct = val ? (blockVal / val) * 100 : 0;
+
+        tableHtml += `
+          <tr class="group hover:bg-slate-800/50 transition-colors ${isKcal ? 'bg-slate-800/30' : ''}">
+            <td class="py-4 px-2">
+              <div class="font-bold ${isKcal ? 'text-emerald-400' : 'text-slate-200'}">${row.label}</div>
+              <div class="text-[10px] text-slate-500 uppercase tracking-tight">${row.unit} / day</div>
+            </td>
+            <td class="py-4">
+              <div class="text-sm font-mono ${isKcal ? 'font-bold' : ''}">${formatScientific(val, isKcal)}</div>
+              <div class="text-[10px] text-slate-500 flex items-center gap-1">
+                <span class="italic">Target:</span> 
+                <span>${dynamicTarget ? formatScientific(dynamicTarget, isKcal) : 'N/A'}</span>
+              </div>
+            </td>
+            <td class="py-4 text-center">
+              ${nrcBase > 0 ? `
+                 <div class="inline-block px-3 py-1 rounded-md text-[10px] font-black ${pct >= 100 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                   ${Math.round(pct)}% ${isKcal ? 'MER' : 'NRC'}
+                 </div>
+              ` : `
+                 <div class="inline-block px-3 py-1 rounded-md text-[10px] font-black bg-slate-500/10 text-slate-400 border border-slate-500/20">
+                   N/A
+                 </div>
+              `}
+            </td>
+            <td class="py-4 text-right pr-2">
+              <div class="flex flex-col items-end">
+                <div class="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div style="width: ${Math.min(100, blockPct)}%" class="h-full ${isKcal ? 'bg-emerald-500' : 'bg-blue-500'} shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                </div>
+                <span class="text-[10px] text-slate-500 mt-1 font-mono">${Math.round(blockPct)}% B</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      document.getElementById('nutrient-table-body').innerHTML = tableHtml;
+
+      // BOM Display
+      const spKey = isDog ? 'dogcore' : 'catcore';
+      document.getElementById('bom-title-display').innerText = `Unit size: 4000 mg (${isDog ? 'DogCore' : 'CatCore'})`;
+      
+      const bomData = Object.entries(DD.bom[spKey].ingredients)
+        .map(([key, data]) => ({
+          id: key,
+          mg: data.dose_mg_per_unit,
+          pct: (data.dose_mg_per_unit / 4000) * 100
+        }))
+        .sort((a, b) => b.pct - a.pct);
+
+      let bomHtml = '';
+      bomData.forEach(item => {
+        bomHtml += `
+          <div class="flex justify-between items-center p-3 rounded-lg bg-slate-50 border border-slate-100">
+            <span class="text-sm font-medium text-slate-700 truncate mr-2" title="${item.id}">
+              ${item.id.replace(/_/g, ' ')}
+            </span>
+            <div class="text-right shrink-0">
+              <div class="text-sm font-bold text-slate-900">${formatScientific(item.pct)}%</div>
+              <div class="text-[10px] text-slate-400">${formatScientific(item.mg)} mg</div>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('bom-list-container').innerHTML = bomHtml;
+
+      // Re-initialize Lucide Icons after DOM updates
+      lucide.createIcons();
+    }
+
+    // --- INIT ---
+    // Make sure toggle buttons are properly highlighted on load
+    window.setSpecies(state.species); 
+    // Initial Render
+    render();
+
+  </script>
 </body>
 </html>
