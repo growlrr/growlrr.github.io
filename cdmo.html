@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growlrr Foods | CatCore™ CDMO Master Dossier v6.4</title>
+    <title>Growlrr Foods | CatCore™ CDMO Master Dossier v6.8</title>
     <!-- Google Fonts: Lato & Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,7 +46,7 @@
             height: 300px;
         }
 
-        /* Minimum Font Size Enforcement */
+        /* Minimum Font Size Enforcement (≥ 10px) */
         .text-2xs { font-size: 10px; line-height: 1.2rem; }
         .text-xs { font-size: 12px; }
         .text-sm { font-size: 14px; }
@@ -76,13 +76,13 @@
 <body class="bg-[#f0f4f8] text-slate-800 antialiased h-screen flex flex-col md:flex-row overflow-hidden">
 
     <!-- Sidebar Navigation -->
-    <aside class="w-full md:w-72 bg-white border-r border-slate-200 flex flex-col z-20 shadow-md flex-shrink-0">
+    <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col z-20 shadow-md flex-shrink-0">
         <div class="p-8 border-b border-slate-100 bg-[#003d5b] text-white">
-            <h1 class="text-xl font-black tracking-tight flex flex-col">
+            <h1 class="text-xl font-black tracking-tight flex flex-col uppercase">
                 <span>GROWLRR</span>
-                <span class="font-light text-slate-300 text-sm">CDMO DASHBOARD</span>
+                <span class="font-light text-slate-300 text-xs italic tracking-widest mt-1">CDMO Command Center</span>
             </h1>
-            <p class="text-2xs mt-2 uppercase tracking-widest font-black text-teal-400">Master Dossier v6.4</p>
+            <p class="text-2xs mt-2 uppercase tracking-widest font-black text-teal-400">Master Dossier v6.8</p>
         </div>
         <nav class="flex-1 overflow-y-auto py-6">
             <ul class="space-y-1">
@@ -118,9 +118,18 @@
                 </li>
             </ul>
         </nav>
-        <div class="p-6 border-t border-slate-100 text-2xs text-slate-400 font-bold uppercase tracking-widest bg-slate-50">
-            <p>Auth: Growlrr Foods Pvt Ltd</p>
-            <p class="mt-1">Chennai, IN | Global Spec</p>
+        
+        <!-- Expanded Authority & Legal Block -->
+        <div class="p-8 border-t border-slate-100 bg-slate-50 text-2xs tracking-widest leading-relaxed">
+            <p class="font-black text-primary uppercase mb-2">Auth: Growlrr Foods Pvt Ltd</p>
+            <div class="space-y-1 text-slate-500 font-bold uppercase">
+                <p class="text-warning">Confidential and proprietary.</p>
+                <p>Not for sale.</p>
+                <p>Not for human use.</p>
+                <p class="normal-case font-medium text-slate-400 mt-2 italic border-t border-slate-200 pt-2">
+                    Not intended as a pharmacological product.
+                </p>
+            </div>
         </div>
     </aside>
 
@@ -133,12 +142,13 @@
         // --- DATA ENGINE ---
         const dossier = {
             metadata: {
-                revision: "v6.2 (Active)",
-                date: "26/02/2026",
+                revision: "v6.8 (Active)",
+                date: "27/02/2026",
                 status: "Pre-Pilot Revision Controlled Issue",
                 classification: "Pet Food Supplement / Topper / Balancer",
                 matrix: "Non-Aqueous Granulated Scaffold",
-                method: "Cold Compression"
+                method: "Cold Compression",
+                tolerance: "±2% (3.92g - 4.08g)"
             },
             phases: [
                 { id: 'alpha', name: 'Alpha Phase', role: 'Lipid binder system', percent: 18.00, color: '#003d5b' },
@@ -149,7 +159,7 @@
                 { id: 'zeta', name: 'Zeta Phase', role: 'Carrier Reconciliation', percent: 10.75, color: '#94a3b8' }
             ],
             ingredients: [
-                { phase: 'alpha', name: 'Mutton Tallow', percent: 16.0000, cas: '61789-97-7', assay: '100% Fat (PV ≤5)', particle: 'Melted/Solid', tolerance: '±5%', status: 'Adjustable' },
+                { phase: 'alpha', name: 'Bovine Tallow', percent: 16.0000, cas: '61789-97-7', assay: '100% Fat (PV ≤5)', particle: 'Melted/Solid', tolerance: '±5%', status: 'Adjustable' },
                 { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5% Purity', particle: 'Viscous Liquid', tolerance: '±1%', status: 'Adjustable' },
                 { phase: 'alpha', name: 'Antioxidant Blend', percent: 1.5400, cas: 'Mixture', assay: 'Mixed Tocopherols', particle: 'Powder/Liquid', tolerance: '±1%', status: 'Locked' },
                 { phase: 'alpha', name: 'Vitamin E (Natural)', percent: 0.0700, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: '±1%', status: 'Locked' },
@@ -175,19 +185,31 @@
         };
 
         const kanban = [
-            { id: 'foundation', name: 'Backlog', cards: [{ stage: 'Stage 0', title: 'Legal Foundation', owner: 'Joint', gate: 'Signed NDA + Revision Acknowledged' }] },
-            { id: 'feasibility', name: 'In Validation', cards: [{ stage: 'Stage 1', title: 'Technical Feasibility', owner: 'CDMO', gate: 'Written Confirmation' }] },
+            { id: 'foundation', name: 'Backlog', cards: [
+                { stage: 'Stage 0', title: 'NDA Executed', owner: 'Joint', gate: 'Legal Clearance Obtained' },
+                { stage: 'Stage 0', title: 'MoU Shared', owner: 'Joint', gate: 'PENDING: MoU Signed' },
+                { stage: 'Stage 0', title: 'Spec Revision Signed', owner: 'Joint', gate: 'PENDING: Revision Signed' }
+            ] },
+            { id: 'validation', name: 'In Validation', cards: [
+                { stage: 'Stage 1', title: 'Bench Top Samples', owner: 'CDMO', gate: 'Physical properties, friability, wt tolerance eval' },
+                { stage: 'Stage 1', title: 'Written Confirmation of Feasibility', owner: 'CDMO', gate: 'Formal Feasibility Sign-off' },
+                { stage: 'Stage 1', title: 'Stage 2 R&D for Optimization', owner: 'CDMO', gate: 'Technical bracketing start' }
+            ] },
             { id: 'test', name: 'Under Test', cards: [
-                { stage: 'Stage 2', title: 'Core Bracketing', owner: 'Joint', gate: 'Final Profile Selected' },
-                { stage: 'Stage 3', title: 'Trace Validation', owner: 'Joint', gate: '±10% intent assay' }
+                { stage: 'Stage 2', title: 'Core Bracketing', owner: 'CDMO', gate: '3-4 matrix to lipid ratio variants' },
+                { stage: 'Stage 3', title: 'Trace Validation', owner: 'Joint', gate: 'Trace within ±10% intent assay' }
             ]},
-            { id: 'review', name: 'Gate Review', cards: [{ stage: 'Stage 4', title: 'Stability Validation', owner: 'CDMO', gate: 'No specification drift' }] },
-            { id: 'scaled', name: 'Approved', cards: [{ stage: 'Stage 6', title: 'Commercial Transition', owner: 'Joint', gate: 'Contract Execution' }] }
+            { id: 'review', name: 'Gate Review', cards: [
+                { stage: 'Stage 4', title: 'NABL Verification', owner: 'Joint', gate: 'Third-party NABL confirmation (Metals, pathogens)' }
+            ] },
+            { id: 'scaled', name: 'Approved', cards: [
+                { stage: 'Stage 6', title: 'Commercial Transition', owner: 'Joint', gate: 'Contract Execution + Scale-up 500kg+' }
+            ] }
         ];
 
         const sops = [
             { id: 'A1', title: 'Lipid / Liquid Base', items: [
-                { act: 'Verify Mutton Tallow PV ≤5 and FFA ≤1%', check: 'Reject rancid lots' },
+                { act: 'Verify Bovine Tallow PV ≤5 and FFA ≤1% (Chicken Fat acceptable)', check: 'Reject rancid lots' },
                 { act: 'Melt Tallow and hold ≤40°C', check: 'CCP: Max 40°C' },
                 { act: 'Drizzle Algal Oil Powder into lipid slurry', check: 'No heat post-addition' }
             ]},
@@ -208,8 +230,8 @@
 
         const ccpMatrix = [
             { id: 'CCP-1', item: 'Trace Premix Purity', limit: 'Vendor Standard Only', action: 'Reject neat actives' },
-            { id: 'CCP-2', item: 'Process Temperature', limit: '≤ 25°C (Dry) / 40°C (Alpha)', action: 'Cool or discard' },
-            { id: 'CCP-3', item: 'Water Activity (aw)', limit: '≤ 0.60', action: 'Verify unit seal' }
+            { id: 'CCP-2', item: 'Process Temperature', limit: '≤ 25°C (Dry) / 40°C (Alpha)', action: 'Cool or discard overheated batch' },
+            { id: 'CCP-3', item: 'Water Activity (aw)', limit: '≤ 0.60', action: 'Verify unit seal and humidity control' }
         ];
 
         // --- RENDER ENGINE ---
@@ -236,17 +258,17 @@
                         <div class="bg-[#003d5b] p-8 text-white flex justify-between items-center">
                             <div>
                                 <h2 class="text-2xl font-black uppercase tracking-tight">Project Command Center</h2>
-                                <p class="text-sm font-bold text-teal-400 mt-1 uppercase">Joint Execution Specification v6.2</p>
+                                <p class="text-sm font-bold text-teal-400 mt-1 uppercase tracking-widest">Joint Execution Specification v6.8</p>
                             </div>
                             <div class="text-right flex flex-col items-end">
-                                <span class="bg-teal-600 px-3 py-1 rounded text-2xs font-black uppercase">REVISION CONTROLLED</span>
+                                <span class="bg-teal-600 px-3 py-1 rounded text-2xs font-black uppercase tracking-widest">REVISION CONTROLLED</span>
                                 <span class="mt-2 font-bold text-slate-300">Auth: ${dossier.metadata.date}</span>
                             </div>
                         </div>
                         <div class="p-8 grid md:grid-cols-3 gap-6 text-sm">
                             <div class="space-y-4">
-                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Status</span><span class="font-bold">${dossier.metadata.status}</span></div>
-                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Regulatory</span><span class="font-bold">${dossier.metadata.classification}</span></div>
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Status</span><span class="font-bold text-primary">${dossier.metadata.status}</span></div>
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Regulatory</span><span class="font-bold text-primary">${dossier.metadata.classification}</span></div>
                             </div>
                             <div class="space-y-4">
                                 <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Matrix Type</span><span class="font-bold">${dossier.metadata.matrix}</span></div>
@@ -254,7 +276,7 @@
                             </div>
                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 border-l-4 border-teal-600">
                                 <h4 class="text-2xs font-black uppercase mb-2">Expected Outcome</h4>
-                                <p class="italic text-slate-600 leading-snug">"Custom samples for CDMO capacity validation. Gated for scale-up contract."</p>
+                                <p class="italic text-slate-600 leading-snug">"Custom samples for CDMO capacity validation. Gated for Manufacturing scale-up contract."</p>
                             </div>
                         </div>
                     </section>
@@ -264,9 +286,9 @@
                             <span>Joint Execution Kanban</span>
                             <span class="text-2xs text-slate-400 font-bold uppercase tracking-widest">Pull-based Gate Clearance</span>
                         </h3>
-                        <div class="flex overflow-x-auto gap-4 pb-4">
+                        <div class="flex overflow-x-auto gap-6 pb-6">
                             ${kanban.map(col => `
-                                <div class="kanban-column flex flex-col space-y-3">
+                                <div class="kanban-column flex flex-col space-y-4">
                                     <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest px-2">${col.name}</h4>
                                     <div class="bg-slate-100 p-2 rounded-xl border border-slate-200 min-h-[300px] flex flex-col space-y-3">
                                         ${col.cards.map(card => `
@@ -275,7 +297,7 @@
                                                 <h5 class="font-black text-primary leading-tight mb-4">${card.title}</h5>
                                                 <div class="pt-3 border-t border-slate-50">
                                                     <p class="text-2xs font-black text-slate-400 uppercase mb-1">Gate Condition</p>
-                                                    <p class="text-xs font-bold italic text-slate-600">${card.gate}</p>
+                                                    <p class="text-xs font-bold italic text-slate-600 leading-snug">${card.gate}</p>
                                                 </div>
                                             </div>
                                         `).join('')}
@@ -326,7 +348,7 @@
                             </table>
                         </div>
                         <div class="p-4 bg-slate-50 text-2xs font-black text-slate-400 uppercase tracking-widest text-center border-t border-slate-200">
-                            * Checksum Verified: 100.00% Required | Carrier Reconciled into Phase Zeta
+                            * Bovine Tallow Primary Lipid (Chicken fat acceptable as alternative)
                         </div>
                     </div>
                 </div>
@@ -400,7 +422,7 @@
                             <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                                 <div class="bg-slate-50 px-8 py-4 border-b border-slate-200 flex justify-between items-center">
                                     <h4 class="font-black text-primary uppercase text-sm">${p.id} — ${p.title}</h4>
-                                    <span class="text-2xs font-black bg-white border border-slate-200 px-2 py-1 rounded text-slate-500 uppercase">Digital Record Form</span>
+                                    <span class="text-2xs font-black bg-white border border-slate-200 px-2 py-1 rounded text-slate-500 uppercase">Batch Log Form</span>
                                 </div>
                                 <table class="w-full text-left sop-table">
                                     <thead>
@@ -412,7 +434,7 @@
                                     </thead>
                                     <tbody class="divide-y divide-slate-100">
                                         ${p.items.map(item => `
-                                            <tr class="hover:bg-slate-50/50">
+                                            <tr class="hover:bg-slate-50/50 transition-colors">
                                                 <td class="px-8 py-5 text-slate-600">${item.act}</td>
                                                 <td class="px-8 py-5 text-right"><input type="text" placeholder="0.0000"></td>
                                                 <td class="px-8 py-5 text-xs font-black uppercase text-teal-700">${item.check}</td>
@@ -433,16 +455,16 @@
                     <div class="flex justify-between items-end">
                         <div>
                             <h2 class="text-2xl font-black text-primary uppercase tracking-tight">Quality & COA Specifications</h2>
-                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">Incoming Material Validation (v6.2 Ref)</p>
+                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">Incoming Material Validation (v6.8 Ref)</p>
                         </div>
-                        <button onclick="exportCSV('COA')" class="bg-primary text-white px-5 py-2.5 rounded font-black text-xs uppercase flex items-center gap-2">
+                        <button onclick="exportCSV('COA')" class="bg-primary text-white px-5 py-2.5 rounded font-black text-xs uppercase flex items-center gap-2 transition-transform hover:scale-105">
                             <span>📥</span> Export COA Specs CSV
                         </button>
                     </div>
 
                     <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
                         <div class="bg-slate-50 px-8 py-4 border-b border-slate-200">
-                            <h3 class="text-xs font-black text-primary uppercase tracking-widest">Incoming Raw Material Detailed COA (v6.2 Mandatory)</h3>
+                            <h3 class="text-xs font-black text-primary uppercase tracking-widest">Incoming Raw Material Detailed COA (Mandatory Baseline)</h3>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-sm">
@@ -475,7 +497,7 @@
                             <h3 class="text-xs font-black text-primary uppercase mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Critical Control Points (CCPs)</h3>
                             <div class="space-y-4">
                                 ${ccpMatrix.map(ccp => `
-                                    <div class="p-6 bg-slate-50 rounded-xl border-l-4 border-teal-600">
+                                    <div class="p-6 bg-slate-50 rounded-xl border-l-4 border-teal-600 shadow-sm">
                                         <div class="flex justify-between items-start mb-2">
                                             <h5 class="font-black text-primary uppercase">${ccp.item}</h5>
                                             <span class="text-2xs bg-teal-600 text-white px-2 py-1 rounded font-black">${ccp.id}</span>
@@ -489,13 +511,14 @@
 
                         <div class="space-y-8">
                             <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
-                                <h3 class="text-xs font-black text-primary uppercase mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Finished Product Specification</h3>
+                                <h3 class="text-xs font-black text-primary uppercase mb-6 underline decoration-teal-500 decoration-2 underline-offset-4 tracking-wider">Finished Product Release Criteria</h3>
                                 <div class="space-y-4 font-bold text-sm">
-                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Unit Weight</span><span class="text-primary font-black">4.0g ± 2%</span></div>
-                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Friability</span><span class="text-primary font-black">10–20% Loss (Crumble)</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Target Unit Weight</span><span class="text-primary font-black">4.0g</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Weight Tolerance</span><span class="text-teal-700 font-black">± 2% (3.92-4.08g)</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Friability (USP)</span><span class="text-primary font-black">10–20% Loss</span></div>
                                     <div class="flex justify-between py-2 border-b border-slate-50"><span>Water Activity (aw)</span><span class="text-primary font-black">≤ 0.60</span></div>
-                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Moisture</span><span class="text-primary font-black">≤ 4.5%</span></div>
-                                    <div class="flex justify-between py-2 text-teal-600"><span>Salmonella</span><span class="font-black uppercase">Absent in 25g</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50 text-teal-600"><span>Salmonella</span><span class="font-black uppercase">Absent / 25g</span></div>
+                                    <div class="flex justify-between py-2 text-teal-600"><span>Heavy Metals</span><span class="font-black uppercase">Pb < 5ppm | As < 2ppm</span></div>
                                 </div>
                             </div>
                         </div>
@@ -508,39 +531,38 @@
             target.innerHTML = `
                 <div class="fade-in max-w-4xl mx-auto space-y-12 pb-20">
                     <section class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
-                        <h2 class="text-xl font-black text-primary uppercase mb-6 border-b-2 border-teal-600 pb-3">NRC-2006 Alignment Framework</h2>
+                        <h2 class="text-xl font-black text-primary uppercase mb-6 border-b-2 border-teal-600 pb-3 tracking-tighter">NRC-2006 Consistency Alignment</h2>
                         <p class="text-slate-600 leading-relaxed mb-6">
-                            Formulations are mathematically aligned to NRC-2006 requirements for healthy adult animals. CatCore™ units act as the "Nutritional Floor" to owner-sourced protein.
+                            Formulations are mathematically aligned to NRC-2006 requirements for healthy adult animals. CatCore™ acts as the "Nutritional Floor" (Micro-Active Block) to owner-sourced macro-protein.
                         </p>
                         <div class="grid md:grid-cols-2 gap-6">
                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2">Mineral Buffering</h5>
-                                <p class="text-sm text-slate-500">Dual-salt architecture handles Phosphorus Load from fresh meat.</p>
+                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2 tracking-widest">Mineral Architecture</h5>
+                                <p class="text-sm text-slate-500">Dual-salt buffering manages Phosphorus Load from Raw/Fresh grocery meat.</p>
                             </div>
                             <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2">Biological APIs</h5>
-                                <p class="text-sm text-slate-500">Liver powders provide Retinol bounds without synthetic esters.</p>
+                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2 tracking-widest">Biological Matrices</h5>
+                                <p class="text-sm text-slate-500">Insects (BSFL) and Liver powders provide Vitamin A/D/E and Fe/Mn naturally.</p>
                             </div>
                         </div>
                     </section>
 
-                    <section class="bg-[#003d5b] p-10 rounded-2xl shadow-xl text-white">
-                        <h2 class="text-xl font-black uppercase mb-4 tracking-tight">Legal Classification</h2>
-                        <p class="text-teal-200 leading-relaxed italic mb-8">"Pet Food Supplement / Topper / Balancer"</p>
-                        <div class="p-8 bg-white/10 rounded-xl border border-white/20">
-                            <p class="text-sm font-bold leading-relaxed">
-                                Under FSSAI/FDA frameworks, CatCore™ is a supplement. CDMO must maintain the trace discipline of a therapeutic nutraceutical (Delta Phase handling). 
-                                No medical/disease claims are authorized.
+                    <section class="bg-primary p-10 rounded-2xl shadow-xl text-white">
+                        <h2 class="text-xl font-black uppercase mb-4 tracking-tight">Legal & Compliance</h2>
+                        <p class="text-teal-200 leading-relaxed italic mb-8">Classification: "Pet Food Supplement / Topper / Balancer"</p>
+                        <div class="p-8 bg-white/10 rounded-xl border border-white/20 leading-relaxed">
+                            <p class="text-sm font-bold">
+                                Under FSSAI/FDA/AAFCO frameworks, CatCore™ is a feed supplement. CDMO must maintain the trace discipline of a therapeutic nutraceutical (Delta Phase handling). No medical/disease claims are authorized.
                             </p>
                         </div>
                     </section>
 
                     <section class="bg-red-50 p-10 rounded-2xl shadow-lg border border-red-100 border-l-8 border-red-500">
-                        <h2 class="text-xl font-black text-red-700 uppercase mb-6">Trace Safety (Delta Phase)</h2>
+                        <h2 class="text-xl font-black text-red-700 uppercase mb-6">Trace Safety & Handling</h2>
                         <div class="space-y-6 text-sm font-bold text-red-900">
-                            <div class="flex gap-4"><span>⚠</span> <span>Overdose of KI or D3 poses FATAL risk to companion animals.</span></div>
-                            <div class="flex gap-4"><span>⚠</span> <span>Geometric Dilution (Trituration) is NON-NEGOTIABLE.</span></div>
-                            <div class="flex gap-4"><span>⚠</span> <span>Neat trace API handling is PROHIBITED at batch stage.</span></div>
+                            <div class="flex gap-4"><span>⚠</span> <span>Overdose of KI or D3 poses FATAL risk. Batch must halt if trituration math fails.</span></div>
+                            <div class="flex gap-4"><span>⚠</span> <span>Geometric Dilution (Trituration) is NON-NEGOTIABLE for trace mineral integration.</span></div>
+                            <div class="flex gap-4"><span>⚠</span> <span>Handling of NEAT (pure) trace API is PROHIBITED at batch stage.</span></div>
                         </div>
                     </section>
                 </div>
@@ -570,7 +592,6 @@
                 }
             };
 
-            // Phase Doughnut (Interactive)
             const phaseCtx = document.getElementById('chartPhase').getContext('2d');
             new Chart(phaseCtx, {
                 type: 'doughnut',
@@ -598,7 +619,6 @@
                 }
             });
 
-            // Solid to Lipid Ratio (Bar)
             const alphaVal = dossier.phases.find(p => p.id === 'alpha').percent;
             const ratioCtx = document.getElementById('chartRatio').getContext('2d');
             new Chart(ratioCtx, {
@@ -610,7 +630,6 @@
                 options: chartStyles.bar
             });
 
-            // Functional Load (Bar)
             const loadCtx = document.getElementById('chartLoad').getContext('2d');
             const epVal = dossier.phases.find(p => p.id === 'epsilon').percent;
             const zVal = dossier.phases.find(p => p.id === 'zeta').percent;
@@ -624,7 +643,6 @@
                 options: chartStyles.bar
             });
 
-            // Alpha vs Beta (Bar)
             const abCtx = document.getElementById('chartAB').getContext('2d');
             const betaVal = dossier.phases.find(p => p.id === 'beta').percent;
             new Chart(abCtx, {
@@ -646,14 +664,14 @@
 
             table.innerHTML = `
                 <thead class="bg-slate-50 font-black text-slate-400 uppercase tracking-widest text-2xs border-b border-slate-100">
-                    <tr><th class="px-8 py-4">Ingredient</th><th class="px-8 py-4 text-right">Mass %</th><th class="px-8 py-4">Type</th></tr>
+                    <tr><th class="px-8 py-4 text-left">Ingredient</th><th class="px-8 py-4 text-right">Mass %</th><th class="px-8 py-4 text-right">Type</th></tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     ${data.map(i => `
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-8 py-4 font-bold text-slate-700">${i.name}</td>
-                            <td class="px-8 py-4 text-right font-mono font-black text-[#003d5b]">${i.percent.toFixed(4)}%</td>
-                            <td class="px-8 py-4 text-xs font-black uppercase text-slate-400">${i.phase}</td>
+                            <td class="px-8 py-4 text-right font-mono font-black text-primary">${i.percent.toFixed(4)}%</td>
+                            <td class="px-8 py-4 text-xs font-black uppercase text-slate-400 text-right">${i.phase}</td>
                         </tr>
                     `).join('')}
                 </tbody>
@@ -662,7 +680,7 @@
 
         function exportCSV(type) {
             let csv = "";
-            let filename = `Growlrr_${type}_v6.4.csv`;
+            let filename = `Growlrr_${type}_v6.8.csv`;
 
             if (type === 'BOM') {
                 csv = "Ingredient,Mass Percent,CAS,Phase,Status\n";
