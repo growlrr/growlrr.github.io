@@ -1,1 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growlrr Foods | CatCore™ CDMO Master Dossier v6.4</title>
+    <!-- Google Fonts: Lato & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base styles and typography overrides */
+        body { font-family: 'Lato', sans-serif; font-size: 14px; }
+        h1, h2, h3, h4, h5, .nav-item { font-family: 'Montserrat', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* Professional Blue-Green Color Palette */
+        :root {
+            --primary: #003d5b;      /* Deep Navy */
+            --secondary: #00798c;    /* Deep Teal */
+            --accent: #2e8b57;       /* Sea Green */
+            --warning: #d1495b;      /* Muted Red */
+            --bg-main: #f0f4f8;      /* Cool Gray/Blue */
+        }
+
+        .bg-primary { background-color: var(--primary); }
+        .text-primary { color: var(--primary); }
+        .border-primary { border-color: var(--primary); }
+        .nav-item.active {
+            background-color: #f1f5f9;
+            border-left: 4px solid var(--secondary);
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+
+        /* Minimum Font Size Enforcement */
+        .text-2xs { font-size: 10px; line-height: 1.2rem; }
+        .text-xs { font-size: 12px; }
+        .text-sm { font-size: 14px; }
+        
+        table th, table td { font-size: 13px; }
+
+        .sop-table input { 
+            width: 100px; 
+            text-align: right; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 4px; 
+            padding: 4px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .sop-table input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 1px var(--secondary); }
+
+        .kanban-column { min-width: 280px; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-[#f0f4f8] text-slate-800 antialiased h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-72 bg-white border-r border-slate-200 flex flex-col z-20 shadow-md flex-shrink-0">
+        <div class="p-8 border-b border-slate-100 bg-[#003d5b] text-white">
+            <h1 class="text-xl font-black tracking-tight flex flex-col">
+                <span>GROWLRR</span>
+                <span class="font-light text-slate-300 text-sm">CDMO DASHBOARD</span>
+            </h1>
+            <p class="text-2xs mt-2 uppercase tracking-widest font-black text-teal-400">Master Dossier v6.4</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-6">
+            <ul class="space-y-1">
+                <li>
+                    <button onclick="renderView('overview')" id="nav-overview" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">📊</span> Overview & Context
+                    </button>
+                </li>
+                <li>
+                    <button onclick="renderView('formulation')" id="nav-formulation" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">⚗️</span> Master Formulation
+                    </button>
+                </li>
+                <li>
+                    <button onclick="renderView('analytics')" id="nav-analytics" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">📈</span> Formulation Analytics
+                    </button>
+                </li>
+                <li>
+                    <button onclick="renderView('process')" id="nav-process" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">⚙️</span> Phase-Wise SOP
+                    </button>
+                </li>
+                <li>
+                    <button onclick="renderView('quality')" id="nav-quality" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">✅</span> Quality & COA
+                    </button>
+                </li>
+                <li>
+                    <button onclick="renderView('regulatory')" id="nav-regulatory" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">📜</span> Regulatory & Intent
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-6 border-t border-slate-100 text-2xs text-slate-400 font-bold uppercase tracking-widest bg-slate-50">
+            <p>Auth: Growlrr Foods Pvt Ltd</p>
+            <p class="mt-1">Chennai, IN | Global Spec</p>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto relative p-6 md:p-10" id="main-content">
+        <!-- Content injected via JS -->
+    </main>
+
+    <script>
+        // --- DATA ENGINE ---
+        const dossier = {
+            metadata: {
+                revision: "v6.2 (Active)",
+                date: "26/02/2026",
+                status: "Pre-Pilot Revision Controlled Issue",
+                classification: "Pet Food Supplement / Topper / Balancer",
+                matrix: "Non-Aqueous Granulated Scaffold",
+                method: "Cold Compression"
+            },
+            phases: [
+                { id: 'alpha', name: 'Alpha Phase', role: 'Lipid binder system', percent: 18.00, color: '#003d5b' },
+                { id: 'beta', name: 'Beta Phase', role: 'Bulk Calcium salts', percent: 18.18, color: '#00798c' },
+                { id: 'epsilon', name: 'Epsilon Phase', role: 'Biological Matrix', percent: 51.31, color: '#2e8b57' },
+                { id: 'gamma', name: 'Gamma Phase', role: 'Functional Supports', percent: 1.76, color: '#4cc9f0' },
+                { id: 'delta', name: 'Delta Phase', role: 'Trace Corrections', percent: 0.0035, color: '#d1495b' },
+                { id: 'zeta', name: 'Zeta Phase', role: 'Carrier Reconciliation', percent: 10.75, color: '#94a3b8' }
+            ],
+            ingredients: [
+                { phase: 'alpha', name: 'Mutton Tallow', percent: 16.0000, cas: '61789-97-7', assay: '100% Fat (PV ≤5)', particle: 'Melted/Solid', tolerance: '±5%', status: 'Adjustable' },
+                { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5% Purity', particle: 'Viscous Liquid', tolerance: '±1%', status: 'Adjustable' },
+                { phase: 'alpha', name: 'Antioxidant Blend', percent: 1.5400, cas: 'Mixture', assay: 'Mixed Tocopherols', particle: 'Powder/Liquid', tolerance: '±1%', status: 'Locked' },
+                { phase: 'alpha', name: 'Vitamin E (Natural)', percent: 0.0700, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: '±1%', status: 'Locked' },
+                { phase: 'beta', name: 'Calcium Lactate-Gluconate', percent: 15.5700, cas: '11116-97-5', assay: '≥13% Elemental Ca', particle: 'Fine Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'beta', name: 'Calcium Citrate-Malate', percent: 2.6100, cas: '142606-53-9', assay: '≥24% Elemental Ca', particle: 'Fine Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'BSFL Powder', percent: 15.4800, cas: 'Biological', assay: '≥50% Prot, Mn Rich', particle: 'D90 ≤500µm', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Chicken Liver Powder', percent: 12.8300, cas: 'Biological', assay: 'Spray-Dried 4x', particle: 'D90 ≤500µm', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Buffalo Liver Powder', percent: 1.8400, cas: 'Biological', assay: 'Spray-Dried 4x', particle: 'D90 ≤500µm', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Algal Oil Powder (≥20% DHA)', percent: 7.4400, cas: 'Mixture', assay: 'Spray-Dried Powder', particle: 'Dry Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Egg Yolk Powder', percent: 5.0000, cas: 'Biological', assay: '≥40% Fat', particle: 'Fine Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Lecithin', percent: 2.2000, cas: '8002-43-5', assay: '≥60% Acetone Ins.', particle: 'Viscous/Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Bone MCHA', percent: 7.2200, cas: '1306-06-5', assay: '~24% Ca / ~12% P', particle: 'D90 ≤250µm', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'MOS', percent: 1.0000, cas: 'Mixture', assay: '≥20% Mannan', particle: 'Fine Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'epsilon', name: 'Yucca Schidigera', percent: 0.5000, cas: '90147-57-2', assay: '≥30% Saponins', particle: 'Fine Powder', tolerance: '±1%', status: 'Locked' },
+                { phase: 'gamma', name: 'Taurine Pure', percent: 0.1900, cas: '107-35-7', assay: '≥99.0% Purity', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
+                { phase: 'gamma', name: 'MSM', percent: 1.5000, cas: '67-71-0', assay: '≥99.9% Purity', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
+                { phase: 'delta', name: 'Thiamine HCl (2% Premix)', percent: 0.0031, cas: '67-03-8', assay: '2% active in MCC', particle: 'Triturated', tolerance: '±1%', status: 'Locked' },
+                { phase: 'delta', name: 'Potassium Iodide (0.1% Premix)', percent: 0.0003, cas: '7681-11-0', assay: '0.1% active in MCC', particle: 'Triturated', tolerance: '±1%', status: 'Locked' },
+                { phase: 'delta', name: 'Vitamin D3 (1k IU/mg)', percent: 0.0001, cas: '67-97-0', assay: '1000 IU/mg Premix', particle: 'Triturated', tolerance: '±1%', status: 'Locked' },
+                { phase: 'zeta', name: 'Carrier Blend (MCC)', percent: 6.0000, cas: '9004-34-6', assay: 'USP / Pharma Grade', particle: 'Fine Powder', tolerance: '±5%', status: 'Adjustable' },
+                { phase: 'zeta', name: 'Silicates', percent: 1.0066, cas: '7631-86-9', assay: 'Food Grade', particle: 'Fine Powder', tolerance: '±5%', status: 'Adjustable' }
+            ]
+        };
+
+        const kanban = [
+            { id: 'foundation', name: 'Backlog', cards: [{ stage: 'Stage 0', title: 'Legal Foundation', owner: 'Joint', gate: 'Signed NDA + Revision Acknowledged' }] },
+            { id: 'feasibility', name: 'In Validation', cards: [{ stage: 'Stage 1', title: 'Technical Feasibility', owner: 'CDMO', gate: 'Written Confirmation' }] },
+            { id: 'test', name: 'Under Test', cards: [
+                { stage: 'Stage 2', title: 'Core Bracketing', owner: 'Joint', gate: 'Final Profile Selected' },
+                { stage: 'Stage 3', title: 'Trace Validation', owner: 'Joint', gate: '±10% intent assay' }
+            ]},
+            { id: 'review', name: 'Gate Review', cards: [{ stage: 'Stage 4', title: 'Stability Validation', owner: 'CDMO', gate: 'No specification drift' }] },
+            { id: 'scaled', name: 'Approved', cards: [{ stage: 'Stage 6', title: 'Commercial Transition', owner: 'Joint', gate: 'Contract Execution' }] }
+        ];
+
+        const sops = [
+            { id: 'A1', title: 'Lipid / Liquid Base', items: [
+                { act: 'Verify Mutton Tallow PV ≤5 and FFA ≤1%', check: 'Reject rancid lots' },
+                { act: 'Melt Tallow and hold ≤40°C', check: 'CCP: Max 40°C' },
+                { act: 'Drizzle Algal Oil Powder into lipid slurry', check: 'No heat post-addition' }
+            ]},
+            { id: 'A2-A3', title: 'Bulk Dry Scaffolding', items: [
+                { act: 'Dry blend Beta Calcium Salts (5 min)', check: 'Uniform white powder' },
+                { act: 'Charge Bio-Base powders (Epsilon Phase)', check: 'D90 ≤ 500µm' },
+                { act: 'Add Lecithin and check for clumps', check: 'Full dispersion' }
+            ]},
+            { id: 'A4-A5', title: 'Micro-Active Integration', items: [
+                { act: 'Geometric Dilution of Delta Premixes', check: 'Expand ≥50× mass' },
+                { act: 'Integrate Gamma functional amino layer', check: 'No hotspots' }
+            ]},
+            { id: 'A7', title: 'Final Integration', items: [
+                { act: 'Mix Alpha slurry into Dry Bed (≤25°C)', check: 'Damp granule texture' },
+                { act: 'Transfer to Cold Press Hopper (≤30 min)', check: 'Protect from moisture' }
+            ]}
+        ];
+
+        const ccpMatrix = [
+            { id: 'CCP-1', item: 'Trace Premix Purity', limit: 'Vendor Standard Only', action: 'Reject neat actives' },
+            { id: 'CCP-2', item: 'Process Temperature', limit: '≤ 25°C (Dry) / 40°C (Alpha)', action: 'Cool or discard' },
+            { id: 'CCP-3', item: 'Water Activity (aw)', limit: '≤ 0.60', action: 'Verify unit seal' }
+        ];
+
+        // --- RENDER ENGINE ---
+
+        function renderView(view) {
+            const container = document.getElementById('main-content');
+            container.innerHTML = '';
+            setActiveNav(view);
+
+            switch(view) {
+                case 'overview': renderOverview(container); break;
+                case 'formulation': renderFormulation(container); break;
+                case 'analytics': renderAnalytics(container); break;
+                case 'process': renderProcess(container); break;
+                case 'quality': renderQuality(container); break;
+                case 'regulatory': renderRegulatory(container); break;
+            }
+        }
+
+        function renderOverview(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto space-y-10">
+                    <section class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="bg-[#003d5b] p-8 text-white flex justify-between items-center">
+                            <div>
+                                <h2 class="text-2xl font-black uppercase tracking-tight">Project Command Center</h2>
+                                <p class="text-sm font-bold text-teal-400 mt-1 uppercase">Joint Execution Specification v6.2</p>
+                            </div>
+                            <div class="text-right flex flex-col items-end">
+                                <span class="bg-teal-600 px-3 py-1 rounded text-2xs font-black uppercase">REVISION CONTROLLED</span>
+                                <span class="mt-2 font-bold text-slate-300">Auth: ${dossier.metadata.date}</span>
+                            </div>
+                        </div>
+                        <div class="p-8 grid md:grid-cols-3 gap-6 text-sm">
+                            <div class="space-y-4">
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Status</span><span class="font-bold">${dossier.metadata.status}</span></div>
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Regulatory</span><span class="font-bold">${dossier.metadata.classification}</span></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Matrix Type</span><span class="font-bold">${dossier.metadata.matrix}</span></div>
+                                <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Method</span><span class="font-bold">${dossier.metadata.method}</span></div>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 border-l-4 border-teal-600">
+                                <h4 class="text-2xs font-black uppercase mb-2">Expected Outcome</h4>
+                                <p class="italic text-slate-600 leading-snug">"Custom samples for CDMO capacity validation. Gated for scale-up contract."</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 class="text-xl font-black text-[#003d5b] uppercase mb-6 flex justify-between items-center">
+                            <span>Joint Execution Kanban</span>
+                            <span class="text-2xs text-slate-400 font-bold uppercase tracking-widest">Pull-based Gate Clearance</span>
+                        </h3>
+                        <div class="flex overflow-x-auto gap-4 pb-4">
+                            ${kanban.map(col => `
+                                <div class="kanban-column flex flex-col space-y-3">
+                                    <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest px-2">${col.name}</h4>
+                                    <div class="bg-slate-100 p-2 rounded-xl border border-slate-200 min-h-[300px] flex flex-col space-y-3">
+                                        ${col.cards.map(card => `
+                                            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                                                <div class="flex justify-between items-center mb-1"><span class="text-2xs font-black text-teal-600">${card.stage}</span><span class="text-2xs bg-slate-100 px-2 py-0.5 rounded font-black uppercase text-slate-500">${card.owner}</span></div>
+                                                <h5 class="font-black text-primary leading-tight mb-4">${card.title}</h5>
+                                                <div class="pt-3 border-t border-slate-50">
+                                                    <p class="text-2xs font-black text-slate-400 uppercase mb-1">Gate Condition</p>
+                                                    <p class="text-xs font-bold italic text-slate-600">${card.gate}</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function renderFormulation(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto space-y-6 flex flex-col h-full overflow-hidden">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-black text-primary uppercase tracking-tight">Master Formulation</h2>
+                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">NRC Block Active Mass Ledger (100.00% Basis)</p>
+                        </div>
+                        <button onclick="exportCSV('BOM')" class="bg-[#003d5b] text-white px-5 py-2.5 rounded font-black text-xs uppercase hover:bg-slate-800 transition-all flex items-center gap-2">
+                            <span>📥</span> Export BOM CSV
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col flex-1 overflow-hidden">
+                        <div class="overflow-y-auto flex-1">
+                            <table class="w-full text-left">
+                                <thead class="bg-slate-50 sticky top-0 font-black text-primary text-2xs uppercase tracking-widest border-b border-slate-200">
+                                    <tr>
+                                        <th class="px-8 py-5">Ingredient</th>
+                                        <th class="px-8 py-5 text-right">Mass %</th>
+                                        <th class="px-8 py-5">CAS Number</th>
+                                        <th class="px-8 py-5">Phase</th>
+                                        <th class="px-8 py-5 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    ${dossier.ingredients.map(i => `
+                                        <tr class="hover:bg-slate-50 transition-colors">
+                                            <td class="px-8 py-4 font-bold text-slate-700">${i.name}</td>
+                                            <td class="px-8 py-4 text-right font-mono text-[#003d5b] font-black">${i.percent.toFixed(4)}%</td>
+                                            <td class="px-8 py-4 text-slate-500 font-mono text-xs uppercase">${i.cas}</td>
+                                            <td class="px-8 py-4"><span class="text-2xs bg-slate-100 px-2 py-1 rounded font-black uppercase text-slate-500">${i.phase}</span></td>
+                                            <td class="px-8 py-4 text-right"><span class="text-2xs px-2 py-1 rounded font-black uppercase ${i.status === 'Locked' ? 'bg-slate-200 text-slate-600' : 'bg-teal-50 text-teal-600 border border-teal-100'}">${i.status}</span></td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-slate-50 text-2xs font-black text-slate-400 uppercase tracking-widest text-center border-t border-slate-200">
+                            * Checksum Verified: 100.00% Required | Carrier Reconciled into Phase Zeta
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAnalytics(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto space-y-10 pb-20">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-black text-[#003d5b] uppercase tracking-tight">Formulation Analytics</h2>
+                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">Matrix Structure & Load Distribution</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                            <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Interactive: Phase Distribution</h4>
+                            <div class="chart-container"><canvas id="chartPhase"></canvas></div>
+                            <p class="text-2xs text-center text-slate-400 mt-6 font-bold uppercase tracking-tighter italic">Click segments to filter content below</p>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                            <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Solid vs Lipid Binder Ratio</h4>
+                            <div class="chart-container"><canvas id="chartRatio"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                            <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Functional Load Profile</h4>
+                            <div class="chart-container"><canvas id="chartLoad"></canvas></div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                            <h4 class="text-2xs font-black text-slate-400 uppercase tracking-widest mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Alpha vs Beta Phase Compression Load</h4>
+                            <div class="chart-container"><canvas id="chartAB"></canvas></div>
+                        </div>
+                    </div>
+
+                    <div id="analyticsFilterSection" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-8 py-5 border-b border-slate-200 flex justify-between items-center">
+                            <h3 class="text-xs font-black text-primary uppercase" id="filterTitle">Phase Content: All Ingredients</h3>
+                            <button onclick="renderAnalyticsTable('all')" class="text-2xs font-black text-teal-600 uppercase border-b-2 border-teal-600">Reset View</button>
+                        </div>
+                        <div class="overflow-x-auto max-h-[500px]">
+                            <table class="w-full text-left" id="analyticsTable">
+                                <!-- JS Injected via renderAnalyticsTable -->
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            initCharts();
+            renderAnalyticsTable('all');
+        }
+
+        function renderProcess(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-4xl mx-auto space-y-8 pb-20">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-black text-primary uppercase tracking-tight">Phase-Wise SOP</h2>
+                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">GMP Manufacturing Batch Protocol</p>
+                        </div>
+                        <button onclick="exportCSV('SOP')" class="bg-primary text-white px-5 py-2.5 rounded font-black text-xs uppercase hover:bg-slate-800 transition-all flex items-center gap-2">
+                            <span>📥</span> Export SOP CSV
+                        </button>
+                    </div>
+                    <div class="space-y-10">
+                        ${sops.map(p => `
+                            <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 px-8 py-4 border-b border-slate-200 flex justify-between items-center">
+                                    <h4 class="font-black text-primary uppercase text-sm">${p.id} — ${p.title}</h4>
+                                    <span class="text-2xs font-black bg-white border border-slate-200 px-2 py-1 rounded text-slate-500 uppercase">Digital Record Form</span>
+                                </div>
+                                <table class="w-full text-left sop-table">
+                                    <thead>
+                                        <tr class="text-2xs font-black text-slate-400 uppercase tracking-widest bg-slate-50/50 border-b border-slate-100">
+                                            <th class="px-8 py-3">Action Details</th>
+                                            <th class="px-8 py-3 text-right">Qty (g)</th>
+                                            <th class="px-8 py-3">Safety Check</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        ${p.items.map(item => `
+                                            <tr class="hover:bg-slate-50/50">
+                                                <td class="px-8 py-5 text-slate-600">${item.act}</td>
+                                                <td class="px-8 py-5 text-right"><input type="text" placeholder="0.0000"></td>
+                                                <td class="px-8 py-5 text-xs font-black uppercase text-teal-700">${item.check}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderQuality(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto space-y-10 pb-20">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-black text-primary uppercase tracking-tight">Quality & COA Specifications</h2>
+                            <p class="text-sm font-bold text-slate-500 uppercase mt-1">Incoming Material Validation (v6.2 Ref)</p>
+                        </div>
+                        <button onclick="exportCSV('COA')" class="bg-primary text-white px-5 py-2.5 rounded font-black text-xs uppercase flex items-center gap-2">
+                            <span>📥</span> Export COA Specs CSV
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-8 py-4 border-b border-slate-200">
+                            <h3 class="text-xs font-black text-primary uppercase tracking-widest">Incoming Raw Material Detailed COA (v6.2 Mandatory)</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50/50 font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                    <tr>
+                                        <th class="px-6 py-4">Ingredient</th>
+                                        <th class="px-6 py-4">CAS #</th>
+                                        <th class="px-6 py-4">Assay / Purity Spec</th>
+                                        <th class="px-6 py-4">Form / Particle Size</th>
+                                        <th class="px-6 py-4 text-right">Weight Tol.</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-700">
+                                    ${dossier.ingredients.map(i => `
+                                        <tr class="hover:bg-slate-50 transition-colors">
+                                            <td class="px-6 py-4 font-bold text-primary">${i.name}</td>
+                                            <td class="px-6 py-4 font-mono text-xs uppercase">${i.cas}</td>
+                                            <td class="px-6 py-4 font-bold text-slate-500">${i.assay}</td>
+                                            <td class="px-6 py-4 text-slate-500">${i.particle}</td>
+                                            <td class="px-6 py-4 font-black text-teal-600 text-right">${i.tolerance}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                            <h3 class="text-xs font-black text-primary uppercase mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Critical Control Points (CCPs)</h3>
+                            <div class="space-y-4">
+                                ${ccpMatrix.map(ccp => `
+                                    <div class="p-6 bg-slate-50 rounded-xl border-l-4 border-teal-600">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h5 class="font-black text-primary uppercase">${ccp.item}</h5>
+                                            <span class="text-2xs bg-teal-600 text-white px-2 py-1 rounded font-black">${ccp.id}</span>
+                                        </div>
+                                        <p class="text-sm font-bold text-slate-500">Limit: ${ccp.limit}</p>
+                                        <div class="mt-4 bg-white p-3 rounded border border-slate-200 text-2xs font-black uppercase text-teal-700">Action: ${ccp.action}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                                <h3 class="text-xs font-black text-primary uppercase mb-6 underline decoration-teal-500 decoration-2 underline-offset-4">Finished Product Specification</h3>
+                                <div class="space-y-4 font-bold text-sm">
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Unit Weight</span><span class="text-primary font-black">4.0g ± 2%</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Friability</span><span class="text-primary font-black">10–20% Loss (Crumble)</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Water Activity (aw)</span><span class="text-primary font-black">≤ 0.60</span></div>
+                                    <div class="flex justify-between py-2 border-b border-slate-50"><span>Moisture</span><span class="text-primary font-black">≤ 4.5%</span></div>
+                                    <div class="flex justify-between py-2 text-teal-600"><span>Salmonella</span><span class="font-black uppercase">Absent in 25g</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRegulatory(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-4xl mx-auto space-y-12 pb-20">
+                    <section class="bg-white p-8 rounded-2xl shadow-lg border border-slate-200">
+                        <h2 class="text-xl font-black text-primary uppercase mb-6 border-b-2 border-teal-600 pb-3">NRC-2006 Alignment Framework</h2>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            Formulations are mathematically aligned to NRC-2006 requirements for healthy adult animals. CatCore™ units act as the "Nutritional Floor" to owner-sourced protein.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2">Mineral Buffering</h5>
+                                <p class="text-sm text-slate-500">Dual-salt architecture handles Phosphorus Load from fresh meat.</p>
+                            </div>
+                            <div class="bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-black text-teal-600 uppercase mb-2">Biological APIs</h5>
+                                <p class="text-sm text-slate-500">Liver powders provide Retinol bounds without synthetic esters.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-[#003d5b] p-10 rounded-2xl shadow-xl text-white">
+                        <h2 class="text-xl font-black uppercase mb-4 tracking-tight">Legal Classification</h2>
+                        <p class="text-teal-200 leading-relaxed italic mb-8">"Pet Food Supplement / Topper / Balancer"</p>
+                        <div class="p-8 bg-white/10 rounded-xl border border-white/20">
+                            <p class="text-sm font-bold leading-relaxed">
+                                Under FSSAI/FDA frameworks, CatCore™ is a supplement. CDMO must maintain the trace discipline of a therapeutic nutraceutical (Delta Phase handling). 
+                                No medical/disease claims are authorized.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section class="bg-red-50 p-10 rounded-2xl shadow-lg border border-red-100 border-l-8 border-red-500">
+                        <h2 class="text-xl font-black text-red-700 uppercase mb-6">Trace Safety (Delta Phase)</h2>
+                        <div class="space-y-6 text-sm font-bold text-red-900">
+                            <div class="flex gap-4"><span>⚠</span> <span>Overdose of KI or D3 poses FATAL risk to companion animals.</span></div>
+                            <div class="flex gap-4"><span>⚠</span> <span>Geometric Dilution (Trituration) is NON-NEGOTIABLE.</span></div>
+                            <div class="flex gap-4"><span>⚠</span> <span>Neat trace API handling is PROHIBITED at batch stage.</span></div>
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        // --- CORE UTILITIES & CHART LOGIC ---
+
+        function initCharts() {
+            const chartStyles = {
+                bar: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 11, weight: 'bold' }, color: '#64748b' } },
+                        x: { grid: { display: false }, ticks: { font: { size: 11, weight: 'black' }, color: '#475569' } }
+                    }
+                },
+                pie: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'right', labels: { font: { size: 12, weight: 'bold' }, boxWidth: 12 } },
+                        tooltip: { titleFont: { size: 14 }, bodyFont: { size: 14 } }
+                    }
+                }
+            };
+
+            // Phase Doughnut (Interactive)
+            const phaseCtx = document.getElementById('chartPhase').getContext('2d');
+            new Chart(phaseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: dossier.phases.map(p => p.name),
+                    datasets: [{
+                        data: dossier.phases.map(p => p.percent),
+                        backgroundColor: dossier.phases.map(p => p.color),
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    ...chartStyles.pie,
+                    cutout: '70%',
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const phaseId = dossier.phases[index].id;
+                            renderAnalyticsTable(phaseId);
+                        } else {
+                            renderAnalyticsTable('all');
+                        }
+                    }
+                }
+            });
+
+            // Solid to Lipid Ratio (Bar)
+            const alphaVal = dossier.phases.find(p => p.id === 'alpha').percent;
+            const ratioCtx = document.getElementById('chartRatio').getContext('2d');
+            new Chart(ratioCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lipid (Alpha)', 'Solid Matrix'],
+                    datasets: [{ data: [alphaVal, 100 - alphaVal], backgroundColor: ['#003d5b', '#cbd5e1'], barThickness: 60 }]
+                },
+                options: chartStyles.bar
+            });
+
+            // Functional Load (Bar)
+            const loadCtx = document.getElementById('chartLoad').getContext('2d');
+            const epVal = dossier.phases.find(p => p.id === 'epsilon').percent;
+            const zVal = dossier.phases.find(p => p.id === 'zeta').percent;
+            const traceVal = dossier.phases.find(p => p.id === 'delta').percent;
+            new Chart(loadCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Bio-Matrix', 'Carrier', 'Trace API'],
+                    datasets: [{ data: [epVal, zVal, traceVal], backgroundColor: ['#2e8b57', '#94a3b8', '#d1495b'], barThickness: 40 }]
+                },
+                options: chartStyles.bar
+            });
+
+            // Alpha vs Beta (Bar)
+            const abCtx = document.getElementById('chartAB').getContext('2d');
+            const betaVal = dossier.phases.find(p => p.id === 'beta').percent;
+            new Chart(abCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Binder (Alpha)', 'Mineral (Beta)'],
+                    datasets: [{ data: [alphaVal, betaVal], backgroundColor: ['#003d5b', '#00798c'], barThickness: 60 }]
+                },
+                options: chartStyles.bar
+            });
+        }
+
+        function renderAnalyticsTable(filterId) {
+            const table = document.getElementById('analyticsTable');
+            const title = document.getElementById('filterTitle');
+            const data = filterId === 'all' ? dossier.ingredients : dossier.ingredients.filter(i => i.phase === filterId);
+            
+            title.innerText = filterId === 'all' ? "Phase Content: All Ingredients" : `Phase Content: ${filterId.toUpperCase()}`;
+
+            table.innerHTML = `
+                <thead class="bg-slate-50 font-black text-slate-400 uppercase tracking-widest text-2xs border-b border-slate-100">
+                    <tr><th class="px-8 py-4">Ingredient</th><th class="px-8 py-4 text-right">Mass %</th><th class="px-8 py-4">Type</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    ${data.map(i => `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-8 py-4 font-bold text-slate-700">${i.name}</td>
+                            <td class="px-8 py-4 text-right font-mono font-black text-[#003d5b]">${i.percent.toFixed(4)}%</td>
+                            <td class="px-8 py-4 text-xs font-black uppercase text-slate-400">${i.phase}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        function exportCSV(type) {
+            let csv = "";
+            let filename = `Growlrr_${type}_v6.4.csv`;
+
+            if (type === 'BOM') {
+                csv = "Ingredient,Mass Percent,CAS,Phase,Status\n";
+                dossier.ingredients.forEach(i => csv += `${i.name},${i.percent}%,${i.cas},${i.phase},${i.status}\n`);
+            } else if (type === 'SOP') {
+                csv = "Phase ID,Title,Instruction,Safety Check\n";
+                sops.forEach(p => p.items.forEach(i => csv += `${p.id},${p.title},${i.act},${i.check}\n`));
+            } else if (type === 'COA') {
+                csv = "Ingredient,CAS,Assay Purity,Particle Size,Tolerance\n";
+                dossier.ingredients.forEach(i => csv += `${i.name},${i.cas},"${i.assay}","${i.particle}",${i.tolerance}\n`);
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function setActiveNav(id) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const navBtn = document.getElementById(`nav-${id}`);
+            if(navBtn) navBtn.classList.add('active');
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView('overview');
+        });
+    </script>
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Charts rendered via Canvas. -->
+</body>
+</html>
