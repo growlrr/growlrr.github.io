@@ -71,6 +71,31 @@
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Document Thumbnail Placeholder */
+        .doc-thumbnail {
+            width: 180px;
+            height: 240px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.3s ease;
+        }
+        .doc-thumbnail:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        .doc-corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, transparent 50%, #f1f5f9 50%);
+            border-bottom: 1px solid #e2e8f0;
+            border-left: 1px solid #e2e8f0;
+        }
     </style>
 </head>
 <body class="bg-[#f0f4f8] text-slate-800 antialiased h-screen flex flex-col md:flex-row overflow-hidden">
@@ -116,11 +141,16 @@
                         <span class="text-lg">📜</span> Regulatory & Intent
                     </button>
                 </li>
+                <li>
+                    <button onclick="renderView('downloads')" id="nav-downloads" class="nav-item w-full text-left px-8 py-4 hover:bg-slate-50 transition-colors flex items-center gap-3">
+                        <span class="text-lg">📥</span> External Assets
+                    </button>
+                </li>
             </ul>
         </nav>
         
         <!-- Expanded Authority & Legal Block -->
-        <div class="p-8 border-t border-slate-100 bg-slate-50 text-2xs tracking-widest leading-relaxed">
+        <div class="p-8 border-t border-slate-100 bg-slate-50 text-2xs tracking-widest leading-relaxed flex-shrink-0">
             <p class="font-black text-primary uppercase mb-2">Auth: Growlrr Foods Pvt Ltd</p>
             <div class="space-y-1 text-slate-500 font-bold uppercase">
                 <p class="text-warning">Confidential and proprietary.</p>
@@ -138,7 +168,38 @@
         <!-- Content injected via JS -->
     </main>
 
+    <!-- Global Security Modal -->
+    <div id="passkeyModal" class="hidden fixed inset-0 bg-primary/95 z-[100] flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white p-10 rounded-2xl shadow-2xl max-w-md w-full border-t-8 border-teal-600">
+            <h3 class="text-xl font-black text-primary uppercase mb-2">Authenticated Access</h3>
+            <p class="text-sm text-slate-500 mb-6" id="modalInstruction">Enter technical passkey to view secured dossier contents.</p>
+            
+            <div class="space-y-4">
+                <input type="password" id="passkeyInput" 
+                       class="w-full p-4 bg-slate-50 border border-slate-200 rounded-lg text-primary font-bold text-center tracking-[0.2em] focus:ring-2 focus:ring-teal-600 outline-none"
+                       placeholder="Enter Passkey">
+                
+                <div class="flex gap-4">
+                    <button onclick="closeSecureGate()" class="flex-1 py-3 text-xs font-black uppercase text-slate-400 hover:text-slate-600 transition-colors">Cancel</button>
+                    <button onclick="verifyPasskey()" class="flex-[2] py-3 bg-teal-600 text-white rounded-lg font-black uppercase text-xs hover:bg-teal-700 transition-transform active:scale-95 shadow-lg">Verify Access</button>
+                </div>
+            </div>
+            
+            <p id="passkeyError" class="hidden text-warning text-xs font-bold text-center mt-4 uppercase italic">Unauthorized Passkey Signature</p>
+        </div>
+    </div>
+
     <script>
+        // --- SECURITY STATE ---
+        let isAuthenticated = false;
+        let pendingView = null;
+        const VAULT = {
+            // Correct Base64 for #GroVault2026CDMO
+            k: "I0dyb1ZhdWx0MjAyNkNETU8=", 
+            // New Secure G-Doc Link
+            u: "aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vZG9jdW1lbnQvZC8xbEhFeFBQdklRaVRrMnBiQnRTcHA4c0Y1NTBWckF0dkRpR0xKNWcxMi1jNC9lZGl0P3VzcD1kcml2ZV9saW5r"
+        };
+
         // --- DATA ENGINE ---
         const dossier = {
             metadata: {
@@ -190,7 +251,7 @@
                 { stage: 'Stage 0', title: 'MoU Shared', owner: 'Joint', gate: 'PENDING: MoU Signed' },
                 { stage: 'Stage 0', title: 'Spec Revision Signed', owner: 'Joint', gate: 'PENDING: Revision Signed' }
             ] },
-            { id: 'validation', name: 'In Validation', cards: [
+            { id: 'feasibility', name: 'In Validation', cards: [
                 { stage: 'Stage 1', title: 'Bench Top Samples', owner: 'CDMO', gate: 'Physical properties, friability, wt tolerance eval' },
                 { stage: 'Stage 1', title: 'Written Confirmation of Feasibility', owner: 'CDMO', gate: 'Formal Feasibility Sign-off' },
                 { stage: 'Stage 1', title: 'Stage 2 R&D for Optimization', owner: 'CDMO', gate: 'Technical bracketing start' }
@@ -238,6 +299,14 @@
 
         function renderView(view) {
             const container = document.getElementById('main-content');
+            
+            // SECURITY GATE: Overview is always accessible. Everything else requires authentication.
+            if (view !== 'overview' && !isAuthenticated) {
+                pendingView = view;
+                openSecureGate();
+                return;
+            }
+
             container.innerHTML = '';
             setActiveNav(view);
 
@@ -248,24 +317,25 @@
                 case 'process': renderProcess(container); break;
                 case 'quality': renderQuality(container); break;
                 case 'regulatory': renderRegulatory(container); break;
+                case 'downloads': renderDownloads(container); break;
             }
         }
 
         function renderOverview(target) {
             target.innerHTML = `
-                <div class="fade-in max-w-7xl mx-auto space-y-10">
+                <div class="fade-in max-w-7xl mx-auto space-y-10 text-sm">
                     <section class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
                         <div class="bg-[#003d5b] p-8 text-white flex justify-between items-center">
                             <div>
                                 <h2 class="text-2xl font-black uppercase tracking-tight">Project Command Center</h2>
-                                <p class="text-sm font-bold text-teal-400 mt-1 uppercase tracking-widest">Joint Execution Specification v6.8</p>
+                                <p class="text-sm font-bold text-teal-400 mt-1 uppercase tracking-widest text-xs">Joint Execution Specification v6.8</p>
                             </div>
                             <div class="text-right flex flex-col items-end">
                                 <span class="bg-teal-600 px-3 py-1 rounded text-2xs font-black uppercase tracking-widest">REVISION CONTROLLED</span>
                                 <span class="mt-2 font-bold text-slate-300">Auth: ${dossier.metadata.date}</span>
                             </div>
                         </div>
-                        <div class="p-8 grid md:grid-cols-3 gap-6 text-sm">
+                        <div class="p-8 grid md:grid-cols-3 gap-6">
                             <div class="space-y-4">
                                 <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Status</span><span class="font-bold text-primary">${dossier.metadata.status}</span></div>
                                 <div class="flex flex-col"><span class="text-2xs font-black text-slate-400 uppercase tracking-widest">Regulatory</span><span class="font-bold text-primary">${dossier.metadata.classification}</span></div>
@@ -434,7 +504,7 @@
                                     </thead>
                                     <tbody class="divide-y divide-slate-100">
                                         ${p.items.map(item => `
-                                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                            <tr class="hover:bg-slate-50/50 transition-colors text-sm">
                                                 <td class="px-8 py-5 text-slate-600">${item.act}</td>
                                                 <td class="px-8 py-5 text-right"><input type="text" placeholder="0.0000"></td>
                                                 <td class="px-8 py-5 text-xs font-black uppercase text-teal-700">${item.check}</td>
@@ -550,8 +620,8 @@
                     <section class="bg-primary p-10 rounded-2xl shadow-xl text-white">
                         <h2 class="text-xl font-black uppercase mb-4 tracking-tight">Legal & Compliance</h2>
                         <p class="text-teal-200 leading-relaxed italic mb-8">Classification: "Pet Food Supplement / Topper / Balancer"</p>
-                        <div class="p-8 bg-white/10 rounded-xl border border-white/20 leading-relaxed">
-                            <p class="text-sm font-bold">
+                        <div class="p-8 bg-white/10 rounded-xl border border-white/20 leading-relaxed text-sm">
+                            <p class="font-bold">
                                 Under FSSAI/FDA/AAFCO frameworks, CatCore™ is a feed supplement. CDMO must maintain the trace discipline of a therapeutic nutraceutical (Delta Phase handling). No medical/disease claims are authorized.
                             </p>
                         </div>
@@ -565,6 +635,41 @@
                             <div class="flex gap-4"><span>⚠</span> <span>Handling of NEAT (pure) trace API is PROHIBITED at batch stage.</span></div>
                         </div>
                     </section>
+                </div>
+            `;
+        }
+
+        function renderDownloads(target) {
+            target.innerHTML = `
+                <div class="fade-in max-w-7xl mx-auto space-y-10 pb-20">
+                    <div>
+                        <h2 class="text-2xl font-black text-primary uppercase tracking-tight">External Documentation Assets</h2>
+                        <p class="text-sm font-bold text-slate-500 uppercase mt-1 italic underline decoration-teal-500">Secure Access Protocols Required</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-12">
+                        <div class="flex flex-col items-center group cursor-pointer" onclick="openSecureLink()">
+                            <div class="doc-thumbnail border-teal-600 border-t-8 rounded-b-lg flex flex-col items-center justify-center">
+                                <div class="doc-corner"></div>
+                                <div class="text-6xl mb-4">📄</div>
+                                <div class="text-primary font-black text-center px-4 leading-tight text-sm">Snowleopard Protocol Technical Manual</div>
+                                <div class="text-2xs text-slate-400 mt-4 font-bold uppercase tracking-widest">G-DOCS | v6.8-REF</div>
+                            </div>
+                            <p class="mt-4 text-xs font-black uppercase text-teal-600 group-hover:text-primary transition-colors flex items-center gap-2">
+                                🌐 Open Cloud Asset
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Security Info Box -->
+                    <div class="bg-slate-50 p-8 rounded-2xl border-l-8 border-secondary max-w-2xl">
+                        <h4 class="text-xs font-black uppercase mb-3 text-secondary tracking-widest">Access Policy</h4>
+                        <ul class="text-sm text-slate-600 space-y-2">
+                            <li>• Documentation is configured for <strong>Non-Download / Non-Edit</strong> mode.</li>
+                            <li>• Document identity tracking is enabled for all access tokens.</li>
+                            <li>• Contact Growlrr Foods PVT LTD if session access is revoked.</li>
+                        </ul>
+                    </div>
                 </div>
             `;
         }
@@ -666,7 +771,7 @@
                 <thead class="bg-slate-50 font-black text-slate-400 uppercase tracking-widest text-2xs border-b border-slate-100">
                     <tr><th class="px-8 py-4 text-left">Ingredient</th><th class="px-8 py-4 text-right">Mass %</th><th class="px-8 py-4 text-right">Type</th></tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100 text-sm">
                     ${data.map(i => `
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-8 py-4 font-bold text-slate-700">${i.name}</td>
@@ -676,6 +781,40 @@
                     `).join('')}
                 </tbody>
             `;
+        }
+
+        // --- SECURITY HANDLERS ---
+        function openSecureGate() {
+            document.getElementById('passkeyModal').classList.remove('hidden');
+            document.getElementById('passkeyInput').focus();
+        }
+
+        function closeSecureGate() {
+            document.getElementById('passkeyModal').classList.add('hidden');
+            document.getElementById('passkeyError').classList.add('hidden');
+            document.getElementById('passkeyInput').value = '';
+            pendingView = null;
+        }
+
+        function verifyPasskey() {
+            const input = document.getElementById('passkeyInput').value;
+            // The correct Base64 signature for #GroVault2026CDMO
+            if (btoa(input) === VAULT.k) {
+                isAuthenticated = true;
+                const viewToRender = pendingView || 'overview';
+                closeSecureGate();
+                renderView(viewToRender);
+            } else {
+                document.getElementById('passkeyError').classList.remove('hidden');
+            }
+        }
+
+        function openSecureLink() {
+            if (isAuthenticated) {
+                window.open(atob(VAULT.u), '_blank');
+            } else {
+                openSecureGate();
+            }
         }
 
         function exportCSV(type) {
@@ -715,6 +854,6 @@
             renderView('overview');
         });
     </script>
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Charts rendered via Canvas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Charts rendered via Canvas. Assets secured via B64 gate. -->
 </body>
 </html>
