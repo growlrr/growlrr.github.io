@@ -90,6 +90,10 @@
                     <a href="#framework" class="hover:text-blue-400 transition-colors">Protocol</a>
                     <a href="#engine" class="hover:text-blue-400 transition-colors">Metabolism</a>
                     <a href="#merits" class="hover:text-blue-400 transition-colors">Formulation BOM <i data-lucide="lock" class="w-3 h-3 inline-block ml-0.5 relative -top-0.5"></i></a>
+                    <a href="https://www.growlrr.com/diet" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-full font-bold shadow-lg shadow-emerald-900/20 transition-all flex items-center gap-2 text-[13px]">
+                        <span>Customize Diet</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -158,7 +162,7 @@
                         </div>
                     </div>
                     
-                    <!-- NEW: Five Ingredient Architecture Features from PDF -->
+                    <!-- Five Ingredient Architecture Features -->
                     <div class="mt-auto pt-8 border-t border-slate-700/50">
                         <h4 class="text-white font-bold mb-6 flex items-center gap-2 uppercase tracking-widest text-[12px]">
                             <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> The Five Ingredient Architecture
@@ -181,7 +185,7 @@
                 </div>
 
                 <div class="flex flex-col gap-6">
-                    <!-- Swapped: Missing Minerals is now first -->
+                    <!-- Missing Minerals -->
                     <div class="p-8 rounded-[2.5rem] bg-emerald-900/20 border border-emerald-500/20 shadow-sm flex flex-col flex-1">
                         <h3 class="font-bold text-emerald-400 text-xl mb-4 flex items-center gap-2 uppercase tracking-widest">
                             <i data-lucide="sparkles" class="w-5 h-5"></i> Missing Minerals
@@ -191,7 +195,7 @@
                             <p>High Heat processing of kibble or retort cans destroy fragile B-Vitamins. Our process ensures all these reach your pet's diet everyday in appropriate doses.</p>
                         </div>
                     </div>
-                    <!-- Swapped: Mandate is now second -->
+                    <!-- Mandate -->
                     <div class="p-8 rounded-[2.5rem] bg-orange-900/20 border border-orange-500/20 shadow-sm flex flex-col flex-1">
                         <h3 class="font-bold text-orange-400 text-xl mb-4 flex items-center gap-2 uppercase tracking-widest">
                             <i data-lucide="beef" class="w-5 h-5"></i> Mandate
@@ -231,12 +235,27 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
-                    <p class="text-slate-400 text-xl font-light max-w-xl">
-                        A geographically agnostic feeding plan. Adjust mass below to generate the daily 110% NRC safety recipe.
-                    </p>
-                    <div class="w-full md:w-80 bg-slate-800 p-8 rounded-3xl shadow-2xl border border-blue-900/50 ring-4 ring-blue-500/10">
-                        <div class="flex justify-between items-center mb-6">
+                <div class="grid lg:grid-cols-12 gap-8 items-stretch mb-12">
+                    <!-- Customizer Call To Action -->
+                    <div class="lg:col-span-7 bg-slate-800/80 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] border border-slate-700 shadow-2xl relative overflow-hidden group flex flex-col justify-center">
+                        <div class="absolute -top-10 -right-10 text-emerald-500/10 group-hover:text-emerald-500/20 transition-colors rotate-12 pointer-events-none">
+                            <i data-lucide="activity" class="w-64 h-64"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-4 relative z-10">Customize Your Diet Plan</h3>
+                        <p class="text-slate-300 mb-8 text-[14px] leading-relaxed relative z-10 max-w-lg">
+                            Launch the stochastic stress test to build a dynamically scaled, 110% NRC compliant recipe mapped directly to your pet's metabolic weight and species.
+                        </p>
+                        <div class="relative z-10">
+                            <a href="https://www.growlrr.com/diet" target="_blank" class="inline-flex bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-emerald-900/20 items-center justify-center gap-3 text-[15px]">
+                                <i data-lucide="calculator" class="w-5 h-5"></i>
+                                <span>Launch Calculator</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Model Control Wrapper -->
+                    <div class="lg:col-span-5 bg-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-blue-900/50 ring-4 ring-blue-500/10 flex flex-col justify-center">
+                        <div class="flex justify-between items-center mb-8">
                             <span class="text-[12px] font-bold text-slate-400 uppercase tracking-widest">Model Control</span>
                             <div class="flex bg-slate-900 p-1 rounded-xl">
                                 <button onclick="setSpecies('cat')" id="btn-cat" class="px-5 py-2 rounded-lg text-xs font-bold transition-all bg-slate-700 text-blue-400 shadow-sm">Cat</button>
@@ -246,9 +265,9 @@
                         <div class="space-y-6">
                             <div class="flex justify-between items-end">
                                 <span class="text-[11px] uppercase font-bold text-slate-500 tracking-widest">Target Weight</span>
-                                <span class="font-mono font-bold text-blue-400 text-2xl"><span id="weight-display">6</span><span class="text-sm ml-1 text-slate-500 font-sans">kg</span></span>
+                                <span class="font-mono font-bold text-blue-400 text-3xl"><span id="weight-display">6</span><span class="text-sm ml-1 text-slate-500 font-sans">kg</span></span>
                             </div>
-                            <input type="range" id="weight-slider" min="1" max="15" step="0.1" value="6" oninput="setWeight(this.value)" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="weight-slider" min="1" max="15" step="0.1" value="6" oninput="setWeight(this.value)" class="w-full h-3 rounded-lg appearance-none cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -300,7 +319,7 @@
         </div>
     </section>
 
-    <!-- 5. Flex Rotation (Moved here based on instruction) -->
+    <!-- 5. Flex Rotation -->
     <section class="py-24 bg-slate-900 border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
             <h2 class="text-3xl font-black text-white mb-4 tracking-tight uppercase">6. Flex Rotation (Freedom within Framework)</h2>
@@ -330,7 +349,7 @@
         </div>
     </section>
 
-    <!-- 6. Validation (Moved here based on instruction) -->
+    <!-- 6. Validation -->
     <section id="performance" class="py-24 relative overflow-hidden dark-mesh text-white border-b border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <h2 class="text-4xl font-extrabold mb-16 tracking-tight uppercase tracking-[0.2em] text-center text-white">Nutritional Performance Validation</h2>
@@ -363,7 +382,7 @@
         </div>
     </section>
 
-    <!-- 3. Allometric Scaling Section (Moved here based on instruction) -->
+    <!-- 3. Allometric Scaling Section -->
     <section id="engine" class="py-24 bg-[#0f172a] border-b border-slate-800 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid lg:grid-cols-2 gap-16 items-center mb-24">
