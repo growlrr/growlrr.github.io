@@ -1,38 +1,52 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Growlrr Stress Test v10.2</title>
+  <title>Growlrr Stress Test rev 7.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
+    .secure-lock-overlay {
+      backdrop-filter: blur(8px);
+      transition: all 0.4s ease-out;
+    }
+    input[type=range]::-webkit-slider-runnable-track { background: #334155; }
+    input[type=range]::-webkit-slider-thumb { background: #10b981; }
+    
+    /* Hide scrollbar for clean checkout list */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 pb-20">
+<body class="bg-[#0f172a] text-slate-300 pb-20 selection:bg-emerald-900/50 selection:text-emerald-200">
 
   <!-- Header -->
-  <header class="bg-emerald-900 text-white py-6 px-4 shadow-lg sticky top-0 z-50">
+  <header class="bg-[#0f172a]/80 backdrop-blur-xl border-b border-slate-800 text-white py-6 px-4 shadow-lg sticky top-0 z-50">
     <div class="max-w-4xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="bg-emerald-100 p-2 rounded-lg text-emerald-900">
+        <div class="bg-emerald-900/50 border border-emerald-800/50 p-2 rounded-lg text-emerald-400">
           <i data-lucide="activity" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v10.2</h1>
-          <div class="text-[10px] text-emerald-300 uppercase tracking-wider font-mono mt-0.5">BOM v3.2 &bull; Science v2.2-fork &bull; Protocol v2.1-fork</div>
+          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test rev 7.0</h1>
+          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v3.2 &bull; Science v2.2 &bull; Protocol v2.1</div>
         </div>
       </div>
-      <div class="flex bg-emerald-800/50 rounded-full p-1 border border-emerald-700">
-        <button id="btn-dog" onclick="setSpecies('dog')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-emerald-100">
-          <i data-lucide="dog" class="w-[18px] h-[18px]"></i> Dog
-        </button>
-        <button id="btn-cat" onclick="setSpecies('cat')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-emerald-100">
-          <i data-lucide="cat" class="w-[18px] h-[18px]"></i> Cat
+      <div class="flex items-center gap-4">
+        <div class="flex bg-slate-900 rounded-full p-1 border border-slate-800">
+          <button id="btn-dog" onclick="setSpecies('dog')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-slate-400 hover:text-slate-200">
+            <i data-lucide="dog" class="w-[18px] h-[18px]"></i> Dog
+          </button>
+          <button id="btn-cat" onclick="setSpecies('cat')" class="flex items-center gap-2 px-6 py-2 rounded-full transition-all text-slate-400 hover:text-slate-200">
+            <i data-lucide="cat" class="w-[18px] h-[18px]"></i> Cat
+          </button>
+        </div>
+        <button onclick="openCheckout()" class="hidden md:flex bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2 rounded-full font-bold shadow-lg shadow-emerald-900/20 transition-all items-center gap-2 text-[13px]">
+          <span>🛒 Checkout</span>
         </button>
       </div>
     </div>
@@ -40,176 +54,413 @@
 
   <main class="max-w-4xl mx-auto px-4 mt-8 space-y-8">
     
-    <!-- Controls -->
-    <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-      <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-2 text-slate-500 font-medium">
-          <i data-lucide="scale" class="w-5 h-5"></i>
-          <span>Target Weight Class</span>
-        </div>
-        <div class="text-3xl font-black text-emerald-800"><span id="weight-display">5</span> <span class="text-lg text-slate-400">kg</span></div>
-      </div>
-      <input 
-        type="range" 
-        id="weight-slider"
-        min="1" max="15" step="0.1" value="5"
-        oninput="setWeight(this.value)"
-        class="w-full h-3 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600 mb-2"
-      />
-      <div class="flex justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest px-1">
-        <span>Toy</span>
-        <span>Medium</span>
-        <span>Large</span>
-        <span>Giant</span>
-      </div>
-    </section>
-
-    <!-- Metabolic Analysis Grid -->
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 relative overflow-hidden flex flex-col justify-between">
-        <div class="absolute top-0 right-0 p-4 opacity-10">
-          <i data-lucide="zap" class="w-16 h-16"></i>
-        </div>
-        <div>
-          <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Metabolic Balance</h3>
-          <div class="flex justify-between items-end mb-1">
-            <span class="text-slate-600 font-semibold">Modified Kleiber Target</span>
-            <span id="mer-display" class="text-xl font-bold text-slate-900">
-              <!-- Populated by JS -->
-            </span>
-          </div>
-          <div id="mer-formula-display" class="text-xs text-slate-400 font-serif italic mb-4">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-        <div>
-          <div class="h-2 bg-slate-100 rounded-full overflow-hidden flex mb-2" id="progress-bar-container">
-            <!-- Populated by JS -->
-          </div>
-          <div class="flex gap-4 text-[11px] font-medium" id="energy-breakdown-display">
-            <!-- Populated by JS -->
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 relative overflow-hidden flex flex-col justify-between">
-         <div class="absolute top-0 right-0 p-4 opacity-10">
-          <i data-lucide="microscope" class="w-16 h-16"></i>
-        </div>
-        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Core Block Adjustments</h3>
-        <div class="flex items-center gap-4">
-          <div class="flex-1">
-            <div class="flex items-center gap-3">
-              <div class="text-3xl font-black text-blue-700"><span id="units-display"></span> <span class="text-sm font-normal text-slate-400">Units</span></div>
-              <div class="flex items-center bg-blue-50 border border-blue-100 rounded-lg p-0.5 relative z-10">
-                <button onclick="setBlockModifier(-1)" class="p-1.5 hover:bg-white text-blue-600 rounded transition-colors" title="Decrease block count">
-                  <i data-lucide="minus" class="w-4 h-4"></i>
-                </button>
-                <div id="block-modifier-display" class="w-8 text-center text-xs font-bold text-blue-900 border-x border-blue-100/50">0</div>
-                <button onclick="setBlockModifier(1)" class="p-1.5 hover:bg-white text-blue-600 rounded transition-colors" title="Increase block count">
-                  <i data-lucide="plus" class="w-4 h-4"></i>
-                </button>
-              </div>
+    <!-- ================= MAIN VIEW ================= -->
+    <div id="main-view" class="space-y-8 animate-in fade-in duration-300">
+        <!-- Controls -->
+        <section class="bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-2 text-slate-400 font-medium">
+            <i data-lucide="scale" class="w-5 h-5 text-emerald-500"></i>
+            <span class="text-[14px]">Target Weight Class</span>
             </div>
-            <div id="mass-display" class="text-xs text-slate-500 mt-2">Scale: 16g Total Mass</div>
-          </div>
+            <div class="text-3xl font-black text-emerald-400"><span id="weight-display">5</span> <span class="text-lg text-slate-500">kg</span></div>
         </div>
-        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-           <span class="text-xs font-bold text-blue-600 uppercase">Custom Rounding Logic</span>
-           <span class="text-[11px] text-slate-400 font-serif italic">floor(Theory + 0.65)</span>
+        <input 
+            type="range" 
+            id="weight-slider"
+            min="1" max="15" step="0.1" value="5"
+            oninput="setWeight(this.value)"
+            class="w-full h-3 rounded-lg appearance-none cursor-pointer mb-2"
+        />
+        <div class="flex justify-between text-[11px] text-slate-500 font-bold uppercase tracking-widest px-1">
+            <span>Toy</span>
+            <span>Medium</span>
+            <span>Large</span>
+            <span>Giant</span>
         </div>
-      </div>
-    </div>
+        
+        <!-- Mobile Checkout Button (Shown only on small screens) -->
+        <button onclick="openCheckout()" class="w-full mt-6 md:hidden bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold shadow-lg shadow-emerald-900/20 transition-all flex justify-center items-center gap-2 text-[14px]">
+            <span>🛒 Checkout</span>
+        </button>
+        </section>
 
-    <!-- Grocery List -->
-    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-        <div class="flex items-center gap-2">
-          <i data-lucide="clipboard-list" class="text-emerald-700 w-5 h-5"></i>
-          <h3 class="font-bold">Calculated Daily Grocery List</h3>
+        <!-- Metabolic Analysis Grid -->
+        <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700 relative overflow-hidden flex flex-col justify-between">
+            <div class="absolute top-0 right-0 p-4 opacity-[0.03] text-white">
+            <i data-lucide="zap" class="w-24 h-24"></i>
+            </div>
+            <div class="relative z-10">
+            <h3 class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-4">Metabolic Balance</h3>
+            <div class="flex justify-between items-end mb-1">
+                <span class="text-slate-300 font-semibold text-[14px]">Modified Kleiber Base</span>
+                <span id="mer-display" class="text-xl font-bold text-white">
+                <!-- Populated by JS -->
+                </span>
+            </div>
+            <div id="mer-formula-display" class="text-[12px] text-slate-400 font-serif italic mb-4">
+                <!-- Populated by JS -->
+            </div>
+            </div>
+            <div class="relative z-10">
+            <div class="h-2 bg-slate-900 rounded-full overflow-hidden flex mb-2" id="progress-bar-container">
+                <!-- Populated by JS -->
+            </div>
+            <div class="flex gap-4 text-[12px] font-medium text-slate-400" id="energy-breakdown-display">
+                <!-- Populated by JS -->
+            </div>
+            </div>
         </div>
-        <div id="reset-overrides-container"></div>
-      </div>
-      <div id="grocery-list-container" class="divide-y divide-slate-100">
-        <!-- Populated by JS -->
-      </div>
-    </section>
 
-    <!-- NRC Performance Table -->
-    <section class="bg-slate-900 rounded-3xl p-8 shadow-xl text-white">
-      <div class="flex items-center gap-3 mb-8">
-        <div class="bg-white/10 p-2 rounded-xl text-emerald-400">
-          <i data-lucide="zap" class="w-6 h-6"></i>
+        <div class="bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700 relative overflow-hidden flex flex-col justify-between">
+            <div class="absolute top-0 right-0 p-4 opacity-[0.03] text-white">
+            <i data-lucide="microscope" class="w-24 h-24"></i>
+            </div>
+            <div class="relative z-10">
+                <h3 class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-4">Core Block Adjustments</h3>
+                <div class="flex items-center gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3">
+                    <div class="text-3xl font-black text-blue-400"><span id="units-display"></span> <span class="text-[14px] font-normal text-slate-500">Units</span></div>
+                    <div class="flex items-center bg-slate-900 border border-slate-700 rounded-lg p-0.5 relative z-10 shadow-inner">
+                        <button onclick="setBlockModifier(-1)" class="p-1.5 hover:bg-slate-800 text-blue-400 rounded transition-colors" title="Decrease block count">
+                        <i data-lucide="minus" class="w-4 h-4"></i>
+                        </button>
+                        <div id="block-modifier-display" class="w-8 text-center text-[12px] font-bold text-blue-300 border-x border-slate-700/50">0</div>
+                        <button onclick="setBlockModifier(1)" class="p-1.5 hover:bg-slate-800 text-blue-400 rounded transition-colors" title="Increase block count">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    </div>
+                    <div id="mass-display" class="text-[12px] text-slate-400 mt-2">Scale: 16g Total Mass</div>
+                </div>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between relative z-10">
+            <span class="text-[12px] font-bold text-blue-500 uppercase">Custom Rounding Logic</span>
+            <span class="text-[12px] text-slate-500 font-serif italic">floor(Theory + 0.65)</span>
+            </div>
         </div>
-        <div>
-          <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
-          <p class="text-slate-400 text-sm">Real-time dynamic verification against exact BOM v3.2 dosings</p>
         </div>
-      </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
-              <th class="pb-4 font-bold">Metric</th>
-              <th class="pb-4 font-bold">Delivery</th>
-              <th class="pb-4 font-bold text-center">Status</th>
-              <th class="pb-4 font-bold text-right">Block Share</th>
-            </tr>
-          </thead>
-          <tbody id="nutrient-table-body" class="divide-y divide-slate-800">
+        <!-- Grocery List -->
+        <section class="bg-slate-800 rounded-2xl shadow-sm border border-slate-700 overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-700 flex items-center justify-between bg-slate-900/50">
+            <div class="flex items-center gap-2">
+            <i data-lucide="clipboard-list" class="text-emerald-500 w-5 h-5"></i>
+            <h3 class="font-bold text-white text-[14px]">Calculated Daily Grocery List</h3>
+            </div>
+            <div id="reset-overrides-container"></div>
+        </div>
+        <div id="grocery-list-container" class="divide-y divide-slate-700/50">
             <!-- Populated by JS -->
-          </tbody>
-        </table>
-      </div>
+        </div>
+        </section>
 
-      <!-- Info Cards -->
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-amber-950/40 p-4 rounded-2xl border border-amber-900/50">
-           <div class="text-amber-400 mb-2"><i data-lucide="scale" class="w-[18px] h-[18px]"></i></div>
-           <div class="text-xs font-bold uppercase tracking-wider mb-1">Meat Auto-Scaling & 10% Buffer</div>
-           <p class="text-[11px] text-slate-400 leading-relaxed">
-             The meat pool automatically reverse-scales to hit exactly <strong>110% of the MER target</strong>. This 10% structural buffer ensures the animal does not go into calorie-deficit under normal variance (cooking loss, weighing, activity).
-           </p>
+        <!-- NRC Performance Table -->
+        <section class="bg-[#0b1120] rounded-3xl p-8 shadow-2xl text-white border border-slate-800">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-emerald-900/30 border border-emerald-800/50 p-2 rounded-xl text-emerald-400">
+            <i data-lucide="zap" class="w-6 h-6"></i>
+            </div>
+            <div>
+            <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
+            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v3.2 dosings</p>
+            </div>
         </div>
-        <div class="bg-emerald-950/40 p-4 rounded-2xl border border-emerald-900/50">
-           <div class="text-emerald-400 mb-2"><i data-lucide="activity" class="w-[18px] h-[18px]"></i></div>
-           <div class="text-xs font-bold uppercase tracking-wider mb-1">BOM v3.2 Engine Sync</div>
-           <p class="text-[11px] text-slate-400 leading-relaxed">
-             Calculations are no longer hardcoded approximations. The app parses the JSON payload directly, factoring the true elemental mass of the new Buffalo &amp; Chicken Liver additions in real-time.
-           </p>
-        </div>
-        <div class="bg-purple-950/40 p-4 rounded-2xl border border-purple-900/50">
-           <div class="text-purple-400 mb-2"><i data-lucide="microscope" class="w-[18px] h-[18px]"></i></div>
-           <div class="text-xs font-bold uppercase tracking-wider mb-1">Stochastic Buffer</div>
-           <p class="text-[11px] text-slate-400 leading-relaxed">
-             You can manually bias individual grocery items up or down by 10% to stress test the formula constraints. Block mass remains structurally intact providing a hard nutritional floor.
-           </p>
-        </div>
-      </div>
-    </section>
 
-    <!-- BOM Formulation Display -->
-    <section class="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
-      <div class="flex items-center gap-3 mb-6">
-        <div class="bg-slate-100 p-2 rounded-xl text-slate-600">
-          <i data-lucide="microscope" class="w-6 h-6"></i>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+            <thead>
+                <tr class="text-[11px] text-slate-500 uppercase tracking-widest border-b border-slate-800">
+                <th class="pb-4 font-bold">Metric</th>
+                <th class="pb-4 font-bold">Delivery</th>
+                <th class="pb-4 font-bold text-center">Status</th>
+                <th class="pb-4 font-bold text-right">Block Share</th>
+                </tr>
+            </thead>
+            <tbody id="nutrient-table-body" class="divide-y divide-slate-800/60 text-[14px]">
+                <!-- Populated by JS -->
+            </tbody>
+            </table>
         </div>
-        <div>
-          <h2 class="text-xl font-bold">BOM Formulation (% Unit Mass)</h2>
-          <p id="bom-title-display" class="text-slate-500 text-sm">Unit size: 4000 mg (CatCore)</p>
+
+        <!-- Info Cards -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-amber-900/10 p-5 rounded-2xl border border-amber-800/30">
+            <div class="text-amber-500 mb-2"><i data-lucide="scale" class="w-5 h-5"></i></div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-amber-200">10% Metabolic Buffer</div>
+            <p class="text-[12px] text-slate-300 leading-relaxed">
+                The formula delivers <strong>+10% more calories</strong> than the baseline Kleiber requirement (e.g., 1100 kcal delivered for a 1000 kcal base). This ensures the animal is never underserved due to meat denaturing during steaming, cut-to-cut micro-variances, or daily changes in grocery quality. A healthy, active animal can burn a 10% overage, but cannot magically create energy from a deficit.
+            </p>
+            </div>
+            <div class="bg-emerald-900/10 p-5 rounded-2xl border border-emerald-800/30">
+            <div class="text-emerald-500 mb-2"><i data-lucide="activity" class="w-5 h-5"></i></div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v3.2 Engine Sync</div>
+            <p class="text-[12px] text-slate-300 leading-relaxed">
+                Calculations are no longer hardcoded approximations. The app parses the JSON payload directly, factoring the true elemental mass of the new Bovine &amp; Chicken Liver additions in real-time.
+            </p>
+            </div>
+            <div class="bg-blue-900/10 p-5 rounded-2xl border border-blue-800/30">
+            <div class="text-blue-500 mb-2"><i data-lucide="microscope" class="w-5 h-5"></i></div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-blue-200">Stochastic Stress Test</div>
+            <p class="text-[12px] text-slate-300 leading-relaxed">
+                You can manually bias individual grocery items up or down by 10% to stress test the formula constraints. Block mass remains structurally intact providing a hard nutritional floor.
+            </p>
+            </div>
         </div>
-      </div>
-      
-      <div id="bom-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-        <!-- Populated by JS -->
-      </div>
-    </section>
+        </section>
+
+        <!-- Gating Container (SECURITY LOCK) -->
+        <div id="auth-lock" class="secure-lock-overlay bg-slate-800 p-10 rounded-[2.5rem] border border-slate-700 shadow-xl text-center relative overflow-hidden mb-20">
+            <div class="absolute inset-0 bg-slate-900 opacity-50 z-0"></div>
+            <div class="relative z-10 max-w-md mx-auto">
+                <div class="w-16 h-16 bg-slate-900 text-slate-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-slate-700">
+                    <i data-lucide="lock" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-black text-white mb-2">Secure Segment</h3>
+                <p class="text-[13px] text-slate-400 mb-8 leading-relaxed">Enter CDMO or Admin passkey to view Formulation BOM and matrix ratios.</p>
+                <div class="flex flex-col gap-4">
+                    <input type="password" id="passkey-input" placeholder="Enter passkey" onkeyup="if(event.key==='Enter') window.checkPasskey()" class="w-full px-5 py-4 rounded-xl border border-slate-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center font-mono text-lg shadow-inner bg-slate-900 text-white transition-all">
+                    <button onclick="window.checkPasskey()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-4 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2 text-[14px]">
+                        <span>Verify Access</span>
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </button>
+                    <p id="auth-error" class="text-red-400 text-[11px] hidden mt-2 font-bold uppercase tracking-wider bg-red-900/20 py-2 rounded-lg border border-red-500/20">Invalid Vault Hash</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOM Formulation Display (Protected Content) -->
+        <section id="secure-bom-section" class="bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-700 hidden">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="bg-slate-900 border border-slate-700 p-2 rounded-xl text-slate-400">
+            <i data-lucide="microscope" class="w-6 h-6"></i>
+            </div>
+            <div>
+            <h2 class="text-xl font-bold text-white">BOM Formulation (% Unit Mass)</h2>
+            <p id="bom-title-display" class="text-slate-400 text-[13px]">Unit size: 4000 mg (CatCore)</p>
+            </div>
+        </div>
+        
+        <div id="bom-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <!-- Populated by JS -->
+        </div>
+        </section>
+    </div>
+    
+    <!-- ================= CHECKOUT VIEW ================= -->
+    <div id="checkout-view" class="hidden space-y-8 animate-in fade-in duration-300">
+        
+        <!-- Top Nav -->
+        <div class="flex justify-between items-center bg-slate-800/50 p-4 rounded-2xl border border-slate-700">
+            <button onclick="closeCheckout()" class="text-slate-400 hover:text-white flex items-center gap-2 text-[14px] font-medium transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Builder
+            </button>
+            <a href="https://www.growlrr.com/index" target="_blank" class="text-slate-400 hover:text-emerald-400 text-[14px] font-medium transition-colors flex items-center gap-1">
+                Main <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="bg-slate-800 rounded-[2.5rem] p-8 md:p-10 border border-slate-700 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 text-slate-700 opacity-10 rotate-12 pointer-events-none">
+                <i data-lucide="check-circle-2" class="w-64 h-64"></i>
+            </div>
+            
+            <h2 class="text-3xl font-black text-white mb-8 flex items-center gap-3 relative z-10">
+                <i data-lucide="clipboard-check" class="text-emerald-500"></i> Plan Summary
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-10 relative z-10">
+                <!-- Details Form -->
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[12px] text-slate-500 uppercase font-bold tracking-wider mb-2 block flex items-center gap-2">
+                            <i data-lucide="tag" class="w-3 h-3"></i> Pet Name
+                        </label>
+                        <!-- Placeholder greyed out, value controlled dynamically in JS -->
+                        <input type="text" id="checkout-pet-name" class="w-full bg-slate-900 border border-slate-700 text-white placeholder-slate-500 px-5 py-4 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-[14px] transition-all shadow-inner">
+                    </div>
+                    
+                    <div class="bg-slate-900/50 rounded-2xl border border-slate-700/50 p-6 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                            <span class="text-slate-400 text-[14px] flex items-center gap-2"><i data-lucide="paw-print" class="w-4 h-4 text-slate-500"></i> Selected Profile</span>
+                            <span class="text-white font-bold text-[14px]" id="checkout-profile-val">Dog, 20 kg</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-400 text-[14px] flex items-center gap-2"><i data-lucide="package" class="w-4 h-4 text-blue-500"></i> Daily NRC Blocks</span>
+                            <span class="text-emerald-400 font-black text-lg bg-emerald-900/20 px-3 py-1 rounded-lg border border-emerald-800/30" id="checkout-units-val">10 Units</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Meal Plan Overview -->
+                <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-700 shadow-inner flex flex-col">
+                    <h3 class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-5 flex items-center gap-2">
+                        <i data-lucide="shopping-basket" class="w-4 h-4 text-orange-400"></i> Daily Meal Plan
+                    </h3>
+                    <ul id="checkout-meal-plan" class="space-y-4 text-[14px] text-slate-300 flex-grow overflow-y-auto custom-scroll pr-2 no-scrollbar">
+                        <!-- Populated dynamically via JS -->
+                    </ul>
+                    <div class="mt-4 pt-4 border-t border-slate-800 text-[11px] text-slate-500 italic text-center">
+                        This is your daily required grocery target to mix with the NRC Blocks.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Tiers -->
+        <div class="mt-12">
+            <h3 class="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                <i data-lucide="calendar" class="text-emerald-500"></i> Select Dispatch Option
+            </h3>
+            
+            <div class="grid md:grid-cols-3 gap-6 relative mb-8">
+                <!-- 2 Weeks -->
+                <div class="bg-slate-800 border border-slate-700 rounded-[2rem] p-8 relative overflow-hidden flex flex-col opacity-80">
+                    <div class="text-slate-400 font-bold text-[13px] uppercase tracking-widest mb-1 transition-colors">Trial Run</div>
+                    <div class="text-white font-black text-2xl mb-6">2 Weeks</div>
+                    
+                    <div class="bg-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700/50 text-center flex-grow flex flex-col justify-center">
+                        <div class="text-[12px] text-slate-500 uppercase font-bold tracking-wider mb-2">Total Blocks Received</div>
+                        <div class="text-4xl font-black text-white"><span id="qty-2w">140</span> <span class="text-[14px] text-slate-500 font-normal">units</span></div>
+                    </div>
+                    
+                    <button class="w-full bg-slate-900 border border-slate-700 text-slate-500 py-4 rounded-xl font-bold cursor-not-allowed text-[14px] shadow-sm" disabled>
+                        Select 2-Week Plan
+                    </button>
+                </div>
+                
+                <!-- 4 Weeks (Most Popular) -->
+                <div class="bg-slate-800 border border-slate-700 rounded-[2rem] p-8 relative overflow-hidden flex flex-col opacity-80">
+                    <div class="absolute top-0 inset-x-0 bg-slate-700 text-slate-400 text-[10px] font-bold uppercase tracking-widest text-center py-1.5">
+                        Most Popular
+                    </div>
+                    <div class="text-emerald-500/50 font-bold text-[13px] uppercase tracking-widest mb-1 mt-2">Standard</div>
+                    <div class="text-white font-black text-2xl mb-6">4 Weeks</div>
+                    
+                    <div class="bg-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700/50 text-center flex-grow flex flex-col justify-center">
+                        <div class="text-[12px] text-slate-500 uppercase font-bold tracking-wider mb-2">Total Blocks Received</div>
+                        <div class="text-4xl font-black text-white"><span id="qty-4w">280</span> <span class="text-[14px] text-slate-500 font-normal">units</span></div>
+                    </div>
+                    
+                    <button class="w-full bg-slate-900 border border-slate-700 text-slate-500 py-4 rounded-xl font-bold cursor-not-allowed text-[14px] shadow-sm flex justify-center items-center gap-2" disabled>
+                        <span>Select 4-Week Plan</span>
+                    </button>
+                </div>
+
+                <!-- 3 Months -->
+                <div class="bg-slate-800 border border-slate-700 rounded-[2rem] p-8 relative overflow-hidden flex flex-col opacity-80">
+                    <div class="text-slate-400 font-bold text-[13px] uppercase tracking-widest mb-1 transition-colors">Long Term</div>
+                    <div class="text-white font-black text-2xl mb-6">3 Months</div>
+                    
+                    <div class="bg-slate-900/50 rounded-xl p-4 mb-6 border border-slate-700/50 text-center flex-grow flex flex-col justify-center">
+                        <div class="text-[12px] text-slate-500 uppercase font-bold tracking-wider mb-2">Total Blocks Received</div>
+                        <div class="text-4xl font-black text-white"><span id="qty-3m">840</span> <span class="text-[14px] text-slate-500 font-normal">units</span></div>
+                    </div>
+                    
+                    <button class="w-full bg-slate-900 border border-slate-700 text-slate-500 py-4 rounded-xl font-bold cursor-not-allowed text-[14px] shadow-sm" disabled>
+                        Select 3-Month Plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Protocol Mandate Section -->
+            <div class="bg-slate-900/50 rounded-[2rem] border border-slate-700 p-8 shadow-inner mt-4">
+                <h4 class="text-emerald-500 font-bold uppercase tracking-widest mb-4 flex items-center gap-2 text-[12px]">
+                    <i data-lucide="info" class="w-4 h-4"></i> The Protocol Mandate
+                </h4>
+                <ul class="space-y-3 text-[14px] text-slate-400 leading-relaxed">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-slate-500 shrink-0 mt-0.5"></i>
+                        <span><strong class="text-slate-200">Base Rules:</strong> Steamed meats only. No bones, no river fishes. No organ meats.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-slate-500 shrink-0 mt-0.5"></i>
+                        <span><strong class="text-slate-200">Flex Meats:</strong> 10% of total kcal allowed 2-3 times a week (Gizzard, Heart, Sardines/Anchovies &mdash; Pressure Cooked).</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-slate-500 shrink-0 mt-0.5"></i>
+                        <span><strong class="text-slate-200">Steamed Veg:</strong> Open out using Carrots, Red Pumpkin, and White Pumpkin (2:1:1 ratio).</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        
+    </div>
 
   </main>
 
   <script>
-    // --- V10.2 EMBEDDED DATA ---
+    // Security logic for BOM access
+    window.checkPasskey = function() {
+        const HASH_CDMO = "I0dyb1ZhdWx0MjAyNkNETU8=";
+        const HASH_ADMIN = "I0dyb1ZhdWx0MjAyNkFkbWlu";
+        
+        const input = document.getElementById('passkey-input').value.trim();
+        const errorMsg = document.getElementById('auth-error');
+        const inputHash = btoa(input);
+        
+        if (inputHash === HASH_CDMO || inputHash === HASH_ADMIN) {
+            document.getElementById('auth-lock').classList.add('hidden');
+            document.getElementById('secure-bom-section').classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+        } else {
+            errorMsg.classList.remove('hidden');
+        }
+    };
+
+    // --- CHECKOUT NAVIGATION LOGIC ---
+    window.openCheckout = () => {
+        // Run fresh calcs to guarantee accuracy
+        const stats = calculateStats();
+        
+        // Hide Main, Show Checkout
+        document.getElementById('main-view').classList.add('hidden');
+        document.getElementById('checkout-view').classList.remove('hidden');
+        
+        // Populate Checkout Summary UI
+        const speciesName = state.species.charAt(0).toUpperCase() + state.species.slice(1);
+        document.getElementById('checkout-profile-val').innerText = `${speciesName}, ${state.weight} kg`;
+        document.getElementById('checkout-units-val').innerText = `${stats.finalUnits} Units/Day`;
+        
+        // Dynamic Pet Name Placeholder
+        const defaultName = state.species === 'cat' ? 'Bella' : 'Ringo';
+        document.getElementById('checkout-pet-name').placeholder = ` ${defaultName} `;
+        
+        // Build Meal Plan list mapping
+        let mealHtml = '';
+        stats.groceryList.forEach(item => {
+            const currentMod = item.isEgg ? 1 : (state.groceryMods[item.id] || 1);
+            const modifiedQty = item.isEgg ? item.count.toFixed(2) + ' Eggs' : Math.round(item.g * currentMod) + 'g';
+            
+            mealHtml += `
+                <li class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <span class="text-slate-400 font-medium">${item.label}</span> 
+                    <span class="font-bold text-white bg-slate-800 px-3 py-1 rounded-md border border-slate-700">${modifiedQty}</span>
+                </li>`;
+        });
+        document.getElementById('checkout-meal-plan').innerHTML = mealHtml;
+        
+        // Set quantities for plans (14 days, 28 days, 90 days)
+        document.getElementById('qty-2w').innerText = stats.finalUnits * 14;
+        document.getElementById('qty-4w').innerText = stats.finalUnits * 28;
+        document.getElementById('qty-3m').innerText = stats.finalUnits * 90;
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.closeCheckout = () => {
+        document.getElementById('checkout-view').classList.add('hidden');
+        document.getElementById('main-view').classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // --- EMBEDDED DATA ---
     const DD = {
       nrc: {
         cat_adult: { nutrients: { protein_g:5.0, fat_g:2.5, calcium_mg:180.0, phosphorus_mg:160.0, magnesium_mg:25.0, sodium_mg:85.0, potassium_mg:330.0, iron_mg:2.5, copper_mg:0.3, zinc_mg:1.8, manganese_mg:0.3, iodine_ug:35.0, selenium_ug:19.0, vitamin_a_ug:63.0, vitamin_d_ug:0.44, vitamin_e_mg:2.5, thiamine_b1_mg:0.33, riboflavin_b2_mg:0.45, pantothenic_b5_mg:0.4, pyridoxine_b6_mg:0.16, folate_b9_ug:47.0, cobalamin_b12_ug:1.4, choline_mg:85.0, taurine_mg:22.5, arginine_mg:250.0, lysine_mg:170.0, methionine_mg:170.0, dha_mg:50.0, epa_mg:25.0 } },
@@ -320,8 +571,8 @@
       state.weight = newSpecies === 'dog' ? 20 : 5;
       
       // Update toggle UI
-      document.getElementById('btn-dog').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'dog' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-100'}`;
-      document.getElementById('btn-cat').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'cat' ? 'bg-white text-emerald-900 shadow-sm' : 'text-emerald-100'}`;
+      document.getElementById('btn-dog').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'dog' ? 'bg-slate-800 text-white shadow-sm border border-slate-700' : 'text-slate-400 hover:text-slate-200'}`;
+      document.getElementById('btn-cat').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'cat' ? 'bg-slate-800 text-white shadow-sm border border-slate-700' : 'text-slate-400 hover:text-slate-200'}`;
       
       // Update slider bounds
       const slider = document.getElementById('weight-slider');
@@ -486,29 +737,30 @@
       const stats = calculateStats();
       const isDog = state.species === 'dog';
       const nrcKey = isDog ? 'dog_adult' : 'cat_adult';
+      const config = SCIENCE_CONSTANTS[state.species];
       
       // Update Basic DOM
       document.getElementById('weight-display').innerText = state.weight;
       document.getElementById('block-modifier-display').innerText = state.blockModifier > 0 ? `+${state.blockModifier}` : state.blockModifier;
       
       const isAmber = Math.abs(stats.deliveryTotalKcal - stats.targetKcal) > stats.targetKcal * 0.1;
-      document.getElementById('mer-display').className = `text-xl font-bold ${isAmber ? 'text-amber-600' : 'text-slate-900'}`;
-      document.getElementById('mer-display').innerHTML = `${Math.round(stats.deliveryTotalKcal)} <small class="text-slate-400">/ ${Math.round(stats.targetKcal)} target (+10% buffer)</small>`;
+      document.getElementById('mer-display').className = `text-xl font-bold ${isAmber ? 'text-amber-400' : 'text-white'}`;
       
-      document.getElementById('mer-formula-display').innerHTML = isDog 
-        ? `<span>MER = 110 &times; W<sup class="text-[10px] ml-[1px]">0.64</sup></span>`
-        : `<span>MER = 75 &times; W<sup class="text-[10px] ml-[1px]">0.75</sup></span>`;
+      // Clearly display Delivered / Base
+      document.getElementById('mer-display').innerHTML = `${Math.round(stats.deliveryTotalKcal)} <small class="text-slate-500 font-medium">/ ${Math.round(stats.mer)} kcal</small>`;
+      
+      document.getElementById('mer-formula-display').innerHTML = `<span>MER = ${config.coefficient} &times; W<sup class="text-[10px] ml-[1px]">${config.exponent}</sup></span>`;
 
       // Progress Bar
       const blockPct = (stats.blockEnergy / stats.deliveryTotalKcal) * 100;
       const grocPct = (stats.deliveryGroceryKcal / stats.deliveryTotalKcal) * 100;
       document.getElementById('progress-bar-container').innerHTML = `
-        <div style="width: ${blockPct}%" class="bg-blue-500 h-full transition-all"></div>
-        <div style="width: ${grocPct}%" class="bg-emerald-500 h-full transition-all"></div>
+        <div style="width: ${blockPct}%" class="bg-blue-500 h-full transition-all shadow-[0_0_10px_rgba(59,130,246,0.3)]"></div>
+        <div style="width: ${grocPct}%" class="bg-emerald-500 h-full transition-all shadow-[0_0_10px_rgba(16,185,129,0.3)]"></div>
       `;
       document.getElementById('energy-breakdown-display').innerHTML = `
-        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500"></div> Blocks (${Math.round(stats.blockEnergy)} kcal)</div>
-        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Grocery (${Math.round(stats.deliveryGroceryKcal)} kcal)</div>
+        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></div> Blocks (${Math.round(stats.blockEnergy)} kcal)</div>
+        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div> Grocery (${Math.round(stats.deliveryGroceryKcal)} kcal)</div>
       `;
 
       // Block Units
@@ -518,7 +770,7 @@
       // Reset Button
       const hasOverrides = Object.values(state.groceryMods).some(v => v !== 1) || state.eggMod !== 0 || state.blockModifier !== 0;
       document.getElementById('reset-overrides-container').innerHTML = hasOverrides ? `
-        <button onclick="resetVariance()" class="flex items-center gap-1.5 text-xs text-emerald-700 hover:text-emerald-800 font-bold px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 rounded-full transition-colors">
+        <button onclick="resetVariance()" class="flex items-center gap-1.5 text-[12px] text-emerald-400 hover:text-emerald-300 font-bold px-3 py-1.5 bg-emerald-900/40 border border-emerald-800/50 hover:bg-emerald-800/50 rounded-full transition-colors">
           <i data-lucide="refresh-cw" class="w-3 h-3"></i> Reset Overrides
         </button>
       ` : '';
@@ -530,38 +782,38 @@
         const modifiedGrams = item.g * currentMod;
         
         groceryHtml += `
-          <div class="px-6 py-5 flex justify-between items-center group hover:bg-emerald-50/30 transition-colors">
+          <div class="px-6 py-5 flex justify-between items-center group hover:bg-slate-700/50 transition-colors">
             <div>
-              <div class="font-semibold text-slate-700 flex items-center gap-2 flex-wrap">
+              <div class="font-semibold text-slate-200 flex items-center gap-2 flex-wrap text-[14px]">
                 ${item.label} 
-                ${item.isMeat ? `<span class="text-[9px] uppercase tracking-wider bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded font-bold">Auto-Scaled</span>` : ''}
+                ${item.isMeat ? `<span class="text-[9px] uppercase tracking-wider bg-slate-700/80 border border-slate-600 text-slate-400 px-1.5 py-0.5 rounded font-bold">Auto-Scaled</span>` : ''}
               </div>
               ${item.isEgg 
-                ? `<div class="text-xs text-slate-400 mt-1">Continuous theory: ${stats.theoryEggs.toFixed(2)} eggs</div>`
-                : `<div class="text-xs text-slate-400 mt-1">Allometric base target: ${Math.round(item.baseG)}g</div>`
+                ? `<div class="text-[12px] text-slate-500 mt-1">Continuous theory: ${stats.theoryEggs.toFixed(2)} eggs</div>`
+                : `<div class="text-[12px] text-slate-500 mt-1">Allometric base target: ${Math.round(item.baseG)}g</div>`
               }
             </div>
             
             <div class="flex items-center gap-4">
               ${item.isEgg 
                 ? `
-                <div class="flex items-center bg-amber-50 border border-amber-200 rounded-md p-1 shadow-sm">
-                  <button onclick="setEggMod(-0.25)" class="px-2 py-1 hover:bg-white text-amber-700 rounded transition-colors text-xs font-black">-0.25</button>
-                  <span class="w-20 text-center text-xs font-mono font-bold text-amber-900">${state.eggMod > 0 ? '+' : ''}${state.eggMod.toFixed(2)} Mod</span>
-                  <button onclick="setEggMod(0.25)" class="px-2 py-1 hover:bg-white text-amber-700 rounded transition-colors text-xs font-black">+0.25</button>
+                <div class="flex items-center bg-amber-900/20 border border-amber-800/50 rounded-md p-1 shadow-sm">
+                  <button onclick="setEggMod(-0.25)" class="px-2 py-1 hover:bg-amber-800/50 text-amber-400 rounded transition-colors text-[12px] font-black">-0.25</button>
+                  <span class="w-20 text-center text-[12px] font-mono font-bold text-amber-200">${state.eggMod > 0 ? '+' : ''}${state.eggMod.toFixed(2)} Mod</span>
+                  <button onclick="setEggMod(0.25)" class="px-2 py-1 hover:bg-amber-800/50 text-amber-400 rounded transition-colors text-[12px] font-black">+0.25</button>
                 </div>
                 ` : `
-                <div class="flex items-center bg-slate-100 border border-slate-200 rounded-md p-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                  <button onclick="updateGroceryMod('${item.id}', -0.1)" class="px-2 py-1 hover:bg-white text-slate-600 rounded shadow-sm transition-colors text-xs font-bold">-10%</button>
-                  <span class="w-12 text-center text-xs font-mono font-bold text-slate-700">${Math.round(currentMod * 100)}%</span>
-                  <button onclick="updateGroceryMod('${item.id}', 0.1)" class="px-2 py-1 hover:bg-white text-slate-600 rounded shadow-sm transition-colors text-xs font-bold">+10%</button>
+                <div class="flex items-center bg-slate-900 border border-slate-700 rounded-md p-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                  <button onclick="updateGroceryMod('${item.id}', -0.1)" class="px-2 py-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded shadow-sm transition-colors text-[12px] font-bold">-10%</button>
+                  <span class="w-12 text-center text-[12px] font-mono font-bold text-slate-300">${Math.round(currentMod * 100)}%</span>
+                  <button onclick="updateGroceryMod('${item.id}', 0.1)" class="px-2 py-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded shadow-sm transition-colors text-[12px] font-bold">+10%</button>
                 </div>
                 `
               }
               <div class="text-right w-24">
                 ${item.isEgg 
-                  ? `<div class="text-xl font-black text-emerald-800">${item.count.toFixed(2)} <span class="text-xs font-bold uppercase tracking-wider text-slate-400 ml-0.5">Eggs</span></div>`
-                  : `<div class="text-xl font-black text-emerald-800">${Math.round(modifiedGrams)}<span class="text-xs font-normal text-slate-400 ml-0.5">g</span></div>`
+                  ? `<div class="text-xl font-black text-emerald-400">${item.count.toFixed(2)} <span class="text-[12px] font-bold uppercase tracking-wider text-slate-500 ml-0.5">Eggs</span></div>`
+                  : `<div class="text-xl font-black text-emerald-400">${Math.round(modifiedGrams)}<span class="text-[12px] font-normal text-slate-500 ml-0.5">g</span></div>`
                 }
               </div>
             </div>
@@ -590,23 +842,23 @@
         tableHtml += `
           <tr class="group hover:bg-slate-800/50 transition-colors ${isKcal ? 'bg-slate-800/30' : ''}">
             <td class="py-4 px-2">
-              <div class="font-bold ${isKcal ? 'text-emerald-400' : 'text-slate-200'}">${row.label}</div>
-              <div class="text-[10px] text-slate-500 uppercase tracking-tight">${row.unit} / day</div>
+              <div class="font-bold text-[14px] ${isKcal ? 'text-emerald-400' : 'text-slate-200'}">${row.label}</div>
+              <div class="text-[11px] text-slate-500 uppercase tracking-tight">${row.unit} / day</div>
             </td>
             <td class="py-4">
-              <div class="text-sm font-mono ${isKcal ? 'font-bold' : ''}">${formatScientific(val, isKcal)}</div>
-              <div class="text-[10px] text-slate-500 flex items-center gap-1">
+              <div class="text-[14px] font-mono ${isKcal ? 'font-bold' : ''}">${formatScientific(val, isKcal)}</div>
+              <div class="text-[11px] text-slate-500 flex items-center gap-1">
                 <span class="italic">Target:</span> 
                 <span>${dynamicTarget ? formatScientific(dynamicTarget, isKcal) : 'N/A'}</span>
               </div>
             </td>
             <td class="py-4 text-center">
               ${nrcBase > 0 ? `
-                 <div class="inline-block px-3 py-1 rounded-md text-[10px] font-black ${pct >= 100 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                 <div class="inline-block px-3 py-1 rounded-md text-[11px] font-black ${pct >= 100 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/50' : 'bg-red-900/30 text-red-400 border border-red-800/50'}">
                    ${Math.round(pct)}% ${isKcal ? 'MER' : 'NRC'}
                  </div>
               ` : `
-                 <div class="inline-block px-3 py-1 rounded-md text-[10px] font-black bg-slate-500/10 text-slate-400 border border-slate-500/20">
+                 <div class="inline-block px-3 py-1 rounded-md text-[11px] font-black bg-slate-800 text-slate-400 border border-slate-700">
                    N/A
                  </div>
               `}
@@ -616,7 +868,7 @@
                 <div class="w-20 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                   <div style="width: ${Math.min(100, blockPct)}%" class="h-full ${isKcal ? 'bg-emerald-500' : 'bg-blue-500'} shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
                 </div>
-                <span class="text-[10px] text-slate-500 mt-1 font-mono">${Math.round(blockPct)}% B</span>
+                <span class="text-[11px] text-slate-500 mt-1 font-mono">${Math.round(blockPct)}% B</span>
               </div>
             </td>
           </tr>
@@ -639,18 +891,23 @@
       let bomHtml = '';
       bomData.forEach(item => {
         bomHtml += `
-          <div class="flex justify-between items-center p-3 rounded-lg bg-slate-50 border border-slate-100">
-            <span class="text-sm font-medium text-slate-700 truncate mr-2" title="${item.id}">
+          <div class="flex justify-between items-center p-3 rounded-lg bg-slate-900/50 border border-slate-700/50">
+            <span class="text-[13px] font-medium text-slate-300 truncate mr-2" title="${item.id}">
               ${item.id.replace(/_/g, ' ')}
             </span>
             <div class="text-right shrink-0">
-              <div class="text-sm font-bold text-slate-900">${formatScientific(item.pct)}%</div>
-              <div class="text-[10px] text-slate-400">${formatScientific(item.mg)} mg</div>
+              <div class="text-[13px] font-bold text-white">${formatScientific(item.pct)}%</div>
+              <div class="text-[11px] text-slate-500">${formatScientific(item.mg)} mg</div>
             </div>
           </div>
         `;
       });
       document.getElementById('bom-list-container').innerHTML = bomHtml;
+
+      // Check if Checkout is visible and update it dynamically if open
+      if (!document.getElementById('checkout-view').classList.contains('hidden')) {
+          openCheckout(); 
+      }
 
       // Re-initialize Lucide Icons after DOM updates
       lucide.createIcons();
