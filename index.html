@@ -104,17 +104,44 @@
         <div class="absolute inset-0 bg-mesh opacity-80"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             
-            <div class="max-w-4xl mb-20">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-900/30 text-blue-300 text-[12px] font-bold mb-6 border border-blue-800/50 backdrop-blur-sm">
-                    <i data-lucide="target" class="w-4 h-4"></i>
-                    <span>Precision Nutrition Mission</span>
+            <!-- Hero Top Section with Graphic -->
+            <div class="grid lg:grid-cols-2 gap-12 items-center mb-24">
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-900/30 text-blue-300 text-[12px] font-bold mb-6 border border-blue-800/50 backdrop-blur-sm">
+                        <i data-lucide="target" class="w-4 h-4"></i>
+                        <span>Precision Nutrition Mission</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-black text-white tracking-tight mb-8 leading-tight">
+                        Eliminating the <br/><span class="text-blue-500">Industrial Deficit.</span>
+                    </h2>
+                    <p class="text-xl text-slate-400 leading-relaxed font-light">
+                        Growlrr Foods is a precision pet nutrition company. Our mission is to eliminate the gap between commercially available pet food and what a carnivore’s biology actually requires — without requiring owners to source impractical ingredients.
+                    </p>
                 </div>
-                <h2 class="text-4xl md:text-6xl font-black text-white tracking-tight mb-8 leading-tight">
-                    Eliminating the <br/><span class="text-blue-500">Industrial Deficit.</span>
-                </h2>
-                <p class="text-xl text-slate-400 leading-relaxed font-light">
-                    Growlrr Foods is a precision pet nutrition company. Our mission is to eliminate the gap between commercially available pet food and what a carnivore’s biology actually requires — without requiring owners to source impractical ingredients.
-                </p>
+
+                <div class="relative lg:ml-auto w-full max-w-lg">
+                    <!-- Decorative glow behind image to blend it elegantly into dark mode -->
+                    <div class="absolute inset-0 bg-emerald-500/20 blur-[80px] rounded-full z-0"></div>
+                    
+                    <!-- Image Wrapper -->
+                    <div class="relative z-10 rounded-[3rem] overflow-hidden border border-slate-700 shadow-2xl bg-[#fafafa] transform hover:-translate-y-2 transition-transform duration-500 group aspect-[4/3] flex items-center justify-center">
+                        <img 
+                            src="landing_cat_dog_gemini.png" 
+                            alt="Happy Dog and Cat ready for Growlrr" 
+                            class="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity duration-300"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                        />
+                        <!-- Fallback block if the local path is blocked by the browser -->
+                        <div style="display: none;" class="flex-col items-center justify-center p-8 text-center w-full h-full bg-slate-800/50 absolute inset-0">
+                            <i data-lucide="image-off" class="w-12 h-12 text-slate-500 mb-4"></i>
+                            <h4 class="text-emerald-400 font-bold text-sm mb-2">Image Blocked by Browser</h4>
+                            <p class="text-slate-400 text-xs">If you see this, your browser blocked the local file path. Try putting the image in the same folder as the HTML file and changing the path to just the filename.</p>
+                        </div>
+                        
+                        <!-- Subtle inner border overlay to soften the image edges -->
+                        <div class="absolute inset-0 border-[6px] border-slate-900/5 rounded-[3rem] pointer-events-none"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="grid lg:grid-cols-2 gap-10 mb-10">
