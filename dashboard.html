@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Growlrr NRC Calculator v8.2.0</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green:#1B5E20; --gmid:#2E7D32; --glight:#E8F5E9;
+    --red:#B71C1C; --rlight:#FFEBEE;
+    --amber:#E65100; --alight:#FFF3E0;
+    --purple:#4A148C; --plight:#F3E5F5;
+    --safe-hi:#1565C0; --safe-hi-bg:#E3F2FD;
+    --border:#DDD;
+    --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --mono:'SF Mono','Fira Mono',monospace;
+  }
+  body{font-family:var(--font);font-size:13px;background:#F0F2F5;color:#222;}
+  /* HEADER */
+  .hdr{background:var(--green);color:#fff;padding:9px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .hdr-title{font-size:15px;font-weight:700;}
+  .hdr-sub{font-size:10px;opacity:.65;}
+  .sp-btn{padding:4px 14px;border:2px solid rgba(255,255,255,.5);border-radius:16px;background:transparent;color:#fff;cursor:pointer;font-size:12px;font-weight:600;}
+  .sp-btn.active{background:#fff;color:var(--green);border-color:#fff;}
+  .hdr-right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .icon-btn{padding:4px 10px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);border-radius:4px;color:#fff;cursor:pointer;font-size:11px;}
+  .icon-btn:hover{background:rgba(255,255,255,.25);}
+  /* GUIDANCE BAR */
+  .guide-bar{background:#263238;color:#fff;padding:7px 16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:11.5px;}
+  .guide-section{display:flex;align-items:center;gap:8px;}
+  .guide-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;opacity:.6;min-width:52px;}
+  .guide-chip{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:3px;padding:2px 7px;font-family:var(--mono);font-size:11.5px;white-space:nowrap;}
+  .guide-chip.units{background:#1B5E20;border-color:#2E7D32;font-weight:700;}
+  .guide-sep{opacity:.3;}
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:300px 1fr;min-height:100vh;}
+  /* SIDEBAR */
+  .sidebar{background:#fff;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
+  .sb-toolbar{background:#F5F5F5;padding:5px 8px;display:flex;gap:5px;align-items:center;border-bottom:1px solid #E0E0E0;position:sticky;top:0;z-index:2;}
+  .toggle-btn{padding:3px 9px;border-radius:12px;border:1px solid #CCC;background:#fff;cursor:pointer;font-size:11px;font-weight:600;color:#555;}
+  .toggle-btn.active{background:#1B5E20;color:#fff;border-color:#1B5E20;}
+  .sb-body{flex:1;overflow-y:auto;}
+  .sec-hdr{background:#ECEFF1;padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#546E7A;position:sticky;top:0;z-index:1;}
+  .ing-row{display:grid;grid-template-columns:1fr 88px 22px;gap:3px;align-items:center;padding:3px 6px 3px 10px;border-bottom:1px solid #F5F5F5;}
+  .ing-row:hover{background:#F9FFF9;}
+  .ing-lbl{font-size:11px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ing-lbl .tag{font-size:9px;color:#BBB;margin-left:2px;}
+  .ing-inp{width:100%;border:1px solid #DDD;border-radius:3px;padding:2px 4px;font-size:11.5px;text-align:right;font-family:var(--mono);}
+  .ing-inp:focus{outline:none;border-color:var(--gmid);}
+  .ing-inp.fixed{background:#F8F8F8;color:#AAA;}
+  .rst{background:none;border:none;cursor:pointer;color:#CCC;font-size:12px;padding:1px 2px;border-radius:3px;}
+  .rst:hover{background:#EEE;color:#666;}
+  /* MAIN */
+  .main{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px;}
+  /* CARDS */
+  .cards{display:flex;gap:8px;flex-wrap:wrap;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px;flex:1;min-width:100px;}
+  .card .v{font-size:20px;font-weight:700;}
+  .card .l{font-size:9.5px;color:#888;text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
+  .card.danger{border-color:var(--red);background:var(--rlight);}
+  .card.warn{border-color:#FF9800;background:var(--alight);}
+  .card.good{border-color:var(--gmid);background:var(--glight);}
+  /* TABLES */
+  .tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .tbl-hdr{background:var(--green);color:#fff;padding:6px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+  table{width:100%;border-collapse:collapse;}
+  th{background:#2E7D32;color:#fff;padding:6px 8px;font-size:10.5px;font-weight:700;text-align:left;white-space:nowrap;}
+  th.r{text-align:right;}
+  td{padding:4px 8px;border-bottom:1px solid #F0F0F0;font-size:11px;vertical-align:middle;}
+  td.r{text-align:right;font-family:var(--mono);font-size:10.5px;}
+  tr:hover td{background:#FAFFF9;}
+  tr.gh td{background:#EEF2EE;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:#444;padding:4px 8px;}
+  /* BARS */
+  .bar-cell{display:flex;align-items:center;gap:5px;}
+  .bar-wrap{flex:1;height:6px;background:#EEE;border-radius:3px;overflow:hidden;max-width:70px;}
+  .bar{height:100%;border-radius:3px;transition:width .2s;}
+  .pn{font-size:10.5px;font-family:var(--mono);min-width:42px;text-align:right;font-weight:600;}
+  .na{color:#BBB;font-size:10.5px;}
+  /* status */
+  .ok{color:var(--gmid);} .bok{background:var(--gmid);}
+  .lo{color:var(--red);}  .blo{background:var(--red);}
+  .wn{color:var(--amber);} .bwn{background:#FF9800;}
+  .hi{color:var(--purple);} .bhi{background:#9C27B0;}
+  .safe-hi{color:var(--safe-hi);} .bsafe-hi{background:var(--safe-hi);}
+  /* ratio */
+  .ratio-note{font-size:9.5px;color:#888;}
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:center;justify-content:center;}
+  .overlay.open{display:flex;}
+  .modal{background:#fff;border-radius:8px;padding:20px;width:440px;max-width:96vw;}
+  .modal h2{font-size:14px;margin-bottom:12px;color:var(--green);}
+  .urow{margin-bottom:10px;}
+  .urow label{display:block;font-size:11px;font-weight:600;color:#444;margin-bottom:2px;}
+  .urow input[type=file]{width:100%;font-size:11.5px;}
+  .mact{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;}
+  .btn{padding:6px 14px;border-radius:4px;border:none;cursor:pointer;font-size:12px;font-weight:600;}
+  .btn-p{background:var(--gmid);color:#fff;}
+  .btn-s{background:#EEE;color:#333;}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <h2>Load YAML Files</h2>
+    <p style="font-size:11px;color:#666;margin-bottom:12px">Embedded: BOM v8.2.0 · Science v8.1.1 · Protocol v8.2.0. Load new YAMLs to override.</p>
+    <div class="urow"><label>science_v1.yaml</label><input type="file" id="fSci" accept=".yaml,.yml"></div>
+    <div class="urow"><label>bom_v1.yaml</label><input type="file" id="fBom" accept=".yaml,.yml"></div>
+    <div class="urow"><label>protocol_v1.yaml</label><input type="file" id="fPro" accept=".yaml,.yml"></div>
+    <div class="mact">
+      <button class="btn btn-s" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-p" onclick="loadYamls()">Apply</button>
+    </div>
+    <div style="font-size:10.5px;color:#888;margin-top:8px" id="loadStatus"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div><div class="hdr-title">🐾 Growlrr</div><div class="hdr-sub" id="ver">BOM v8.2.0 · Science v8.1.1 · Protocol v8.2.0</div></div>
+  <button class="sp-btn active" id="btnCat" onclick="setSp('cat')">CatCore</button>
+  <button class="sp-btn" id="btnDog" onclick="setSp('dog')">DogCore</button>
+  <div class="hdr-right">
+    <button class="icon-btn" onclick="openModal()">📂 Load YAMLs</button>
+    <button onclick="exportCSV()" style="cursor:pointer;background:#1B5E20;color:#fff;border:1px solid #388E3C;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:600;margin-left:6px">⬇ Export CSV</button>
+  </div>
+</div>
+
+<!-- GUIDANCE BAR: units/day + grocery amounts -->
+<div class="guide-bar" id="guideBar"></div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-toolbar">
+      <span style="font-size:10.5px;color:#666;font-weight:600;">Block — % of unit</span>
+    </div>
+    <div class="sb-body" id="sidebar"></div>
+  </div>
+  <div class="main">
+    <div style="background:#1B5E20;color:#fff;padding:5px 14px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:4px">✅ v8.2.0 LOCKED — BOM v8.2.0 · Science v8.1.1 · Protocol v8.2.0 · 2026-03-01</div>
+<div class="cards" id="cards"></div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr">NRC 2006 Nutrient Coverage</div>
+      <table>
+        <thead><tr>
+          <th>Nutrient</th><th class="r">NRC/day</th>
+          <th class="r">Block</th><th class="r">Grocery</th>
+          <th class="r">Total/day</th><th>% NRC</th><th class="r">Split</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr">Formulation Ratios</div>
+      <table>
+        <thead><tr>
+          <th>Ratio</th><th class="r">Value</th><th class="r">Range</th><th class="r">Target</th><th>Status</th><th>Notes</th>
+        </tr></thead>
+        <tbody id="rtbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── EMBEDDED DATA (BOM v1.8 / Science v1.5 / Protocol v2.1) ─────────────────
+const DD = {"nrc":{"cat_adult":{"description":"4.0kg neutered adult cat, 250 kcal/day, ambient India","source":"NRC 2006 Table 15-1","nutrients":{"protein_g":5.0,"fat_g":2.5,"calcium_mg":180.0,"phosphorus_mg":160.0,"magnesium_mg":25.0,"sodium_mg":85.0,"potassium_mg":330.0,"iron_mg":2.5,"copper_mg":0.3,"zinc_mg":1.8,"manganese_mg":0.3,"iodine_ug":35.0,"selenium_ug":19.0,"vitamin_a_ug":63.0,"vitamin_d_ug":0.44,"vitamin_e_mg":2.5,"thiamine_b1_mg":0.33,"riboflavin_b2_mg":0.45,"pantothenic_b5_mg":0.4,"pyridoxine_b6_mg":0.16,"folate_b9_ug":47.0,"cobalamin_b12_ug":1.4,"choline_mg":85.0,"taurine_mg":22.5,"arginine_mg":250.0,"lysine_mg":170.0,"methionine_mg":170.0,"dha_mg":50.0,"epa_mg":25.0}},"dog_adult":{"description":"20kg adult dog, MER 95×BW^0.64, 1000 kcal/day, ambient India","source":"NRC 2006 Table 15-2","nutrients":{"protein_g":50.0,"fat_g":14.0,"calcium_mg":1400.0,"phosphorus_mg":1000.0,"magnesium_mg":150.0,"sodium_mg":400.0,"potassium_mg":1100.0,"iron_mg":7.6,"copper_mg":1.5,"zinc_mg":9.0,"manganese_mg":1.2,"iodine_ug":220.0,"selenium_ug":95.0,"vitamin_a_ug":379.0,"vitamin_d_ug":3.4,"vitamin_e_mg":8.0,"thiamine_b1_mg":2.25,"riboflavin_b2_mg":1.3,"pantothenic_b5_mg":4.0,"pyridoxine_b6_mg":0.38,"folate_b9_ug":68.0,"cobalamin_b12_ug":8.8,"choline_mg":425.0,"taurine_mg":null,"arginine_mg":1040.0,"lysine_mg":870.0,"methionine_mg":480.0,"dha_mg":100.0,"epa_mg":50.0}}},"hrf":{"vitamin_a":0.82,"vitamin_d":0.85,"vitamin_e":0.8,"thiamine_b1":0.0,"riboflavin_b2":0.85,"pantothenic_b5":0.8,"pyridoxine_b6":0.8,"folate_b9":0.68,"cobalamin_b12":0.75,"iron":0.97,"copper":0.97,"zinc":0.97,"selenium":0.93,"potassium":0.96,"sodium":0.96,"magnesium":0.97,"phosphorus":0.97,"calcium":0.97,"taurine":0.0,"arginine":0.85,"lysine":0.85,"methionine":0.85,"choline":0.9},"ingredients":{"mutton_boneless":{"kcal_per_100g":122,"nutrients_per_100g":{"protein_g":20.5,"fat_g":4.5,"vitamin_a_ug":2.0,"thiamine_b1_mg":0.12,"riboflavin_b2_mg":0.22,"pantothenic_b5_mg":0.8,"pyridoxine_b6_mg":0.35,"folate_b9_ug":5.0,"cobalamin_b12_ug":1.5,"iron_mg":2.8,"copper_mg":0.15,"zinc_mg":4.5,"selenium_ug":8.0,"phosphorus_mg":185.0,"potassium_mg":385.0,"sodium_mg":75.0,"magnesium_mg":22.0,"taurine_mg":50.0,"arginine_mg":1380.0,"lysine_mg":1820.0,"methionine_mg":540.0,"la_mg":160,"iodine_ug":5.0}},"chicken_breast":{"kcal_per_100g":110,"nutrients_per_100g":{"protein_g":22.5,"fat_g":2.5,"vitamin_a_ug":8.0,"thiamine_b1_mg":0.08,"riboflavin_b2_mg":0.12,"pantothenic_b5_mg":0.8,"pyridoxine_b6_mg":0.6,"folate_b9_ug":4.0,"cobalamin_b12_ug":0.3,"iron_mg":0.85,"copper_mg":0.05,"zinc_mg":0.8,"selenium_ug":18.0,"phosphorus_mg":200.0,"potassium_mg":340.0,"sodium_mg":65.0,"magnesium_mg":25.0,"arginine_mg":1400.0,"lysine_mg":1900.0,"methionine_mg":590.0,"la_mg":570,"iodine_ug":7.0}},"egg_whole":{"kcal_per_100g":143,"nutrients_per_100g":{"protein_g":13.0,"fat_g":10.5,"vitamin_a_ug":140.0,"vitamin_d_ug":1.1,"thiamine_b1_mg":0.12,"riboflavin_b2_mg":0.42,"pantothenic_b5_mg":1.4,"pyridoxine_b6_mg":0.14,"folate_b9_ug":44.0,"cobalamin_b12_ug":1.2,"choline_mg":294.0,"iron_mg":1.8,"copper_mg":0.08,"zinc_mg":1.1,"selenium_ug":27.0,"phosphorus_mg":195.0,"potassium_mg":130.0,"sodium_mg":140.0,"magnesium_mg":12.0,"arachidonic_acid_mg":150.0,"arginine_mg":820.0,"lysine_mg":910.0,"methionine_mg":390.0,"la_mg":1188,"iodine_ug":28.0}},"curd_dahi":{"kcal_per_100g":61,"nutrients_per_100g":{"protein_g":3.5,"fat_g":4.0,"vitamin_a_ug":30.0,"riboflavin_b2_mg":0.18,"pantothenic_b5_mg":0.3,"folate_b9_ug":12.0,"cobalamin_b12_ug":0.35,"calcium_mg":120.0,"phosphorus_mg":95.0,"potassium_mg":140.0,"sodium_mg":45.0,"magnesium_mg":12.0,"selenium_ug":2.5,"arginine_mg":120.0,"lysine_mg":270.0,"methionine_mg":80.0,"la_mg":60,"iodine_ug":5.0}},"steamed_veg_mix":{"kcal_per_100g":35,"nutrients_per_100g":{"vitamin_a_ug":0.0,"fibre_g":2.1,"folate_b9_ug":13.5,"pyridoxine_b6_mg":0.09,"potassium_mg":215.0,"magnesium_mg":11.5,"iron_mg":0.38,"copper_mg":0.04,"zinc_mg":0.17,"selenium_ug":0.4,"calcium_mg":28.0,"phosphorus_mg":32.0,"la_mg":50}},"mutton_tallow":{"kcal_per_100g":902,"nutrients_per_100g":{"fat_g":99.5,"vitamin_a_ug":35.0,"vitamin_d_ug":0.7,"vitamin_e_mg":2.7,"la_mg":3360}},"glycerine_usp":{"kcal_per_100g":312,"nutrients_per_100g":{"la_mg":0}},"silicates":{"kcal_per_100g":0,"nutrients_per_100g":{"la_mg":0}},"antioxidant_blend":{"kcal_per_100g":50,"nutrients_per_100g":{"vitamin_e_mg":0,"la_mg":0}},"carrier_blend":{"kcal_per_100g":380,"nutrients_per_100g":{"la_mg":0}},"mutton_liver_powder":{"kcal_per_100g":340,"nutrients_per_100g":{"protein_g":76.0,"fat_g":6.0,"vitamin_a_ug":28000.0,"vitamin_d_ug":0.8,"vitamin_e_mg":1.6,"thiamine_b1_mg":1.04,"riboflavin_b2_mg":12.0,"pantothenic_b5_mg":22.8,"pyridoxine_b6_mg":3.6,"folate_b9_ug":1160.0,"cobalamin_b12_ug":260.0,"choline_mg":1800.0,"iron_mg":26.0,"copper_mg":39.2,"zinc_mg":18.0,"selenium_ug":120.0,"taurine_mg":200.0,"magnesium_mg":18.0,"arginine_mg":4200.0,"lysine_mg":5600.0,"methionine_mg":2000.0,"la_mg":660}},"mutton_powder":{"kcal_per_100g":370,"nutrients_per_100g":{"protein_g":82.0,"fat_g":6.0,"thiamine_b1_mg":0.4,"riboflavin_b2_mg":0.88,"pyridoxine_b6_mg":1.4,"cobalamin_b12_ug":6.0,"folate_b9_ug":20.0,"iron_mg":11.2,"copper_mg":0.6,"zinc_mg":18.0,"selenium_ug":32.0,"vitamin_a_ug":8.0,"taurine_mg":160.0,"phosphorus_mg":740.0,"potassium_mg":1540.0,"magnesium_mg":25.0,"arginine_mg":5200.0,"lysine_mg":6800.0,"methionine_mg":2100.0,"la_mg":210}},"spirulina":{"kcal_per_100g":290,"nutrients_per_100g":{"protein_g":57.5,"fat_g":7.7,"thiamine_b1_mg":2.38,"riboflavin_b2_mg":3.67,"pantothenic_b5_mg":3.48,"pyridoxine_b6_mg":0.364,"folate_b9_ug":94.0,"cobalamin_b12_ug":0.0,"iron_mg":28.5,"copper_mg":6.1,"zinc_mg":2.0,"manganese_mg":1.9,"selenium_ug":7.2,"vitamin_a_ug":0.0,"vitamin_e_mg":5.0,"choline_mg":66.0,"magnesium_mg":195.0,"arginine_mg":4300.0,"lysine_mg":2960.0,"methionine_mg":1130.0,"la_mg":420}},"bsfl":{"kcal_per_100g":270,"nutrients_per_100g":{"protein_g":42.0,"fat_g":15.0,"thiamine_b1_mg":0.25,"riboflavin_b2_mg":1.8,"folate_b9_ug":40.0,"cobalamin_b12_ug":0.0,"iron_mg":5.0,"copper_mg":0.8,"zinc_mg":11.0,"manganese_mg":14.5,"selenium_ug":12,"calcium_mg":900.0,"phosphorus_mg":900.0,"magnesium_mg":80.0,"arginine_mg":2800.0,"lysine_mg":2400.0,"methionine_mg":650.0,"la_mg":1200}},"egg_yolk_powder":{"kcal_per_100g":669,"nutrients_per_100g":{"protein_g":34.0,"fat_g":60.0,"vitamin_a_ug":765.0,"vitamin_d_ug":5.4,"vitamin_e_mg":5.5,"thiamine_b1_mg":0.19,"riboflavin_b2_mg":1.08,"pantothenic_b5_mg":5.2,"pyridoxine_b6_mg":0.35,"folate_b9_ug":146.0,"cobalamin_b12_ug":3.1,"choline_mg":1190.0,"iron_mg":6.0,"copper_mg":0.47,"zinc_mg":3.9,"selenium_ug":55.0,"arginine_mg":2100.0,"lysine_mg":2600.0,"methionine_mg":980.0,"la_mg":7080,"iodine_ug":48.0}},"algal_oil":{"kcal_per_100g":225,"nutrients_per_100g":{"fat_g":25.0,"dha_mg":20000.0,"epa_mg":1000.0,"note":"Nutrients per 100g POWDER (not per 100g oil). DHA spec ≥20% of powder mass (COA: GC-FAME). At 20% DHA: 172.4mg powder → 34.5mg DHA/unit (CatCore); 136.6mg powder → 27.3mg DHA/unit (DogCore). Fatty acid profile: DHA ≥20%, EPA ≥1%, total omega-3 ≥22%. O6 contribution from powder is negligible (carrier is CHO-based).","la_mg":0}},"lecithin":{"kcal_per_100g":405,"nutrients_per_100g":{"fat_g":45.0,"choline_mg":3975.0,"note":"PC ≥25% spec (de-oiled form typical 25-30%). Choline = 15.9% of PC by MW (choline 121 / PC 760). Emulsifier role; secondary choline source (primary: EYP + liver powder).","la_mg":24750}},"ca_lactate_gluconate":{"kcal_per_100g":0,"nutrients_per_100g":{"calcium_mg":13000.0,"la_mg":0}},"ca_citrate_malate":{"kcal_per_100g":0,"nutrients_per_100g":{"calcium_mg":24000.0,"la_mg":0}},"bone_mcha":{"kcal_per_100g":0,"nutrients_per_100g":{"calcium_mg":22500.0,"phosphorus_mg":11000.0,"magnesium_mg":800.0,"protein_g":22.0,"iron_mg":0.5,"zinc_mg":0.4,"copper_mg":0.05,"la_mg":0,"fat_g":2.0,"manganese_mg":0.03,"selenium_ug":2.0,"thiamine_b1_mg":0.0,"riboflavin_b2_mg":0.05,"folate_b9_ug":0.0,"cobalamin_b12_ug":0.0,"arginine_mg":1800.0,"lysine_mg":1100.0,"methionine_mg":180.0}},"potassium_citrate":{"kcal_per_100g":0,"nutrients_per_100g":{"potassium_mg":38600.0,"la_mg":0}},"iodized_sea_salt":{"kcal_per_100g":0,"nutrients_per_100g":{"sodium_mg":38700.0,"iodine_ug":7700.0,"la_mg":0}},"iron_bisglycinate":{"kcal_per_100g":0,"nutrients_per_100g":{"iron_mg":20000.0,"la_mg":0}},"zinc_picolinate":{"kcal_per_100g":0,"nutrients_per_100g":{"zinc_mg":20000.0,"la_mg":0}},"taurine_pure":{"kcal_per_100g":0,"nutrients_per_100g":{"taurine_mg":100000.0,"la_mg":0}},"vitamin_e_natural":{"kcal_per_100g":0,"nutrients_per_100g":{"vitamin_e_mg":100000.0,"la_mg":0}},"thiamine_hcl":{"kcal_per_100g":0,"nutrients_per_100g":{"thiamine_b1_mg":100000.0,"la_mg":0}},"folic_acid":{"kcal_per_100g":0,"nutrients_per_100g":{"folate_b9_ug":100000000.0,"la_mg":0}},"potassium_iodide":{"kcal_per_100g":0,"nutrients_per_100g":{"iodine_ug":76450000.0,"la_mg":0}},"riboflavin":{"kcal_per_100g":0,"nutrients_per_100g":{"riboflavin_b2_mg":100000.0,"la_mg":0}},"msm_mos_yucca":{"kcal_per_100g":0,"nutrients_per_100g":{"sulphur_mg":26000.0,"la_mg":0}},"cholecalciferol_d3":{"kcal_per_100g":0,"nutrients_per_100g":{"vitamin_d_ug":2500000.0,"la_mg":0}},"magnesium_bisglycinate":{"kcal_per_100g":0,"nutrients_per_100g":{"magnesium_mg":10000.0,"la_mg":0}},"calcium_pantothenate":{"kcal_per_100g":0,"nutrients_per_100g":{"pantothenic_b5_mg":92000.0,"la_mg":0}},"selenium_yeast":{"kcal_per_100g":0,"nutrients_per_100g":{"selenium_ug":100000.0,"la_mg":0}},"msm":{"kcal_per_100g":0,"nutrients_per_100g":{"sulphur_mg":34040,"la_mg":0}},"mos":{"kcal_per_100g":0,"nutrients_per_100g":{}},"yucca_schidigera":{"kcal_per_100g":0,"nutrients_per_100g":{}},"algal_oil_powder":{"kcal_per_100g":225,"nutrients_per_100g":{"fat_g":25.0,"dha_mg":20000.0,"epa_mg":1000.0,"note":"Nutrients per 100g POWDER (not per 100g oil). DHA spec ≥20% of powder mass (COA: GC-FAME). At 20% DHA: 172.4mg powder → 34.5mg DHA/unit (CatCore); 136.6mg powder → 27.3mg DHA/unit (DogCore). Fatty acid profile: DHA ≥20%, EPA ≥1%, total omega-3 ≥22%. O6 contribution from powder is negligible (carrier is CHO-based).","la_mg":0}},"buffalo_liver_powder":{"kcal_per_100g":450,"nutrients_per_100g":{"protein_g":78.0,"fat_g":12.0,"calcium_mg":110.0,"phosphorus_mg":1556.0,"magnesium_mg":72.0,"iron_mg":26.4,"copper_mg":58.0,"zinc_mg":18.0,"selenium_ug":100.0,"manganese_mg":0.8,"iodine_ug":4.0,"vitamin_a_ug":34000.0,"vitamin_d_ug":4.8,"vitamin_e_mg":1.6,"thiamine_b1_mg":0.72,"riboflavin_b2_mg":11.2,"pantothenic_b5_mg":23.6,"pyridoxine_b6_mg":4.2,"folate_b9_ug":1160.0,"cobalamin_b12_ug":260.0,"choline_mg":1332.0,"taurine_mg":180.0,"arginine_mg":5040.0,"lysine_mg":6640.0,"methionine_mg":2080.0,"cystine_mg":880.0,"la_mg":520}},"chicken_liver_powder":{"kcal_per_100g":380,"nutrients_per_100g":{"protein_g":67.6,"fat_g":12.0,"calcium_mg":48.0,"phosphorus_mg":1188.0,"magnesium_mg":80.0,"iron_mg":45.6,"copper_mg":2.0,"zinc_mg":15.6,"selenium_ug":120.0,"manganese_mg":1.2,"vitamin_a_ug":17930.0,"vitamin_d_ug":5.2,"vitamin_e_mg":2.4,"thiamine_b1_mg":1.12,"riboflavin_b2_mg":7.0,"pantothenic_b5_mg":27.0,"pyridoxine_b6_mg":3.4,"folate_b9_ug":2352.0,"cobalamin_b12_ug":66.4,"choline_mg":1160.0,"taurine_mg":240.0,"arginine_mg":4600.0,"lysine_mg":5720.0,"methionine_mg":1744.0,"cystine_mg":728.0,"la_mg":1600,"iodine_ug":152.0}},"bovine_tallow":{"kcal_per_100g":902,"nutrients_per_100g":{"fat_g":99.5,"vitamin_a_ug":35.0,"vitamin_d_ug":0.7,"vitamin_e_mg":2.7,"la_mg":3360}},"sardine_meal":{"kcal_per_100g":250,"nutrients_per_100g":{"protein_g":65.0,"fat_g":12.0,"calcium_mg":1530.0,"phosphorus_mg":1960.0,"magnesium_mg":45.0,"iron_mg":3.2,"zinc_mg":2.8,"selenium_ug":65.0,"vitamin_a_ug":80.0,"vitamin_d_ug":22.0,"vitamin_e_mg":2.5,"iodine_ug":115.0,"dha_mg":1200.0,"epa_mg":1000.0,"la_mg":450.0,"choline_mg":120.0,"arginine_mg":4200.0,"lysine_mg":5800.0,"methionine_mg":2100.0}},"eggshell_powder":{"kcal_per_100g":0,"nutrients_per_100g":{"calcium_mg":38000.0,"phosphorus_mg":100.0,"magnesium_mg":140.0,"potassium_mg":80.0,"sodium_mg":50.0,"protein_g":2.0}}},"bom":{"catcore":{"units_per_day":4,"ingredients":{"bovine_tallow":{"dose_mg_per_unit":640.0,"fixed":true},"glycerine_usp":{"dose_mg_per_unit":80.0,"fixed":true},"antioxidant_blend":{"dose_mg_per_unit":60.0,"fixed":true},"bsfl":{"dose_mg_per_unit":620.0,"fixed":true},"algal_oil_powder":{"dose_mg_per_unit":280.0,"fixed":true},"chicken_liver_powder":{"dose_mg_per_unit":360.0,"fixed":true},"buffalo_liver_powder":{"dose_mg_per_unit":40.0,"fixed":true},"sardine_meal":{"dose_mg_per_unit":440.0,"fixed":true},"lecithin":{"dose_mg_per_unit":80.0,"fixed":true},"bone_mcha":{"dose_mg_per_unit":300.0,"fixed":true},"mos":{"dose_mg_per_unit":28.0,"fixed":true},"yucca_schidigera":{"dose_mg_per_unit":20.0,"fixed":true},"ca_lactate_gluconate":{"dose_mg_per_unit":620.0,"fixed":true},"ca_citrate_malate":{"dose_mg_per_unit":100.0,"fixed":true},"msm":{"dose_mg_per_unit":60.0,"fixed":true},"taurine_pure":{"dose_mg_per_unit":8.0,"fixed":true},"vitamin_e_natural":{"dose_mg_per_unit":2.8,"fixed":true},"thiamine_hcl":{"dose_mg_per_unit":0.12,"fixed":true},"potassium_iodide":{"dose_mg_per_unit":0.008,"fixed":true},"carrier_blend":{"dose_mg_per_unit":240.0,"fixed":true},"silicates":{"dose_mg_per_unit":21.072,"fixed":true}}},"dogcore":{"units_per_day":10,"ingredients":{"bovine_tallow":{"dose_mg_per_unit":640.0,"fixed":true},"glycerine_usp":{"dose_mg_per_unit":80.0,"fixed":true},"antioxidant_blend":{"dose_mg_per_unit":80.0,"fixed":true},"bsfl":{"dose_mg_per_unit":840.0,"fixed":true},"algal_oil_powder":{"dose_mg_per_unit":274.0,"fixed":true},"chicken_liver_powder":{"dose_mg_per_unit":191.2,"fixed":true},"buffalo_liver_powder":{"dose_mg_per_unit":134.0,"fixed":true},"sardine_meal":{"dose_mg_per_unit":740.0,"fixed":true},"lecithin":{"dose_mg_per_unit":80.0,"fixed":true},"eggshell_powder":{"dose_mg_per_unit":280.0,"fixed":true},"mos":{"dose_mg_per_unit":20.0,"fixed":true},"yucca_schidigera":{"dose_mg_per_unit":20.0,"fixed":true},"ca_lactate_gluconate":{"dose_mg_per_unit":40.0,"fixed":true},"ca_citrate_malate":{"dose_mg_per_unit":280.0,"fixed":true},"msm":{"dose_mg_per_unit":32.0,"fixed":true},"taurine_pure":{"dose_mg_per_unit":5.6,"fixed":true},"vitamin_e_natural":{"dose_mg_per_unit":3.6,"fixed":true},"thiamine_hcl":{"dose_mg_per_unit":0.36,"fixed":true},"potassium_iodide":{"dose_mg_per_unit":0.024,"fixed":true},"carrier_blend":{"dose_mg_per_unit":240.0,"fixed":true},"silicates":{"dose_mg_per_unit":19.216,"fixed":true}}}},"protocol":{"cat":{"mutton_boneless":{"daily_g":65},"chicken_breast":{"daily_g":105},"egg_whole":{"daily_g":25}},"dog":{"mutton_boneless":{"daily_g":135},"chicken_breast":{"daily_g":270},"curd_dahi":{"daily_g":150},"steamed_veg_mix":{"daily_g":400},"egg_whole":{"daily_g":200}}}};
+
+// ── HRF MAP ───────────────────────────────────────────────────────────────────
+const HRF_MAP={calcium_mg:'calcium',phosphorus_mg:'phosphorus',magnesium_mg:'magnesium',sodium_mg:'sodium',potassium_mg:'potassium',iron_mg:'iron',copper_mg:'copper',zinc_mg:'zinc',selenium_ug:'selenium',vitamin_a_ug:'vitamin_a',vitamin_d_ug:'vitamin_d',vitamin_e_mg:'vitamin_e',thiamine_b1_mg:'thiamine_b1',riboflavin_b2_mg:'riboflavin_b2',pantothenic_b5_mg:'pantothenic_b5',pyridoxine_b6_mg:'pyridoxine_b6',folate_b9_ug:'folate_b9',cobalamin_b12_ug:'cobalamin_b12',choline_mg:'choline',taurine_mg:'taurine',arginine_mg:'arginine',lysine_mg:'lysine',methionine_mg:'methionine'};
+
+// ── SAFE EXCESS: nutrients where >200% NRC is biologically benign ────────────
+// Unsafe excess: VitA, VitD, Se, I, Mn, Cu, Fe, Zn (narrow safety margin / toxicity concern)
+// Species-aware safe-excess. Dog VitA: SUL ~3790 µg/day (NRC 2006); 
+// current 951µg = 25% SUL — safe. Cat VitA: never safe-excess (hepatic accumulation risk).
+const SAFE_EXCESS_COMMON = new Set([
+  'protein_g','fat_g',
+  'calcium_mg','phosphorus_mg','magnesium_mg','potassium_mg','sodium_mg',
+  'thiamine_b1_mg','riboflavin_b2_mg','pantothenic_b5_mg','pyridoxine_b6_mg',
+  'folate_b9_ug','cobalamin_b12_ug','choline_mg',
+  'taurine_mg','arginine_mg','lysine_mg','methionine_mg',
+  'cystine_mg',   // NRC tracks Met+Cys combined; cystine alone has no published SUL in carnivores.
+  'la_mg',        // O6 excess is normal for carnivore diets balanced by O3. No SUL. O6:O3 ratio is the relevant check.
+  '_epa_dha','dha_mg','epa_mg',
+  'zinc_mg',      // Food-matrix Zn; self-regulated via metallothionein. NRC floor not ceiling.
+  'vitamin_e_mg', // Balanced to ≤10 IU/g PUFA.
+  'vitamin_a_ug', // Cat SUL 750µg/day; Dog SUL 3750µg/day. Liver retinol — safe.
+]);
+const SAFE_EXCESS_DOG_ONLY = new Set([]);
+function isSafeExcess(key) {
+  return SAFE_EXCESS_COMMON.has(key) || (species === 'dog' && SAFE_EXCESS_DOG_ONLY.has(key));
+}
+
+// ── NRC GROUPS ────────────────────────────────────────────────────────────────
+const NRC_GROUPS=[
+  {label:'Macros',rows:[
+    {key:'protein_g',label:'Protein',unit:'g',track:true},
+    {key:'fat_g',label:'Fat',unit:'g',track:true},
+  ]},
+  {label:'Minerals',rows:[
+    {key:'calcium_mg',label:'Calcium',unit:'mg',track:true},
+    {key:'phosphorus_mg',label:'Phosphorus',unit:'mg',track:true},
+    {key:'magnesium_mg',label:'Magnesium',unit:'mg',track:true},
+    {key:'sodium_mg',label:'Sodium',unit:'mg',track:true},
+    {key:'potassium_mg',label:'Potassium',unit:'mg',track:true},
+    {key:'iron_mg',label:'Iron',unit:'mg',track:true},
+    {key:'copper_mg',label:'Copper',unit:'mg',track:true},
+    {key:'zinc_mg',label:'Zinc',unit:'mg',track:true},
+    {key:'manganese_mg',label:'Manganese',unit:'mg',track:true},
+    {key:'iodine_ug',label:'Iodine',unit:'µg',track:true},
+    {key:'selenium_ug',label:'Selenium',unit:'µg',track:true},
+  ]},
+  {label:'Fat-Soluble Vitamins',rows:[
+    {key:'vitamin_a_ug',label:'Vitamin A',unit:'µg',track:true,
+      note:'Cat SUL 750µg/day · Dog SUL 3750µg/day (NRC 2006). Liver retinol; both species well within safe upper limits.'},
+    {key:'vitamin_d_ug',label:'Vitamin D',unit:'µg',track:true},
+    {key:'vitamin_e_mg',label:'Vitamin E',unit:'mg',track:true},
+  ]},
+  {label:'B Vitamins & Choline',rows:[
+    {key:'thiamine_b1_mg',label:'Thiamine B1',unit:'mg',track:true},
+    {key:'riboflavin_b2_mg',label:'Riboflavin B2',unit:'mg',track:true},
+    {key:'pantothenic_b5_mg',label:'Pantothenate B5',unit:'mg',track:true},
+    {key:'pyridoxine_b6_mg',label:'Pyridoxine B6',unit:'mg',track:true},
+    {key:'folate_b9_ug',label:'Folate B9',unit:'µg',track:true},
+    {key:'cobalamin_b12_ug',label:'Cobalamin B12',unit:'µg',track:true},
+    {key:'choline_mg',label:'Choline',unit:'mg',track:true},
+  ]},
+  {label:'Amino Acids',rows:[
+    {key:'taurine_mg',label:'Taurine',unit:'mg',track:true},
+    {key:'arginine_mg',label:'Arginine',unit:'mg',track:true},
+    {key:'lysine_mg',label:'Lysine',unit:'mg',track:true},
+    {key:'methionine_mg',label:'Methionine',unit:'mg',track:true},
+    {key:'cystine_mg',label:'Cystine',unit:'mg',track:true,
+      note:'NRC tracks Met+Cys combined. Shown separately. USDA values used for grocery; verify with COA for block.'},
+  ]},
+  {label:'Fatty Acids',rows:[
+    {key:'la_mg',label:'Linoleic Acid (O6)',unit:'mg',track:true,
+      note:'NRC 2006 minimum: cat 550mg/day, dog 2800mg/day. Primary source: chicken, egg, algal oil co-O6.'},
+    {key:'_epa_dha',label:'DHA+EPA — NRC combined',unit:'mg',track:true,
+      note:'NRC 2006 combined allowance only. Algal oil = Schizochytrium sp. (DHA-dominant).'},
+    {key:'dha_mg',label:'  ↳ DHA (component)',unit:'mg',track:false,sub:true},
+    {key:'epa_mg',label:'  ↳ EPA (component)',unit:'mg',track:false,sub:true,
+      note:'Reference only — no standalone NRC EPA floor.'},
+  ]},
+];
+
+// ── RATIOS ────────────────────────────────────────────────────────────────────
+const RATIO_DEFS=[
+  {id:'ca_p',label:'Ca : P',num:'calcium_mg',den:'phosphorus_mg',lo:1.1,hi:1.6,target:'cat≥1.30, dog≥1.40',note:'NRC 1.0–2.0 safe.'},
+  {id:'zn_cu',label:'Zn : Cu',num:'zinc_mg',den:'copper_mg',lo:7.5,hi:15.0,target:'8–15',note:'Bedlington Cu toxicity >100:1.'},
+  {id:'zn_fe',label:'Zn : Fe',num:'zinc_mg',den:'iron_mg',lo:0.5,hi:4.0,target:'0.5–4',note:'Fe:Zn >2:1 inhibits Zn at DMT-1.'},
+  {id:'fe_cu',label:'Fe : Cu',num:'iron_mg',den:'copper_mg',lo:3.0,hi:20.0,target:'3–20',note:'Excess Fe drives Cu deficiency.'},
+  {id:'ca_mg',label:'Ca : Mg',num:'calcium_mg',den:'magnesium_mg',lo:5.0,hi:20.0,target:'5–20',note:'Cat <5:1 struvite risk.'},
+  {id:'k_na',label:'K : Na',num:'potassium_mg',den:'sodium_mg',lo:2.0,hi:15.0,target:'2–15',note:'Carnivore K:Na. <1:1 hypertensive.'},
+  {id:'o6_o3',label:'O6 : O3',num:null,den:null,lo:4.0,hi:8.0,target:'≤5 (4–8)',note:'O6 from la_mg+ARA per YAML. O3 = DHA+EPA.'},
+  {id:'vite_pufa',label:'Vit E / PUFA',num:null,den:null,lo:0.6,hi:null,target:'≥0.6 IU/g',note:'AAFCO: ≥0.6 IU d-α-tocopherol per g PUFA. 1mg=1.49 IU.'},
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let D=JSON.parse(JSON.stringify(DD)), species='cat';
+let bomDoses={}, groceryG={};
+
+function initState() {
+  const sp=species==='cat'?'catcore':'dogcore', pk=species==='cat'?'cat':'dog';
+  bomDoses={}; groceryG={};
+  for (const [k,v] of Object.entries(D.bom[sp].ingredients)) bomDoses[k]=v.dose_mg_per_unit;
+  for (const [k,v] of Object.entries(D.protocol[pk])) groceryG[k]=v.daily_g;
+}
+
+// ── CALC ──────────────────────────────────────────────────────────────────────
+function calc() {
+  const sp=species==='cat'?'catcore':'dogcore';
+  const nk=species==='cat'?'cat_adult':'dog_adult';
+  const upd=D.bom[sp].units_per_day;
+  const nrc=D.nrc[nk].nutrients, hrf=D.hrf, ings=D.ingredients;
+  const bTot={}, gTot={};
+
+  for (const [k,dose] of Object.entries(bomDoses)) {
+    const p=ings[k]||ings[k.replace('_powder','')]; if(!p) continue;
+    for (const [nk2,c] of Object.entries(p.nutrients_per_100g||{})) {
+      if(typeof c==='number') bTot[nk2]=(bTot[nk2]||0)+(dose/100000)*c*upd;
+    }
+  }
+  for (const [k,g] of Object.entries(groceryG)) {
+    const p=ings[k]; if(!p) continue;
+    for (const [nk2,c] of Object.entries(p.nutrients_per_100g||{})) {
+      if(typeof c!=='number') continue;
+      const hrfv=(nk2==='la_mg')?1.0:(HRF_MAP[nk2]?(hrf[HRF_MAP[nk2]]??1.0):1.0);
+      gTot[nk2]=(gTot[nk2]||0)+(g/100)*c*hrfv;
+    }
+  }
+
+  const res={};
+  for (const [k,nrcVal] of Object.entries(nrc)) {
+    const b=bTot[k]||0, g=gTot[k]||0, tot=b+g;
+    res[k]={nrc:nrcVal,block:b,grocery:g,total:tot,
+            pct:(nrcVal===null||nrcVal===0)?null:(tot/nrcVal)*100, track:false};
+  }
+  for (const grp of NRC_GROUPS) for (const row of grp.rows) { if(res[row.key]) res[row.key].track=row.track; }
+
+  // Combined DHA+EPA
+  const cb=(bTot.dha_mg||0)+(bTot.epa_mg||0), cg=(gTot.dha_mg||0)+(gTot.epa_mg||0);
+  const cnrc=(nrc.dha_mg||0)+(nrc.epa_mg||0);
+  res['_epa_dha']={nrc:cnrc,block:cb,grocery:cg,total:cb+cg,
+                   pct:cnrc>0?(cb+cg)/cnrc*100:null,track:true};
+
+  // Linoleic acid — ensure it's computed (la_mg in ingredients, nrc now has la_mg)
+  if(!res['la_mg']) {
+    const bla=bTot.la_mg||0, gla=gTot.la_mg||0;
+    const nla=nrc.la_mg||0;
+    res['la_mg']={nrc:nla,block:bla,grocery:gla,total:bla+gla,
+                  pct:nla>0?(bla+gla)/nla*100:null,track:true};
+  }
+
+  // O6 / O3
+  let o6_b=0,o6_g=0;
+  for (const [k,dose] of Object.entries(bomDoses)) {
+    const p=ings[k]||ings[k.replace('_powder','')]; if(!p) continue;
+    const la=p.nutrients_per_100g?.la_mg||0, ara=p.nutrients_per_100g?.arachidonic_acid_mg||0;
+    o6_b+=(dose/100000)*(la+ara)*upd;
+  }
+  for (const [k,g] of Object.entries(groceryG)) {
+    const p=ings[k]; if(!p) continue;
+    const la=p.nutrients_per_100g?.la_mg||0, ara=p.nutrients_per_100g?.arachidonic_acid_mg||0;
+    o6_g+=(g/100)*(la+ara);
+  }
+  const o6t=o6_b+o6_g, o3t=cb+cg;
+  const vite_mg=res.vitamin_e_mg?.total||0, vite_iu=vite_mg*1.49;
+  const pufa_g=(o6t+o3t)/1000;
+  // ── kcal ─────────────────────────────────────────────────────────────────
+  let kcal_block=0, kcal_groc=0;
+  for (const [k,dose] of Object.entries(bomDoses)) {
+    const p2=ings[k]||ings[k.replace('_powder','')]; if(!p2) continue;
+    kcal_block += (dose/100000)*(p2.kcal_per_100g||0)*upd;
+  }
+  for (const [k,g] of Object.entries(groceryG)) {
+    const p2=ings[k]; if(!p2) continue;
+    kcal_groc += (g/100)*(p2.kcal_per_100g||0);
+  }
+  const kcal_total=kcal_block+kcal_groc;
+  const kcal_nrc=species==='cat'?250:1000;
+  const kcal_pct=kcal_total/kcal_nrc*100;
+  return {res,o6_b,o6_g,o6t,o3t,o6_o3:o3t>0?o6t/o3t:null,
+          vite_mg,vite_iu,pufa_g,vite_per_pufa:pufa_g>0?vite_iu/pufa_g:null,
+          kcal_block,kcal_groc,kcal_total,kcal_nrc,kcal_pct,bTot,gTot,upd};
+}
+
+// ── FORMAT ────────────────────────────────────────────────────────────────────
+function f(v){if(v===null||v===undefined)return'—';if(v===0)return'0';if(v>0&&v<0.0001)return v.toExponential(2);if(v<0.001)return v.toFixed(5);return v<1?v.toFixed(4):v<10?v.toFixed(3):v<100?v.toFixed(2):v.toFixed(1);}
+// pct mode: never show 0.000 for non-zero values
+function fPct(pctVal){if(pctVal===0)return'0.000';if(pctVal>0&&pctVal<0.0005)return pctVal.toExponential(2);return pctVal.toFixed(3);}
+
+function pctBar(pct, key, sub=false) {
+  if(pct===null) return `<span class="na">N/A</span>`;
+  const isSafe=isSafeExcess(key);
+  let cls,bcls;
+  if(pct<90){cls='lo';bcls='blo';}
+  else if(pct<100){cls='wn';bcls='bwn';}
+  else if(pct<=200){cls='ok';bcls='bok';}
+  else if(isSafe){cls='safe-hi';bcls='bsafe-hi';}
+  else{cls='hi';bcls='bhi';}
+  const w=Math.min(100,pct>=200?100:pct);
+  const lbl=pct>=200?`${Math.round(pct)}%`:`${pct.toFixed(1)}%`;
+  const suffix=(pct>200&&isSafe)?' ✓':''
+  if(sub) return `<span class="pn ${cls}" style="font-size:9.5px;opacity:.75">${lbl}</span>`;
+  return `<div class="bar-cell"><div class="bar-wrap"><div class="bar ${bcls}" style="width:${w}%"></div></div><span class="pn ${cls}">${lbl}${suffix}</span></div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const C=calc();
+  const {res,o6_b,o6_g,o6t,o3t,o6_o3,vite_mg,vite_iu,pufa_g,vite_per_pufa,upd}=C;
+
+  // Guidance bar
+  const sp=species==='cat'?'catcore':'dogcore', pk=species==='cat'?'cat':'dog';
+  const unitMass=(Object.values(bomDoses).reduce((a,b)=>a+b,0)/1000).toFixed(2);
+  let gbar=`<div class="guide-section"><span class="guide-label">Block</span><span class="guide-chip units">${upd} units / day</span><span class="guide-chip">${unitMass}g / unit</span><span class="guide-chip">${(parseFloat(unitMass)*upd).toFixed(1)}g block / day</span></div>`;
+  gbar+=`<div class="guide-sep">|</div><div class="guide-section"><span class="guide-label">Grocery</span>`;
+  let grocKcalBar=0;
+  for(const [k,g] of Object.entries(groceryG)){
+    const gkc=((g||0)/100)*(D.ingredients[k]?.kcal_per_100g||0); grocKcalBar+=gkc;
+    gbar+=`<span class="guide-chip">${k.replace(/_/g,' ')}: ${g}g<span style="opacity:.6;font-size:9.5px"> ${gkc.toFixed(0)}kcal</span></span>`;
+  }
+  gbar+=`</div><div class="guide-sep">|</div>`;
+  gbar+=`<div class="guide-section"><span class="guide-label">Energy</span>`;
+  const _cc=calc();
+  gbar+=`<span class="guide-chip" style="background:#4E342E;color:#fff;border-color:#795548">Block ${_cc.kcal_block.toFixed(0)} kcal</span>`;
+  gbar+=`<span class="guide-chip" style="background:#4E342E;color:#fff;border-color:#795548">Grocery ${grocKcalBar.toFixed(0)} kcal</span>`;
+  gbar+=`<span class="guide-chip" style="background:#3E2723;color:#fff;border-color:#4E342E;font-weight:700">Total ${_cc.kcal_total.toFixed(0)} kcal</span>`;
+  gbar+=`</div>`;
+  document.getElementById('guideBar').innerHTML=gbar;
+
+  // Cards — only track:true, skip null
+  const tracked=Object.values(res).filter(r=>r.track&&r.pct!==null&&!isNaN(r.pct));
+  const nDef=tracked.filter(r=>r.pct<90).length;
+  const nWat=tracked.filter(r=>r.pct>=90&&r.pct<100).length;
+  const nOk =tracked.filter(r=>r.pct>=100&&r.pct<=200).length;
+  const nSafe=tracked.filter(r=>r.pct>200&&isSafeExcess(Object.keys(res).find(k2=>res[k2]===r))).length;
+  const nUnsafe=tracked.filter(r=>r.pct>200&&!isSafeExcess(Object.keys(res).find(k2=>res[k2]===r))).length;
+  const minP=tracked.length?Math.min(...tracked.map(r=>r.pct)):0;
+
+  document.getElementById('cards').innerHTML=`
+    <div class="card" style="border-color:#1B5E20">
+      <div class="n" style="color:#1B5E20">${Math.round(C.kcal_total)}</div>
+      <div class="l">TOTAL kcal/day</div>
+      <div style="font-size:9.5px;color:#1B5E20;font-weight:700;margin-top:2px">${C.kcal_pct.toFixed(0)}% NRC min</div>
+    </div>
+    <div class="card ${nDef>0?'danger':'good'}"><div class="v ${nDef>0?'lo':'ok'}">${nDef}</div><div class="l">Deficient &lt;90%</div></div>
+    <div class="card ${nWat>0?'warn':'good'}"><div class="v">${nWat}</div><div class="l">Watch 90–100%</div></div>
+    <div class="card good"><div class="v ok">${nOk}</div><div class="l">Met 100–200%</div></div>
+    <div class="card" style="border-color:#1565C0;background:#E3F2FD"><div class="v safe-hi">${nSafe}</div><div class="l">Safe Excess ✓</div></div>
+    <div class="card" style="${nUnsafe>0?'border-color:var(--purple);background:var(--plight)':''}"><div class="v ${nUnsafe>0?'hi':''}">${nUnsafe}</div><div class="l">Excess ⚠</div></div>
+    <div class="card ${minP<100?'warn':'good'}"><div class="v">${minP.toFixed(0)}%</div><div class="l">Lowest NRC%</div></div>
+    <div class="card" style="border-color:#795548;background:#EFEBE9"><div class="v" style="color:#4E342E">${C.kcal_block.toFixed(0)}</div><div class="l">Block kcal/day</div></div>
+    <div class="card" style="border-color:#795548;background:#EFEBE9"><div class="v" style="color:#4E342E">${C.kcal_groc.toFixed(0)}</div><div class="l">Grocery kcal/day</div></div>
+    <div class="card" style="border-color:#4E342E;background:#D7CCC8"><div class="v" style="color:#3E2723;font-size:18px">${C.kcal_total.toFixed(0)}</div><div class="l">Total kcal/day</div></div>`;
+
+  // NRC table — use key for safe-excess lookup
+  let html='';
+  for(const grp of NRC_GROUPS){
+    html+=`<tr class="gh"><td colspan="7">${grp.label}</td></tr>`;
+    for(const row of grp.rows){
+      let r=res[row.key];
+      if(row.key==='dha_mg'||row.key==='epa_mg'){
+        const b=C.bTot[row.key]||0,g=C.gTot[row.key]||0;
+        r={nrc:res[row.key]?.nrc||null,block:b,grocery:g,total:b+g,pct:null};
+      }
+      if(!r) continue;
+      const u=row.unit;
+      const split=r.total>0?`${Math.round(r.block/r.total*100)}%B/${Math.round(r.grocery/r.total*100)}%G`:'—';
+      const note=row.note?`<br><span style="font-size:9px;color:#AAA;font-style:italic">${row.note}</span>`:'';
+      html+=`<tr style="${row.sub?'opacity:.75':''}">
+        <td>${row.label}${note}</td>
+        <td class="r">${r.nrc!==null?`${f(r.nrc)} ${u}`:'—'}</td>
+        <td class="r">${r.block>0?f(r.block):'—'}</td>
+        <td class="r">${r.grocery>0?f(r.grocery):'—'}</td>
+        <td class="r">${f(r.total)} ${u}</td>
+        <td>${pctBar(r.pct,row.key,row.sub)}</td>
+        <td class="r" style="font-size:9.5px;color:#AAA">${split}</td>
+      </tr>`;
+    }
+  }
+  document.getElementById('tbody').innerHTML=html;
+
+  // Ratios table
+  const T={}; for(const [k,v] of Object.entries(res)) T[k]=v.total;
+  let rhtml='';
+  for(const rd of RATIO_DEFS){
+    let val=null;
+    if(rd.id==='o6_o3') val=o6_o3;
+    else if(rd.id==='vite_pufa') val=vite_per_pufa;
+    else{const n=T[rd.num]||0,d=T[rd.den]||0; val=d>0?n/d:null;}
+    let sc='na',st='—';
+    if(val!==null){
+      if(val<rd.lo){sc='lo';st='↓ Low';}
+      else if(rd.hi!==null&&val>rd.hi){sc='hi';st='↑ High';}
+      else{sc='ok';st='✓ OK';}
+    }
+    const vs=rd.id==='vite_pufa'?`${(val??0).toFixed(2)} IU/g`:`${(val??0).toFixed(2)} : 1`;
+    rhtml+=`<tr><td><strong>${rd.label}</strong></td>
+      <td class="r" style="font-family:var(--mono);font-size:11px" class="${sc}">${val!==null?`<span class="${sc}" style="font-weight:600">${vs}</span>`:'—'}</td>
+      <td class="r ratio-note">${rd.lo}${rd.hi!==null?'–'+rd.hi:'+'}</td>
+      <td class="r ratio-note">${rd.target}</td>
+      <td><span class="${sc}" style="font-weight:600">${st}</span></td>
+      <td class="ratio-note">${rd.note}</td></tr>`;
+  }
+  rhtml+=`<tr class="gh"><td colspan="6">Omega Breakdown (mg/day)</td></tr>
+    <tr><td>Total O6 (LA+ARA)</td><td class="r" style="font-family:var(--mono)">${o6t.toFixed(0)} mg</td><td class="r ratio-note" colspan="2">block ${o6_b.toFixed(0)} + grocery ${o6_g.toFixed(0)}</td><td colspan="2" class="ratio-note">la_mg from science YAML (USDA/IFCT sourced)</td></tr>
+    <tr><td>Total O3 (DHA+EPA)</td><td class="r" style="font-family:var(--mono)">${o3t.toFixed(0)} mg</td><td colspan="4" class="ratio-note">Algal oil powder (Schizochytrium sp.)</td></tr>
+    <tr><td>Vit E</td><td class="r" style="font-family:var(--mono)">${vite_mg.toFixed(1)} mg = ${vite_iu.toFixed(0)} IU</td><td colspan="4" class="ratio-note">1 mg d-α-tocopherol = 1.49 IU</td></tr>
+    <tr><td>Total PUFA</td><td class="r" style="font-family:var(--mono)">${(pufa_g*1000).toFixed(0)} mg</td><td colspan="4" class="ratio-note">O6 + O3 combined</td></tr>`;
+  document.getElementById('rtbody').innerHTML=rhtml;
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────────
+function renderSidebar(){
+  const sp=species==='cat'?'catcore':'dogcore', pk=species==='cat'?'cat':'dog';
+  const bomIng=D.bom[sp].ingredients, grocery=D.protocol[pk];
+  const unitTotal=Object.values(bomDoses).reduce((a,b)=>a+b,0);
+  const upd=D.bom[sp].units_per_day;
+  let html='';
+  html+=`<div class="sec-hdr">🥩 Grocery (g / day)</div>`;
+  for(const [k,v] of Object.entries(grocery)){
+    const lbl=k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    const gKcal=((groceryG[k]||0)/100)*(D.ingredients[k]?.kcal_per_100g||0);
+    html+=`<div class="ing-row">
+      <span class="ing-lbl" title="${k}">${lbl}<span class="tag">${gKcal.toFixed(0)}kcal</span></span>
+      <input class="ing-inp" type="number" min="0" step="5" value="${groceryG[k]}"
+        oninput="groceryG['${k}']=parseFloat(this.value)||0;render()">
+      <button class="rst" onclick="groceryG['${k}']=${v.daily_g};this.previousElementSibling.value=${v.daily_g};render()">↺</button>
+    </div>`;
+  }
+  const adj=[],fix=[];
+  for(const [k,v] of Object.entries(bomIng)) {
+    const isUnlocked = getUnlockedKeys().has(k);
+    (isUnlocked ? adj : fix).push([k,v]);
+  }
+
+  html+=`<div class="sec-hdr">⚗️ Block — Adjustable (% of unit)</div>`;
+  for(const [k,v] of adj){
+    const lbl=k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    const rawPct=bomDoses[k]/unitTotal*100;
+    const displayVal=fPct(rawPct);
+    const atFloor = false;
+    const floorNote = '';
+    html+=`<div class="ing-row" style="${atFloor?'opacity:.55':''}">
+      <span class="ing-lbl" title="${k}">${lbl}${floorNote}</span>
+      <input class="ing-inp${atFloor?' fixed':''}" type="number" min="0" step="0.001" value="${displayVal}"
+        ${atFloor?'readonly':''}
+        oninput="handleBomInput('${k}',parseFloat(this.value)||0)">
+      <button class="rst" onclick="bomDoses['${k}']=${v.dose_mg_per_unit};renderSidebar();render()">↺</button>
+    </div>`;
+  }
+  html+=`<div class="sec-hdr">🔒 Block — Fixed (% of unit)</div>`;
+  for(const [k,v] of fix){
+    const lbl=k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    const rawPct2=bomDoses[k]/unitTotal*100;
+    const displayVal=fPct(rawPct2);
+    html+=`<div class="ing-row">
+      <span class="ing-lbl">${lbl} <span class="tag">locked</span></span>
+      <input class="ing-inp fixed" type="number" value="${displayVal}" readonly>
+      <span></span>
+    </div>`;
+  }
+  // ── BOM CHECKSUM ─────────────────────────────────────────────────────────
+  const unitTotalMg=Object.values(bomDoses).reduce((a,b)=>a+b,0);
+  const targetMg=4000;
+  const csumPct=unitTotalMg/targetMg*100;
+  const csumOk=Math.abs(csumPct-100)<0.01;
+  const csumColor=csumOk?'#2E7D32':'#C62828';
+  const csumBg=csumOk?'#E8F5E9':'#FFEBEE';
+  html+=`<div class="sec-hdr" style="margin-top:8px">Checksum</div>`;
+  html+=`<div style="padding:8px 10px;background:${csumBg};border-radius:6px;border:1px solid ${csumColor};margin:4px 0;font-family:var(--mono);font-size:12px">`;
+  html+=`<div style="color:${csumColor};font-weight:700">${csumOk?'✓':'⚠'} ${unitTotalMg.toFixed(4)} mg / ${targetMg} mg = ${csumPct.toFixed(4)}%</div>`;
+  if(!csumOk) html+=`<div style="color:#C62828;font-size:11px;margin-top:3px">Checksum error — adjustable values do not sum to 4000 mg. Correct before use.</div>`;
+  html+=`</div>`;
+  html+=`<div style="padding:6px 10px;font-size:9.5px;color:#888;font-style:italic;line-height:1.5">
+    All APIs are non-triturated and weighed direct. Pre-trit premixes (B-vitamins, KI, D3) are supplier-spec:
+    state <em>Xg of Y% premix</em> — dilutent MCC is CDMO's allocation, not counted here.
+  </div>`;
+  document.getElementById('sidebar').innerHTML=html;
+}
+
+function handleBomInput(k, inputVal) {
+  // Convert entered % back to mg using fixed 4000mg target
+  let newMg = inputVal/100*4000;
+  // mutton_powder hard floor: never below 2% (80mg)
+  if(k==='mutton_powder') newMg = Math.max(newMg, MUTTON_POWDER_FLOOR_PCT/100*4000);
+  bomDoses[k]=newMg;
+  renderSidebar();
+  render();
+}
+
+// ── VIEW MODE — % only ───────────────────────────────────────────────────────
+let viewMode='pct';
+function setView(v){ viewMode='pct'; renderSidebar(); }
+
+// ── LOCK CONTROL — only these 5 keys are user-editable ───────────────────────
+function getUnlockedKeys(){
+  const sp=species==='cat'?'catcore':'dogcore';
+  return new Set(Object.entries(DD.bom[sp].ingredients).filter(([k,v])=>!v.fixed).map(([k])=>k));
+}
+const MUTTON_POWDER_FLOOR_PCT=0.0;
+
+// ── YAML LOADER ───────────────────────────────────────────────────────────────
+function openModal(){document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function readFile(f){return new Promise((r,j)=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.onerror=j;fr.readAsText(f);});}
+async function loadYamls(){
+  const st=document.getElementById('loadStatus'); st.textContent='Loading…'; const loaded=[];
+  try{
+    const sciF=document.getElementById('fSci').files[0];
+    const bomF=document.getElementById('fBom').files[0];
+    const proF=document.getElementById('fPro').files[0];
+    if(sciF){
+      const y=jsyaml.load(await readFile(sciF));
+      D.nrc=y.nrc; D.hrf=y.heat_retention_factors.factors;
+      D.ingredients={};
+      for(const [k,v] of Object.entries(y.ingredients||{}))
+        D.ingredients[k]={type:v.type,nutrients_per_100g:v.nutrients_per_100g||{}};
+      if(!D.ingredients.algal_oil_powder&&D.ingredients.algal_oil) D.ingredients.algal_oil_powder=D.ingredients.algal_oil;
+      loaded.push('science');
+    }
+    if(bomF){
+      const y=jsyaml.load(await readFile(bomF));
+      for(const sp of ['catcore','dogcore']){
+        if(!y.formulas?.[sp]) continue;
+        D.bom[sp]={units_per_day:sp==='catcore'?4:10,ingredients:{}};
+        for(const [k,v] of Object.entries(y.formulas[sp].ingredients||{}))
+          D.bom[sp].ingredients[k]={dose_mg_per_unit:v.dose_mg_per_unit,fixed:v.fixed||false};
+      }
+      loaded.push('bom');
+    }
+    if(proF){
+      const y=jsyaml.load(await readFile(proF));
+      D.protocol={cat:{},dog:{}};
+      for(const [k,v] of Object.entries(y.profiles?.cat_5kg_adult?.grocery||{})) D.protocol.cat[k]={daily_g:v.daily_g};
+      for(const [k,v] of Object.entries(y.profiles?.dog_20kg_adult?.grocery||{})) D.protocol.dog[k]={daily_g:v.daily_g};
+      loaded.push('protocol');
+    }
+    if(loaded.length){
+      const vs=[]; if(sciF)vs.push(sciF.name);if(bomF)vs.push(bomF.name);if(proF)vs.push(proF.name);
+      document.getElementById('ver').textContent=vs.join(' · ');
+    }
+    st.textContent=`✓ Loaded: ${loaded.join(', ')}`;
+    initState(); renderSidebar(); render();
+    setTimeout(closeModal,700);
+  }catch(e){st.textContent=`Error: ${e.message}`;}
+}
+
+function setSp(sp){
+  species=sp;
+  document.getElementById('btnCat').classList.toggle('active',sp==='cat');
+  document.getElementById('btnDog').classList.toggle('active',sp==='dog');
+  initState(); renderSidebar(); render();
+}
+
+function exportCSV(){
+  const C=calc();const{res,o6_o3,vite_per_pufa,kcal_block,kcal_groc,kcal_total,kcal_pct}=C;
+  const sp=species==='cat'?'catcore':'dogcore';
+  const rows=[];const ts=new Date().toISOString().slice(0,16).replace('T',' ');
+  rows.push(['Growlrr NRC Calculator v8.2.0 — BOM v8.2.0 · Science v8.1.1','','','','','','','']);
+  rows.push(['Species: '+species.toUpperCase()+' | Exported: '+ts,'','','','','','','']);
+  rows.push(['']);
+  rows.push(['=== BOM ===','','','','']);
+  rows.push(['Ingredient','mg/unit','%wt','g/250u batch','Locked']);
+  const tot=Object.values(bomDoses).reduce((a,b)=>a+b,0);
+  for(const[k,v]of Object.entries(D.bom[sp].ingredients)){
+    const d=bomDoses[k]||0;
+    rows.push([k,d.toFixed(4),(d/tot*100).toFixed(3)+'%',(d*250/1000).toFixed(3),v.fixed?'LOCK':'']);
+  }
+  rows.push(['CHECKSUM',tot.toFixed(4),(tot/4000*100).toFixed(4)+'%',(tot*250/1000).toFixed(3),'']);
+  rows.push(['']);
+  rows.push(['=== GROCERY (g/day) ===','g/day','kcal','','']);
+  for(const[k,g]of Object.entries(groceryG)){
+    const kc=(g/100)*(D.ingredients[k]?.kcal_per_100g||0);
+    rows.push([k,g,kc.toFixed(0),'','']);
+  }
+  rows.push(['']);
+  rows.push(['=== ENERGY ===','','','','']);
+  rows.push(['Block kcal/day',kcal_block.toFixed(1),'','','']);
+  rows.push(['Grocery kcal/day',kcal_groc.toFixed(1),'','','']);
+  rows.push(['Total kcal/day',kcal_total.toFixed(1),'','','']);
+  rows.push(['% NRC min kcal',kcal_pct.toFixed(1)+'%','','','']);
+  rows.push(['']);
+  rows.push(['=== NRC 2006 NUTRIENT COVERAGE ===','','','','','','','']);
+  rows.push(['Nutrient','NRC/day','Unit','Block','Grocery','Total/day','% NRC','Status']);
+  for(const grp of NRC_GROUPS){
+    rows.push(['--- '+grp.label+' ---','','','','','','','']);
+    for(const row of grp.rows){
+      const r=res[row.key];if(!r)continue;
+      const pct=r.pct!==null?r.pct.toFixed(1)+'%':'N/A';
+      const isSafe=isSafeExcess(row.key);
+      const st=r.pct===null?'N/A':r.pct<90?'DEFICIENT':r.pct<100?'WATCH':r.pct<=200?'MET':(isSafe?'SAFE EXCESS':'EXCESS');
+      rows.push([row.label,r.nrc!==null?r.nrc:'—',row.unit,r.block.toFixed(3),r.grocery.toFixed(3),r.total.toFixed(3),pct,st]);
+    }
+  }
+  rows.push(['']);
+  rows.push(['=== FORMULATION RATIOS ===','','','','']);
+  rows.push(['Ratio','Value','Range','Target','Status']);
+  const T={};for(const[k,v]of Object.entries(res))T[k]=v.total;
+  for(const rd of RATIO_DEFS){
+    let val=null;
+    if(rd.id==='o6_o3')val=o6_o3;
+    else if(rd.id==='vite_pufa')val=vite_per_pufa;
+    else{const n=T[rd.num]||0,d2=T[rd.den]||0;val=d2>0?n/d2:null;}
+    const st=val===null?'N/A':val<rd.lo?'LOW':rd.hi&&val>rd.hi?'HIGH':'OK';
+    rows.push([rd.label,rd.id==='vite_pufa'?(val??0).toFixed(2)+' IU/g':(val??0).toFixed(2)+':1',''+rd.lo+(rd.hi?'–'+rd.hi:'+'),rd.target,st]);
+  }
+  const csv=rows.map(r=>r.map(c=>{const s2=String(c);return s2.includes(',')||s2.includes('"')?'"'+s2.replace(/"/g,'""')+'"':s2;}).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;
+  a.download='growlrr_'+species+'_v3.2_'+ts.replace(/[ :]/g,'-')+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+initState(); renderSidebar(); render();
+</script>
+</body>
+</html>
