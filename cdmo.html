@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Growlrr CDMO | Master Dossier v8.0.0 [ALPHA.3.2]</title>
+    <title>Growlrr CDMO | Master Dossier v8.2.0 [ALPHA.3.2]</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,7 +62,7 @@
                 <span>GROWLRR</span>
                 <span class="font-light text-blue-400 text-xs italic tracking-widest mt-1">CDMO Command Center</span>
             </h1>
-            <p class="text-2xs mt-1 uppercase tracking-widest font-black text-slate-500 text-[10px]">ALPHA.3.2 | v8.0.0</p>
+            <p class="text-2xs mt-1 uppercase tracking-widest font-black text-slate-500 text-[10px]">ALPHA.3.2 | v8.2.0</p>
             <div class="mt-6 flex bg-[#020617] p-1 rounded-lg border border-white/10">
                 <button onclick="switchProduct('cat')" id="btn-cat" class="flex-1 py-1.5 text-[10px] font-black uppercase rounded transition-all bg-blue-600 text-white">CatCore</button>
                 <button onclick="switchProduct('dog')" id="btn-dog" class="flex-1 py-1.5 text-[10px] font-black uppercase rounded transition-all text-slate-500 hover:text-slate-200">DogCore</button>
@@ -73,7 +73,7 @@
                 <li><button onclick="renderView('overview')" id="nav-overview" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">📊 Overview & Context</button></li>
                 <li><button onclick="renderView('formulation')" id="nav-formulation" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">⚗️ Master Formulation</button></li>
                 <li><button onclick="renderView('analytics')" id="nav-analytics" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">📈 Formulation Analytics</button></li>
-                <li><button onclick="renderView('appendix-b')" id="nav-appendix-b" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">⚖️ Appendix B: Unified</button></li>
+                <li><button onclick="renderView('appendix-b')" id="nav-appendix-b" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">⚖️ Unified Comparison</button></li>
                 <li><button onclick="renderView('process')" id="nav-process" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">⚙️ Phase-Wise SOP</button></li>
                 <li><button onclick="renderView('quality')" id="nav-quality" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">✅ Quality & COA</button></li>
                 <li><button onclick="renderView('regulatory')" id="nav-regulatory" class="nav-item w-full text-left px-8 py-4 hover:bg-white/5 flex items-center gap-3">📜 Regulatory & Intent</button></li>
@@ -111,64 +111,87 @@
         const MASTER_DATA = {
             cat: {
                 id: 'cat', name: 'CatCore™', kcal: '17.2 kcal/unit', shelfLife: '18-24 Months',
-                rev: 'v8.0.0', lastSynced: '01/03/2026', prevRev: 'v7.0.0', prevSynced: '28/02/2026',
+                rev: 'v8.2.0', lastSynced: '01/03/2026', prevRev: 'v8.1.0', prevSynced: '28/02/2026',
                 link: 'https://docs.google.com/document/d/1aY_hEi7ScOke0DSqvqtEvDMRtbLtE7Av894giFAQmFc/edit?usp=sharing',
                 guaranteed: { protein: '24.0%', fat: '31.0%', fiber: '2.5%', moisture: '4.5%', calcium: '2.5%' },
                 ingredients: [
-                    { phase: 'alpha', name: 'Bovine Tallow*', percent: 18.0000, cas: '61789-97-7', assay: 'PV ≤5; FFA ≤1%', particle: 'Melted', tolerance: '±5%', status: 'Adjustable' },
-                    { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5%', particle: 'Viscous', tolerance: '±1%', status: 'Adjustable' },
-                    { phase: 'alpha', name: 'Antioxidant Blend', percent: 1.5000, cas: 'Mixture', assay: 'Tocopherols 4:3:3', particle: 'Liquid', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'BSFL Powder', percent: 15.5000, cas: 'Biological', assay: '≥50% protein', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Algal Oil Powder', percent: 7.0000, cas: 'Mixture', assay: '≥20% DHA', particle: 'Spray-dried', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Chicken Liver Powder', percent: 6.5000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Buffalo Liver Powder', percent: 1.0000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Sardine Meal (IFCT)', percent: 6.0000, cas: 'Biological', assay: '≥50% protein', particle: 'Fine powder', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Egg Yolk Powder', percent: 5.0000, cas: 'Biological', assay: '≥40% fat', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Lecithin', percent: 2.0000, cas: '8002-43-5', assay: 'De-oiled', particle: 'Powder', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Bone MCHA', percent: 7.5000, cas: '1306-06-5', assay: '24:12 Ca:P', particle: '≤250 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'MOS', percent: 0.7400, cas: 'Mixture', assay: '≥20% Mannan', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Yucca Schidigera', percent: 0.5000, cas: '90147-57-2', assay: '≥30% Saponin', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'beta', name: 'Calcium Lactate-Gluconate', percent: 15.5000, cas: '11116-97-5', assay: '≥13% El Ca', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'beta', name: 'Calcium Citrate-Malate', percent: 2.5000, cas: '142606-53-9', assay: '≥24% El Ca', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'MSM', percent: 1.5000, cas: '67-71-0', assay: '≥99.9%', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'Taurine Pure', percent: 0.2000, cas: '107-35-7', assay: '≥99.0%', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'Vitamin E Natural', percent: 0.0700, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'delta', name: 'Thiamine HCl', percent: 0.0030, cas: '67-03-8', assay: 'Pure Intent', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'delta', name: 'Potassium Iodide', percent: 0.0003, cas: '7681-11-0', assay: 'Pure Intent', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'zeta', name: 'Carrier Blend (MCC)', percent: 6.0000, cas: '9004-34-6', assay: 'USP Grade', particle: 'Fine', tolerance: '±5%', status: 'Adjustable' },
-                    { phase: 'zeta', name: 'Silicates', percent: 0.9867, cas: '7631-86-9', assay: 'Food grade', particle: 'Fine', tolerance: '±5%', status: 'Adjustable' }
+                    { phase: 'alpha', name: 'Bovine Tallow', percent: 16.0000, cas: '61789-97-7', assay: 'PV ≤5; FFA ≤1%', particle: 'Melted', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5%', particle: 'Viscous', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'alpha', name: 'Antioxidant Blend', percent: 1.5000, cas: 'Mixture', assay: '3:4:4 synergistic blend of rosemary extract/mixed Tocopherols (>60% gamma dl-tocopherol)/ascorbyl palmitate', particle: 'Liquid', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'BSFL Powder', percent: 15.5000, cas: 'Biological', assay: '≥50% protein', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Algal Oil Powder', percent: 7.0000, cas: 'Mixture', assay: '≥20% DHA', particle: 'Spray-dried', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Chicken Liver Powder', percent: 9.0000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Buffalo Liver Powder', percent: 1.0000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Sardine Meal (IFCT)', percent: 11.0000, cas: 'Biological', assay: '≥60% protein', particle: 'Fine powder', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Lecithin', percent: 2.0000, cas: '8002-43-5', assay: 'De-oiled', particle: 'Powder', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Bone MCHA', percent: 7.5000, cas: '1306-06-5', assay: '24:12 Ca:P', particle: '≤250 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'MOS', percent: 0.7000, cas: 'Mixture', assay: '≥20% Mannan', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Yucca Schidigera', percent: 0.5000, cas: '90147-57-2', assay: '≥30% Saponin', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Calcium Lactate-Gluconate', percent: 15.5000, cas: '11116-97-5', assay: '≥13% El Ca', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Calcium Citrate-Malate', percent: 2.5000, cas: '142606-53-9', assay: '≥24% El Ca', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'MSM', percent: 1.5000, cas: '67-71-0', assay: '≥99.9%', particle: 'Crystalline', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Taurine Pure', percent: 0.2000, cas: '107-35-7', assay: '≥99.0%', particle: 'Crystalline', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Vitamin E Natural', percent: 0.0700, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'delta', name: 'Thiamine HCl', percent: 0.0030, cas: '67-03-8', assay: 'Pure Intent', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'delta', name: 'Potassium Iodide', percent: 0.0002, cas: '7681-11-0', assay: 'Pure Intent', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'zeta', name: 'Carrier Blend', percent: 6.0000, cas: '9004-34-6', assay: 'USP Grade', particle: 'Fine', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'zeta', name: 'Silicates', percent: 0.5268, cas: '7631-86-9', assay: 'Food grade', particle: 'Fine', tolerance: 'OPEN', status: 'OPEN' }
                 ]
             },
             dog: {
                 id: 'dog', name: 'DogCore™', kcal: '18.4 kcal/unit', shelfLife: '18-24 Months',
-                rev: 'v8.0.0', lastSynced: '01/03/2026', prevRev: 'v7.0.0', prevSynced: '28/02/2026',
+                rev: 'v8.2.0', lastSynced: '01/03/2026', prevRev: 'v8.1.0', prevSynced: '28/02/2026',
                 link: 'https://docs.google.com/document/d/1hvHHbGW7qDq9k1pTmnX_ElvCLl1fW_mrNxHhkQjfOj8/edit?usp=sharing',
                 guaranteed: { protein: '24.0%', fat: '31.0%', fiber: '2.5%', moisture: '4.5%', calcium: '2.5%' },
                 ingredients: [
-                    { phase: 'alpha', name: 'Bovine Tallow*', percent: 18.0000, cas: '61789-97-7', assay: 'PV ≤5; FFA ≤1%', particle: 'Melted', tolerance: '±5%', status: 'Adjustable' },
-                    { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5%', particle: 'Viscous', tolerance: '±1%', status: 'Adjustable' },
-                    { phase: 'alpha', name: 'Antioxidant Blend', percent: 1.5000, cas: 'Mixture', assay: 'Tocopherols 4:3:3', particle: 'Liquid', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'BSFL Powder', percent: 23.0000, cas: 'Biological', assay: '≥50% protein', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Algal Oil Powder', percent: 7.0000, cas: 'Mixture', assay: '≥20% DHA', particle: 'Spray-dried', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Chicken Liver Powder', percent: 5.5000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Buffalo Liver Powder', percent: 2.0000, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Sardine Meal (IFCT)', percent: 7.5000, cas: 'Biological', assay: '≥50% protein', particle: 'Fine powder', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Lecithin', percent: 2.0000, cas: '8002-43-5', assay: 'De-oiled', particle: 'Powder', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Bone MCHA', percent: 3.0000, cas: '1306-06-5', assay: '24:12 Ca:P', particle: '≤250 µm', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'MOS', percent: 0.7000, cas: 'Mixture', assay: '≥20% Mannan', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'epsilon', name: 'Yucca Schidigera', percent: 0.5500, cas: '90147-57-2', assay: '≥30% Saponin', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'beta', name: 'Calcium Citrate-Malate', percent: 18.0000, cas: '142606-53-9', assay: '≥24% El Ca', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'beta', name: 'Calcium Lactate-Gluconate', percent: 1.0000, cas: '11116-97-5', assay: '≥13% El Ca', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'MSM', percent: 1.0000, cas: '67-71-0', assay: '≥99.9%', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'Taurine Pure', percent: 0.1500, cas: '107-35-7', assay: '≥99.0%', particle: 'Crystalline', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'gamma', name: 'Vitamin E Natural', percent: 0.0900, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'delta', name: 'Thiamine HCl', percent: 0.0100, cas: '67-03-8', assay: 'Pure Intent', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'delta', name: 'Potassium Iodide', percent: 0.0008, cas: '7681-11-0', assay: 'Pure Intent', particle: 'Fine', tolerance: '±1%', status: 'Locked' },
-                    { phase: 'zeta', name: 'Carrier Blend (MCC)', percent: 6.0000, cas: '9004-34-6', assay: 'USP Grade', particle: 'Fine', tolerance: '±5%', status: 'Adjustable' },
-                    { phase: 'zeta', name: 'Silicates', percent: 0.9992, cas: '7631-86-9', assay: 'Food grade', particle: 'Fine', tolerance: '±5%', status: 'Adjustable' }
+                    { phase: 'alpha', name: 'Bovine Tallow', percent: 16.0000, cas: '61789-97-7', assay: 'PV ≤5; FFA ≤1%', particle: 'Melted', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'alpha', name: 'Glycerine USP', percent: 2.0000, cas: '56-81-5', assay: '≥99.5%', particle: 'Viscous', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'alpha', name: 'Antioxidant Blend', percent: 2.0000, cas: 'Mixture', assay: '3:4:3 synergistic blend of rosemary extract/mixed Tocopherols (>60% gamma dl-tocopherol)/ascorbyl palmitate', particle: 'Liquid', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'BSFL Powder', percent: 21.0000, cas: 'Biological', assay: '≥50% protein', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Algal Oil Powder', percent: 6.8500, cas: 'Mixture', assay: '≥20% DHA', particle: 'Spray-dried', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Chicken Liver Powder', percent: 4.7800, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Buffalo Liver Powder', percent: 3.3500, cas: 'Biological', assay: 'Spray-dried 4x', particle: '≤500 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Sardine Meal (IFCT)', percent: 18.5000, cas: 'Biological', assay: '≥60% protein', particle: 'Fine powder', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'epsilon', name: 'Lecithin', percent: 2.0000, cas: '8002-43-5', assay: 'De-oiled', particle: 'Powder', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Eggshell Powder', percent: 7.0000, cas: 'Biological', assay: '≥38% El Ca', particle: '≤250 µm', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'MOS', percent: 0.5000, cas: 'Mixture', assay: '≥20% Mannan', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Yucca Schidigera', percent: 0.5000, cas: '90147-57-2', assay: '≥30% Saponin', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Calcium Lactate-Gluconate', percent: 1.0000, cas: '11116-97-5', assay: '≥13% El Ca', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'beta', name: 'Calcium Citrate-Malate', percent: 7.0000, cas: '142606-53-9', assay: '≥24% El Ca', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'MSM', percent: 0.8000, cas: '67-71-0', assay: '≥99.9%', particle: 'Crystalline', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Taurine Pure', percent: 0.1400, cas: '107-35-7', assay: '≥99.0%', particle: 'Crystalline', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'gamma', name: 'Vitamin E Natural', percent: 0.0900, cas: '59-02-9', assay: '≥95% d-alpha', particle: 'Oil', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'delta', name: 'Thiamine HCl', percent: 0.0090, cas: '67-03-8', assay: 'Pure Intent', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'delta', name: 'Potassium Iodide', percent: 0.0006, cas: '7681-11-0', assay: 'Pure Intent', particle: 'Fine', tolerance: 'Fixed', status: 'Locked' },
+                    { phase: 'zeta', name: 'Carrier Blend', percent: 6.0000, cas: '9004-34-6', assay: 'USP Grade', particle: 'Fine', tolerance: 'OPEN', status: 'OPEN' },
+                    { phase: 'zeta', name: 'Silicates', percent: 0.4844, cas: '7631-86-9', assay: 'Food grade', particle: 'Fine', tolerance: 'OPEN', status: 'OPEN' }
                 ]
             }
         };
+
+        const UNIFIED_TABLE_DATA = [
+            { cName: 'Bovine Tallow', cPct: 16.0000, dName: 'Bovine Tallow', dPct: 16.0000 },
+            { cName: 'Glycerine USP', cPct: 2.0000, dName: 'Glycerine USP', dPct: 2.0000 },
+            { cName: 'Antioxidant Blend', cPct: 1.5000, dName: 'Antioxidant Blend', dPct: 2.0000 },
+            { cName: 'BSFL Powder', cPct: 15.5000, dName: 'BSFL Powder', dPct: 21.0000 },
+            { cName: 'Algal Oil Powder', cPct: 7.0000, dName: 'Algal Oil Powder', dPct: 6.8500 },
+            { cName: 'Chicken Liver Powder', cPct: 9.0000, dName: 'Chicken Liver Powder', dPct: 4.7800 },
+            { cName: 'Buffalo Liver Powder', cPct: 1.0000, dName: 'Buffalo Liver Powder', dPct: 3.3500 },
+            { cName: 'Sardine Meal (IFCT)', cPct: 11.0000, dName: 'Sardine Meal (IFCT)', dPct: 18.5000 },
+            { cName: 'Lecithin', cPct: 2.0000, dName: 'Lecithin', dPct: 2.0000 },
+            { cName: 'Bone MCHA', cPct: 7.5000, dName: 'Eggshell Powder', dPct: 7.0000 },
+            { cName: 'MOS', cPct: 0.7000, dName: 'MOS', dPct: 0.5000 },
+            { cName: 'Yucca Schidigera', cPct: 0.5000, dName: 'Yucca Schidigera', dPct: 0.5000 },
+            { cName: 'Calcium Lactate-Gluconate', cPct: 15.5000, dName: 'Calcium Lactate-Gluconate', dPct: 1.0000 },
+            { cName: 'Calcium Citrate-Malate', cPct: 2.5000, dName: 'Calcium Citrate-Malate', dPct: 7.0000 },
+            { cName: 'MSM', cPct: 1.5000, dName: 'MSM', dPct: 0.8000 },
+            { cName: 'Taurine Pure', cPct: 0.2000, dName: 'Taurine Pure', dPct: 0.1400 },
+            { cName: 'Vitamin E Natural', cPct: 0.0700, dName: 'Vitamin E Natural', dPct: 0.0900 },
+            { cName: 'Thiamine HCl', cPct: 0.0030, dName: 'Thiamine HCl', dPct: 0.0090 },
+            { cName: 'Potassium Iodide', cPct: 0.0002, dName: 'Potassium Iodide', dPct: 0.0006 },
+            { cName: 'Carrier Blend', cPct: 6.0000, dName: 'Carrier Blend', dPct: 6.0000 },
+            { cName: 'Silicates', cPct: 0.5268, dName: 'Silicates', dPct: 0.4844 }
+        ];
 
         const globalConfig = {
             phases: [
@@ -181,8 +204,8 @@
             ],
             sops: [
                 { id: 'A1', name: 'Alpha Phase (Lipid Base)', acts: ['Verify lipid PV ≤5 and FFA ≤1% (Tallow/Fat)', 'Melt and hold ≤40°C', 'Stir Humectants + Antiox until homogeneous'] },
-                { id: 'A2', name: 'Beta Phase (Mineral Bed)', acts: ['Charge Calcium salts (CLG / CCM)', 'Verify elemental Ca alignment per COA'] },
-                { id: 'A3', name: 'Epsilon Phase (Bio Matrix)', acts: ['Charge Organ Powders (Spray Dried ONLY)', 'Integrate BSFL (≤ 500μm)', 'Add Algal Oil Powder'] },
+                { id: 'A2', name: 'Beta Phase (Mineral Bed)', acts: ['Charge Calcium salts (CLG / CCM / Eggshell / Bone MCHA)', 'Verify elemental Ca alignment per COA'] },
+                { id: 'A3', name: 'Epsilon Phase (Bio Matrix)', acts: ['Charge Organ Powders (Spray Dried ONLY)', 'Integrate BSFL (≤ 500μm)', 'Add Sardine Meal & Algal Oil Powder'] },
                 { id: 'A4', name: 'Gamma Phase (Support)', acts: ['Integrate MSM, Taurine, MOS, and Yucca', 'Blend 10 mins at ≤25°C'] },
                 { id: 'A5', name: 'Delta Phase (Trace)', acts: ['Source from REPUTED suppliers ONLY', 'MANDATORY TRITURATION (≥50x dilution into carrier)', 'Two-step QC verification of weighing mandatory'] },
                 { id: 'A6', name: 'Zeta Phase (Reconciliation)', acts: ['Charge Silicates', 'Add Carrier Blend (Deduct mass used in A5)'] },
@@ -193,7 +216,7 @@
                 { name: 'Backlog', cards: [
                     { st: '0', t: 'Mutual NDA Executed', o: 'Joint', g: 'Legal clearance', icon: '●' },
                     { st: '0', t: 'MoU Shared', o: 'Joint', g: 'Awaiting signature', icon: '◐' },
-                    { st: '0', t: 'Controlled Spec Shared', o: 'Joint', g: 'Doc v8.0.0 Ref', icon: '◐' },
+                    { st: '0', t: 'Controlled Spec Shared', o: 'Joint', g: 'Doc v8.2.0 Ref', icon: '◐' },
                     { st: '0', t: 'Version Lock Confirmed', o: 'Joint', g: 'www.growlrr.com/diet', icon: '◐' }
                 ] },
                 { name: 'Validation', cards: [
@@ -250,7 +273,7 @@
                 <div class="fade-in max-w-7xl mx-auto space-y-10 text-left">
                     <section class="bg-surface rounded-2xl shadow-xl border border-white/5 overflow-hidden">
                         <div class="bg-[#1e293b] p-8 text-white flex justify-between items-center text-left">
-                            <div><h2 class="text-3xl font-black uppercase tracking-tight text-left">${r.name} CDMO Dossier</h2><p class="text-sm font-bold text-blue-400 mt-1 uppercase tracking-widest text-[11px] text-left">Snowleopard Protocol Manufacturing Spec v8.0.0</p></div>
+                            <div><h2 class="text-3xl font-black uppercase tracking-tight text-left">${r.name} CDMO Dossier</h2><p class="text-sm font-bold text-blue-400 mt-1 uppercase tracking-widest text-[11px] text-left">Snowleopard Protocol Manufacturing Spec v8.2.0</p></div>
                             <div class="text-right flex flex-col items-end"><span class="bg-blue-600 px-3 py-1 rounded text-2xs font-black uppercase tracking-widest text-center">ALPHA.3.2</span><span class="mt-2 font-bold text-slate-400 text-[10px]">Auth: Mar 01, 2026</span></div>
                         </div>
                         <div class="p-8 grid md:grid-cols-3 gap-6">
@@ -307,26 +330,30 @@
                                         <th class="px-8 py-5 text-right">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-white/5 text-left">${list.map(i => `
-                                    <tr class="hover:bg-white/5 transition-colors"><td class="px-8 py-4 font-bold text-white">${i.name}</td><td class="px-8 py-4 text-right font-mono text-emerald-400 font-black text-right">${i.percent.toFixed(4)}%</td><td class="px-8 py-4 text-left"><span class="text-2xs bg-white/5 px-2 py-1 rounded font-black uppercase text-slate-500 text-[10px]">${i.phase}</span></td><td class="px-8 py-4 text-right text-right"><span class="text-2xs px-2 py-1 rounded font-black uppercase text-[10px] ${i.status === 'Locked' ? 'bg-slate-700 text-slate-300' : 'bg-emerald-900/50 text-emerald-400 border border-emerald-500/30'}">${i.status}</span></td></tr>`).join('')}</tbody>
+                                <tbody class="divide-y divide-white/5 text-left">${list.map(i => {
+                                    let statusClass = 'bg-slate-700 text-slate-300'; // Locked default
+                                    if (i.status === 'OPEN') {
+                                        statusClass = 'bg-green-900/50 text-green-400 border border-green-500/30';
+                                    }
+                                    return `
+                                    <tr class="hover:bg-white/5 transition-colors"><td class="px-8 py-4 font-bold text-white">${i.name}</td><td class="px-8 py-4 text-right font-mono text-emerald-400 font-black text-right">${i.percent.toFixed(4)}%</td><td class="px-8 py-4 text-left"><span class="text-2xs bg-white/5 px-2 py-1 rounded font-black uppercase text-slate-500 text-[10px]">${i.phase}</span></td><td class="px-8 py-4 text-right text-right"><span class="text-2xs px-2 py-1 rounded font-black uppercase text-[10px] ${statusClass}">${i.status}</span></td></tr>`;
+                                }).join('')}</tbody>
                             </table>
                         </div>
-                        <div class="p-4 bg-deep text-2xs font-bold text-slate-500 uppercase text-center border-t border-white/5">ALWAYS CHECKSUM TO 100.00% TOTAL BATCH MASS.</div>
+                        <div class="p-4 bg-deep text-2xs font-bold text-slate-500 uppercase text-center border-t border-white/5">ALWAYS CHECKSUM TO 100.0000% TOTAL BATCH MASS.</div>
                     </div>
                 </div>
             `;
         }
 
         function renderAppendixB(t) {
-            const cat = MASTER_DATA.cat.ingredients; const dog = MASTER_DATA.dog.ingredients;
-            const unified = cat.map(ci => {
-                const di = dog.find(d => d.name.split('*')[0] === ci.name.split('*')[0]) || { name: '-', percent: 0 };
-                return { cat: ci.name, catP: ci.percent, dog: di.name, dogP: di.percent };
-            });
             t.innerHTML = `
                 <div class="fade-in max-w-7xl mx-auto space-y-12 pb-20 text-sm text-left">
-                    <div class="flex justify-between items-end text-left"><div><h2 class="text-2xl font-black text-blue-400 uppercase tracking-tight text-left">Appendix B: Unified Comparison</h2><p class="text-sm font-bold text-slate-500 uppercase mt-1 text-left">Cross-Species Precision Ledger v8.0.0</p></div><button onclick="exportCSV('UNIFIED')" class="bg-emerald-600 text-white px-5 py-2.5 rounded font-black text-xs uppercase hover:bg-emerald-500 transition-all flex items-center gap-2 text-left"><span>📥</span> Export Unified CSV</button></div>
-                    <div class="bg-[#0f172a] rounded-2xl shadow-xl border border-white/5 overflow-hidden text-left"><table class="w-full text-left text-sm text-left"><thead class="bg-[#1e293b] font-black text-white uppercase text-[10px] tracking-widest border-b border-white/10 text-left"><tr><th class="px-8 py-5 text-left">CatCore™ Ingredient</th><th class="px-8 py-5 text-right">Cat %</th><th class="px-8 py-5 text-left">DogCore™ Ingredient</th><th class="px-8 py-5 text-right">Dog %</th></tr></thead><tbody class="divide-y divide-white/5">${unified.map(u => `<tr class="text-left"><td class="px-8 py-4 font-bold text-blue-200 text-left">${u.cat}</td><td class="px-8 py-4 text-right font-mono text-blue-400 text-right text-right">${u.catP.toFixed(4)}%</td><td class="px-8 py-4 font-bold text-emerald-200 text-left text-left">${u.dog}</td><td class="px-8 py-4 text-right font-mono text-emerald-400 text-right text-right">${u.dogP.toFixed(4)}%</td></tr>`).join('')}</tbody></table></div>
+                    <div class="flex justify-between items-end text-left"><div><h2 class="text-2xl font-black text-blue-400 uppercase tracking-tight text-left">Unified Comparison Ledger</h2><p class="text-sm font-bold text-slate-500 uppercase mt-1 text-left">Cross-Species Precision Ledger v8.2.0</p></div><button onclick="exportCSV('UNIFIED')" class="bg-emerald-600 text-white px-5 py-2.5 rounded font-black text-xs uppercase hover:bg-emerald-500 transition-all flex items-center gap-2 text-left"><span>📥</span> Export Unified CSV</button></div>
+                    <div class="bg-[#0f172a] rounded-2xl shadow-xl border border-white/5 overflow-hidden text-left"><table class="w-full text-left text-sm text-left"><thead class="bg-[#1e293b] font-black text-white uppercase text-[10px] tracking-widest border-b border-white/10 text-left"><tr><th class="px-8 py-5 text-left">CatCore™ Ingredient</th><th class="px-8 py-5 text-right">Cat %</th><th class="px-8 py-5 text-left">DogCore™ Ingredient</th><th class="px-8 py-5 text-right">Dog %</th></tr></thead><tbody class="divide-y divide-white/5">
+                        ${UNIFIED_TABLE_DATA.map(u => `<tr class="text-left"><td class="px-8 py-4 font-bold text-blue-200 text-left">${u.cName}</td><td class="px-8 py-4 text-right font-mono text-blue-400 text-right text-right">${u.cPct.toFixed(4)}%</td><td class="px-8 py-4 font-bold text-emerald-200 text-left text-left">${u.dName}</td><td class="px-8 py-4 text-right font-mono text-emerald-400 text-right text-right">${u.dPct.toFixed(4)}%</td></tr>`).join('')}
+                        <tr class="bg-[#1e293b] border-t border-white/10"><td class="px-8 py-4 font-black text-white uppercase tracking-widest">CHECKSUM</td><td class="px-8 py-4 text-right font-mono font-black text-white">100.0000%</td><td class="px-8 py-4 font-black text-white uppercase tracking-widest">CHECKSUM</td><td class="px-8 py-4 text-right font-mono font-black text-white">100.0000%</td></tr>
+                    </tbody></table></div>
                     <div class="bg-surface p-10 rounded-2xl border border-white/5 space-y-8 text-left"><h3 class="text-lg font-black text-white uppercase mb-4 border-b border-white/5 pb-2 text-left">Anchoring Analytics (Ambient Factor 1.15)</h3><div class="grid md:grid-cols-2 gap-8 text-left"><div class="p-6 bg-deep rounded-xl border border-blue-500/20 text-left"><h4 class="text-blue-400 font-black uppercase text-xs mb-3 text-left">CatCore™ Anchor</h4><div class="text-3xl font-black text-white mb-1 text-left">4 Units / Day</div><p class="text-xs text-slate-500 font-bold uppercase text-left">Target: 250 kcal Maintenance</p></div><div class="p-6 bg-deep rounded-xl border border-emerald-500/20 text-left text-left"><h4 class="text-emerald-400 font-black uppercase text-xs mb-3 text-left">DogCore™ Anchor</h4><div class="text-3xl font-black text-white mb-1 text-left">10 Units / Day</div><p class="text-xs text-slate-500 font-bold uppercase text-left">Target: 1000 kcal Maintenance</p></div></div></div>
                 </div>
             `;
@@ -337,23 +364,23 @@
                 <div class="fade-in max-w-5xl mx-auto space-y-12 pb-20 text-sm text-left">
                     <section class="bg-surface p-10 rounded-2xl shadow-lg border border-white/5 text-sm text-left">
                         <h2 class="text-xl font-black text-blue-400 uppercase mb-8 border-b-2 border-blue-500/20 pb-4 text-left">Regulatory & Technical Intent</h2>
-                        <div class="grid md:grid-cols-2 gap-10 text-left">
+                        <div class="grid md:grid-cols-2 items-start gap-10 text-left">
                             <div class="space-y-6 text-left">
-                                <div class="bg-deep p-6 rounded-xl border border-white/5 text-left">
-                                    <h4 class="text-rose-500 font-black uppercase text-xs mb-3 text-left">⚠ Technical Risk: Trace Actives</h4>
-                                    <p class="text-slate-300 leading-relaxed text-xs text-left">Improper measuring or non-geometric mixing of <strong>Iodine (Potassium Iodide)</strong> or <strong>Vitamin B1</strong> poses serious risks for small animals. <strong>MANDATORY TRITURATION:</strong> Trace actives must be diluted $\\ge 50x$ into a dry carrier bed before bulk addition. Direct neat handling prohibited.</p>
+                                <div class="bg-deep p-6 rounded-xl border border-rose-500/30 text-left">
+                                    <h4 class="text-rose-500 font-black uppercase text-xs mb-3 flex items-center gap-2 text-left">⚠️ Caution: Trace Actives</h4>
+                                    <p class="text-slate-300 leading-relaxed text-xs text-left">Improper measuring or non-geometric mixing of <strong>Iodine (Potassium Iodide)</strong> or <strong>Vitamin B1 (Thiamine HCl)</strong> poses serious risks. Lack of Vitamin B1 due to improper mixing can cause severe neurological damages to cats. <br/><br/><strong>MANDATORY TRITURATION:</strong> Trace actives must be diluted $\\ge 50x$ into a dry carrier bed before bulk addition. Direct neat handling prohibited.</p>
                                 </div>
                                 <div class="bg-deep p-6 rounded-xl border border-white/5 text-left">
                                     <h4 class="text-emerald-400 font-black uppercase text-xs mb-3 text-left">🛡 Quality Compliance</h4>
                                     <ul class="text-slate-400 space-y-2 text-xs leading-relaxed text-left">
                                         <li>• <strong>GMP & HACCP:</strong> Facilities must be currently certified.</li>
-                                        <li>• <strong>Oxidation:</strong> Lipid inputs must maintain $PV \\le 5 \\text{ meq/kg}$.</li>
                                         <li>• <strong>Water Activity:</strong> Target $a_w \\le 0.60$ for 24-month stability.</li>
+                                        <li>• <strong>Synthetic Phase-Out:</strong> D3 naturally sourced via Sardine/Liver.</li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="space-y-6 text-left">
-                                <div class="bg-card p-8 rounded-xl border border-white/5 text-[11px] font-mono text-slate-300 text-left">
+                                <div class="bg-card p-8 rounded-xl border border-white/5 text-[11px] font-mono text-slate-300 text-left h-full">
                                     <h4 class="text-emerald-200 font-black uppercase text-xs mb-4 text-left border-b border-emerald-500/20 pb-2">AAFCO Guaranteed Analysis (${activeProduct.toUpperCase()})</h4>
                                     <div class="grid grid-cols-2 gap-y-2 text-left">
                                         <span class="text-blue-400">Crude Protein (min)</span><span class="text-right">${r.guaranteed.protein}</span>
@@ -365,6 +392,22 @@
                                     <div class="mt-6 pt-4 border-t border-white/5 text-slate-500 font-bold text-[9px] text-left uppercase">NRC Density: ${r.kcal}</div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Extended Quality Section -->
+                        <div class="mt-10 pt-8 border-t border-white/5 grid md:grid-cols-2 gap-8 text-left">
+                            <div class="bg-[#1e293b]/50 p-6 rounded-xl text-left">
+                                <h4 class="text-white font-bold text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"><span class="text-blue-400">●</span> Oxidation & Rancidity Control</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed">Strict PV monitoring required. Tallow, Algal Oil, and Sardine Meal must have vendor tested COA for PV ≤5 meq/kg to prevent lipid peroxidation and rancidity. Pre-stabilised sources shall be preferred. </p>
+                            </div>
+                            <div class="bg-[#1e293b]/50 p-6 rounded-xl text-left">
+                                <h4 class="text-white font-bold text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"><span class="text-blue-400">●</span> Lot Traceability</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed">CDMO must maintain complete lot traceability for all components and verify the COA from qualified vendors. Change of vendors after production would require written communication.</p>
+                            </div>
+                            <div class="bg-[#1e293b]/50 p-6 rounded-xl text-left md:col-span-2">
+                                <h4 class="text-white font-bold text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"><span class="text-blue-400">●</span> Bio-Matrix Gating & Testing</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed">For <i>Salmonella spp.</i> and <i>E. coli</i>: Every in-coming batch must have vendor COA with microbial panel before release. Sardine meal and organ inputs require mandatory quarterly spot-checks for heavy metals (Pb, As, Cd, Hg) and Aflatoxins in addition to vendor COA.</p>
+                            </div>c
                         </div>
                     </section>
                 </div>
@@ -418,7 +461,7 @@
                             <div class="bg-card px-8 py-4 border-b border-white/5 text-left text-left text-left"><h4 class="font-black text-white uppercase text-sm text-left text-left">${p.id} — ${p.name}</h4></div>
                             <table class="w-full text-left sop-table text-sm text-left text-left">
                                 <thead class="text-2xs font-black text-slate-500 uppercase tracking-widest bg-black/20 border-b border-white/5 text-left"><tr><th class="px-8 py-3 text-left">Action Details</th><th class="px-8 py-3 text-right">Qty (g)</th><th class="px-8 py-3 text-right text-[10px]">Verification</th></tr></thead>
-                                <tbody class="divide-y divide-white/5 text-left text-left">${p.acts.map(item => `<tr><td class="px-8 py-5 text-slate-300 text-left text-left text-left">${item}</td><td class="px-8 py-5 text-right"><input type="text" placeholder="0.0000"></td><td class="px-8 py-5 text-xs font-black uppercase text-emerald-400 text-right">Verify</td></tr>`).join('')}</tbody>
+                                <tbody class="divide-y divide-white/5 text-left text-left">${p.acts.map(item => `<tr><td class="px-8 py-5 text-slate-300 text-left text-left text-left">${item}</td><td class="px-8 py-5 text-right"><input type="text" placeholder="0.0000" class="bg-transparent border-b border-slate-700 text-right text-emerald-400 outline-none w-24"></td><td class="px-8 py-5 text-xs font-black uppercase text-emerald-400 text-right">Verify</td></tr>`).join('')}</tbody>
                             </table>
                         </div>
                     `).join('')}
@@ -431,7 +474,7 @@
             const premixNames = { 'Thiamine HCl': 'Thiamine HCl (2% Premix)', 'Potassium Iodide': 'Potassium Iodide (0.1% Premix)' };
             t.innerHTML = `
                 <div class="fade-in max-w-7xl mx-auto space-y-10 pb-20 text-sm text-left">
-                    <div class="flex justify-between items-end text-left text-left"><div><h2 class="text-2xl font-black text-blue-400 uppercase tracking-tight text-left">Quality Release Standards</h2><p class="text-sm font-bold text-slate-500 uppercase mt-1 text-left">v8.0.0 Incoming Lot Parameters (±2% Tolerance)</p></div><button onclick="exportCSV('COA')" class="bg-blue-600 text-white px-5 py-2.5 rounded font-black text-xs uppercase flex items-center gap-2 transition-all text-left text-left text-left"><span>📥</span> Export COA CSV</button></div>
+                    <div class="flex justify-between items-end text-left text-left"><div><h2 class="text-2xl font-black text-blue-400 uppercase tracking-tight text-left">Quality Release Standards</h2><p class="text-sm font-bold text-slate-500 uppercase mt-1 text-left">v8.2.0 Incoming Lot Parameters (±2% Tolerance)</p></div><button onclick="exportCSV('COA')" class="bg-blue-600 text-white px-5 py-2.5 rounded font-black text-xs uppercase flex items-center gap-2 transition-all text-left text-left text-left"><span>📥</span> Export COA CSV</button></div>
                     <div class="bg-[#0f172a] rounded-2xl shadow-xl border border-white/5 overflow-hidden text-left"><div class="overflow-x-auto text-left text-left"><table class="w-full text-left text-sm text-left text-left text-left text-left"><thead class="bg-[#1e293b] font-black text-white uppercase tracking-widest border-b border-white/5 text-[11px] text-left text-left"><tr><th class="px-6 py-4 text-left">Item (Procured Lot)</th><th class="px-6 py-4 text-left">Assay / Purity Spec</th><th class="px-6 py-4 text-left text-left text-left">Particle Size</th><th class="px-6 py-4 text-right text-right">Weight Tol.</th></tr></thead><tbody class="divide-y divide-white/5 text-slate-300 text-left text-left">${r.ingredients.map(i => `<tr class="hover:bg-white/5 transition-colors text-left text-left text-left text-left text-left"><td class="px-6 py-4 font-bold text-white text-sm text-left text-left text-left text-left">${premixNames[i.name] || i.name}</td><td class="px-6 py-4 text-left text-left text-left text-left">${i.assay || 'Standard'}</td><td class="px-6 py-4 text-left text-left text-left text-left text-left text-left text-left">${i.particle || 'Standard'}</td><td class="px-6 py-4 font-black text-teal-500 text-right text-[11px] text-right text-right text-right text-right text-right text-right text-right">${i.tolerance}</td></tr>`).join('')}</tbody></table></div></div>
                 </div>
             `;
@@ -453,7 +496,12 @@
             const data = MASTER_DATA[activeProduct]; const phaseCounts = globalConfig.phases.map(p => data.ingredients.filter(i => i.phase === p.id).length);
             if (chartInstance) chartInstance.destroy();
             chartInstance = new Chart(document.getElementById('chartPhase').getContext('2d'), { type: 'doughnut', data: { labels: globalConfig.phases.map(p => p.name), datasets: [{ data: phaseCounts, backgroundColor: globalConfig.phases.map(p => p.color), borderWidth: 2, borderColor: '#020617' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10, weight: 'bold' } } } }, onClick: (e, el) => { if (el.length > 0) updateAnalyticsTable(globalConfig.phases[el[0].index].id); else updateAnalyticsTable('all'); } } });
-            new Chart(document.getElementById('chartRatio').getContext('2d'), { type: 'bar', data: { labels: ['Lipid binder', 'Solid Scaffold'], datasets: [{ data: [18, 82], backgroundColor: ['#60a5fa', '#334155'], barThickness: 60 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } } });
+            
+            // Adjust lipid/solid ratio for visual representation based on phase logic
+            let lipidPct = 0; let solidPct = 0;
+            data.ingredients.forEach(i => { if(i.phase === 'alpha') lipidPct += i.percent; else solidPct += i.percent; });
+            
+            new Chart(document.getElementById('chartRatio').getContext('2d'), { type: 'bar', data: { labels: ['Lipid binder', 'Solid Scaffold'], datasets: [{ data: [lipidPct, solidPct], backgroundColor: ['#60a5fa', '#334155'], barThickness: 60 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b' } }, x: { grid: { display: false }, ticks: { color: '#64748b' } } } } });
         }
 
         function updateAnalyticsTable(id) {
@@ -464,15 +512,14 @@
 
         function exportCSV(type) {
             let csv = "";
-            if (type === 'BOM') { csv = "Ingredient,Mass %,Phase,Status\n"; MASTER_DATA[activeProduct].ingredients.forEach(i => csv += `${i.name},${i.percent}%,${i.phase},${i.status}\n`); }
+            if (type === 'BOM') { csv = "Ingredient,Mass %,Phase,Status\n"; MASTER_DATA[activeProduct].ingredients.forEach(i => csv += `${i.name},${i.percent.toFixed(4)}%,${i.phase},${i.status}\n`); }
             else if (type === 'UNIFIED') {
                 csv = "CatCore Ingredient,Cat %,DogCore Ingredient,Dog %\n";
-                MASTER_DATA.cat.ingredients.forEach(ci => {
-                    const di = MASTER_DATA.dog.ingredients.find(d => d.name.split('*')[0] === ci.name.split('*')[0]) || { name: '-', percent: 0 };
-                    csv += `${ci.name},${ci.percent}%,${di.name},${di.percent}%\n`;
+                UNIFIED_TABLE_DATA.forEach(u => {
+                    csv += `${u.cName},${u.cPct.toFixed(4)}%,${u.dName},${u.dPct.toFixed(4)}%\n`;
                 });
             }
-            const b = new Blob([csv], { type: 'text/csv' }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `Growlrr_${type}_v8.csv`; a.click();
+            const b = new Blob([csv], { type: 'text/csv' }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `Growlrr_${type}_v8_2.csv`; a.click();
         }
 
         function setActiveNav(id) { document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active')); const btn = document.getElementById(`nav-${id}`); if(btn) btn.classList.add('active'); }
