@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Growlrr Stress Test rev 7.0</title>
+  <title>Growlrr Stress Test v8.2.1</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -32,8 +32,8 @@
           <i data-lucide="activity" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test rev 7.0</h1>
-          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v3.2 &bull; Science v2.2 &bull; Protocol v2.1</div>
+          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v8.2.1</h1>
+          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v8.2.0 &bull; Science v8.1.1 &bull; Protocol v8.2.0</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -166,7 +166,7 @@
             </div>
             <div>
             <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
-            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v3.2 dosings</p>
+            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v8.2.0 dosings</p>
             </div>
         </div>
 
@@ -197,9 +197,9 @@
             </div>
             <div class="bg-emerald-900/10 p-5 rounded-2xl border border-emerald-800/30">
             <div class="text-emerald-500 mb-2"><i data-lucide="activity" class="w-5 h-5"></i></div>
-            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v3.2 Engine Sync</div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v8.2.0 Engine Sync</div>
             <p class="text-[12px] text-slate-300 leading-relaxed">
-                Calculations are no longer hardcoded approximations. The app parses the JSON payload directly, factoring the true elemental mass of the new Bovine &amp; Chicken Liver additions in real-time.
+                Sardine meal, eggshell powder (dog), and bovine tallow are live in the engine. Sardine adds marine Ca, DHA, EPA, VitD, and iodine. Eggshell replaces bone MCHA in DogCore — near-zero P, high Ca, clean label.
             </p>
             </div>
             <div class="bg-blue-900/10 p-5 rounded-2xl border border-blue-800/30">
@@ -408,6 +408,7 @@
             document.getElementById('auth-lock').classList.add('hidden');
             document.getElementById('secure-bom-section').classList.remove('hidden');
             errorMsg.classList.add('hidden');
+            render(); // Ensure BOM reflects current species toggle state on reveal
         } else {
             errorMsg.classList.remove('hidden');
         }
@@ -473,7 +474,7 @@
         egg_whole: { kcal_per_100g:143, nutrients_per_100g: { protein_g:13.0, fat_g:10.5, vitamin_a_ug:140.0, vitamin_d_ug:1.1, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.42, pantothenic_b5_mg:1.4, pyridoxine_b6_mg:0.14, folate_b9_ug:44.0, cobalamin_b12_ug:1.2, choline_mg:294.0, iron_mg:1.8, copper_mg:0.08, zinc_mg:1.1, selenium_ug:27.0, phosphorus_mg:195.0, potassium_mg:130.0, sodium_mg:140.0, magnesium_mg:12.0, arachidonic_acid_mg:150.0, arginine_mg:820.0, lysine_mg:910.0, methionine_mg:390.0, la_mg:1188, iodine_ug:28.0 } },
         curd_dahi: { kcal_per_100g:61, nutrients_per_100g: { protein_g:3.5, fat_g:4.0, vitamin_a_ug:30.0, riboflavin_b2_mg:0.18, pantothenic_b5_mg:0.3, folate_b9_ug:12.0, cobalamin_b12_ug:0.35, calcium_mg:120.0, phosphorus_mg:95.0, potassium_mg:140.0, sodium_mg:45.0, magnesium_mg:12.0, selenium_ug:2.5, arginine_mg:120.0, lysine_mg:270.0, methionine_mg:80.0, la_mg:60, iodine_ug:5.0 } },
         steamed_veg_mix: { kcal_per_100g:35, nutrients_per_100g: { vitamin_a_ug:0.0, folate_b9_ug:13.5, pyridoxine_b6_mg:0.09, potassium_mg:215.0, magnesium_mg:11.5, iron_mg:0.38, copper_mg:0.04, zinc_mg:0.17, selenium_ug:0.4, calcium_mg:28.0, phosphorus_mg:32.0, la_mg:50 } },
-        mutton_tallow: { kcal_per_100g:902, nutrients_per_100g: { fat_g:99.5, vitamin_a_ug:35.0, vitamin_d_ug:0.7, vitamin_e_mg:2.7, la_mg:3360 } },
+        bovine_tallow: { kcal_per_100g:902, nutrients_per_100g: { fat_g:100.0, vitamin_a_ug:0.0, vitamin_d_ug:0.0, vitamin_e_mg:2.7, la_mg:3100 } },
         glycerine_usp: { kcal_per_100g:312, nutrients_per_100g: { la_mg:0 } },
         silicates: { kcal_per_100g:0, nutrients_per_100g: { la_mg:0 } },
         antioxidant_blend: { kcal_per_100g:50, nutrients_per_100g: { vitamin_e_mg:0, la_mg:0 } },
@@ -494,16 +495,18 @@
         cholecalciferol_d3: { kcal_per_100g:0, nutrients_per_100g: { vitamin_d_ug:2500000.0, la_mg:0 } },
         msm: { kcal_per_100g:0, nutrients_per_100g: { sulphur_mg:34040, la_mg:0 } },
         mos: { kcal_per_100g:0, nutrients_per_100g: {} },
-        yucca_schidigera: { kcal_per_100g:0, nutrients_per_100g: {} }
+        yucca_schidigera: { kcal_per_100g:0, nutrients_per_100g: {} },
+        sardine_meal: { kcal_per_100g:250, nutrients_per_100g: { protein_g:65.0, fat_g:12.0, calcium_mg:1530.0, phosphorus_mg:1960.0, magnesium_mg:45.0, iron_mg:3.2, zinc_mg:2.8, selenium_ug:65.0, vitamin_a_ug:80.0, vitamin_d_ug:22.0, vitamin_e_mg:2.5, iodine_ug:115.0, dha_mg:1200.0, epa_mg:1000.0, la_mg:450.0, choline_mg:120.0, arginine_mg:4200.0, lysine_mg:5800.0, methionine_mg:2100.0 } },
+        eggshell_powder: { kcal_per_100g:0, nutrients_per_100g: { protein_g:2.0, fat_g:0.0, calcium_mg:38000.0, phosphorus_mg:100.0, magnesium_mg:140.0, potassium_mg:80.0, sodium_mg:50.0, la_mg:0 } }
       },
       bom: {
         catcore: {
           units_per_day: 4,
-          ingredients: { bsfl: { dose_mg_per_unit:619.2 }, mutton_tallow: { dose_mg_per_unit:640.0 }, chicken_liver_powder: { dose_mg_per_unit:513.2 }, ca_lactate_gluconate: { dose_mg_per_unit:622.8 }, algal_oil_powder: { dose_mg_per_unit:297.6 }, carrier_blend: { dose_mg_per_unit:240.0 }, bone_mcha: { dose_mg_per_unit:288.8 }, egg_yolk_powder: { dose_mg_per_unit:200.0 }, lecithin: { dose_mg_per_unit:88.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, buffalo_liver_powder: { dose_mg_per_unit:73.6 }, msm: { dose_mg_per_unit:60.0 }, antioxidant_blend: { dose_mg_per_unit:61.6 }, ca_citrate_malate: { dose_mg_per_unit:104.4 }, silicates: { dose_mg_per_unit:40.264 }, mos: { dose_mg_per_unit:40.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, taurine_pure: { dose_mg_per_unit:7.6 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.01157 }, cholecalciferol_d3: { dose_mg_per_unit:0.004 } }
+          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:60.0 }, bsfl: { dose_mg_per_unit:620.0 }, algal_oil_powder: { dose_mg_per_unit:280.0 }, chicken_liver_powder: { dose_mg_per_unit:360.0 }, buffalo_liver_powder: { dose_mg_per_unit:40.0 }, sardine_meal: { dose_mg_per_unit:440.0 }, lecithin: { dose_mg_per_unit:80.0 }, bone_mcha: { dose_mg_per_unit:300.0 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:620.0 }, ca_citrate_malate: { dose_mg_per_unit:100.0 }, msm: { dose_mg_per_unit:60.0 }, taurine_pure: { dose_mg_per_unit:8.0 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.008 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:21.072 } }
         },
         dogcore: {
           units_per_day: 10,
-          ingredients: { bsfl: { dose_mg_per_unit:920.0 }, mutton_tallow: { dose_mg_per_unit:640.0 }, chicken_liver_powder: { dose_mg_per_unit:440.0 }, ca_citrate_malate: { dose_mg_per_unit:714.0 }, algal_oil_powder: { dose_mg_per_unit:360.0 }, carrier_blend: { dose_mg_per_unit:240.0 }, ca_lactate_gluconate: { dose_mg_per_unit:40.8 }, bone_mcha: { dose_mg_per_unit:120.0 }, buffalo_liver_powder: { dose_mg_per_unit:150.0 }, lecithin: { dose_mg_per_unit:88.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:70.0 }, msm: { dose_mg_per_unit:46.0 }, silicates: { dose_mg_per_unit:40.081 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:13.2 }, taurine_pure: { dose_mg_per_unit:6.0 }, vitamin_e_natural: { dose_mg_per_unit:3.6 }, thiamine_hcl: { dose_mg_per_unit:0.28 }, potassium_iodide: { dose_mg_per_unit:0.03077 }, cholecalciferol_d3: { dose_mg_per_unit:0.008 } }
+          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:80.0 }, bsfl: { dose_mg_per_unit:840.0 }, algal_oil_powder: { dose_mg_per_unit:274.0 }, chicken_liver_powder: { dose_mg_per_unit:191.2 }, buffalo_liver_powder: { dose_mg_per_unit:134.0 }, sardine_meal: { dose_mg_per_unit:740.0 }, lecithin: { dose_mg_per_unit:80.0 }, eggshell_powder: { dose_mg_per_unit:280.0 }, mos: { dose_mg_per_unit:20.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:40.0 }, ca_citrate_malate: { dose_mg_per_unit:280.0 }, msm: { dose_mg_per_unit:32.0 }, taurine_pure: { dose_mg_per_unit:5.6 }, vitamin_e_natural: { dose_mg_per_unit:3.6 }, thiamine_hcl: { dose_mg_per_unit:0.36 }, potassium_iodide: { dose_mg_per_unit:0.024 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:19.216 } }
         }
       }
     };
@@ -537,6 +540,7 @@
       { key: 'selenium_ug', label: 'Selenium', unit: 'µg' },
       { key: 'iodine_ug', label: 'Iodine', unit: 'µg' },
       { key: 'vitamin_a_ug', label: 'Vitamin A', unit: 'µg' },
+      { key: 'vitamin_d_ug', label: 'Vitamin D3', unit: 'µg' },
       { key: 'vitamin_e_mg', label: 'Vitamin E', unit: 'mg' },
       { key: 'thiamine_b1_mg', label: 'Thiamine (B1)', unit: 'mg' },
       { key: 'choline_mg', label: 'Choline', unit: 'mg' },
@@ -656,8 +660,8 @@
           : Math.pow(state.weight / config.anchorWeight, 0.75);
 
       // 4. Base Continuous Targets
-      const theoryMuttonG = isDog ? 135 * scaleFactor : 65 * scaleFactor;
-      const theoryChickenG = isDog ? 270 * scaleFactor : 105 * scaleFactor;
+      const theoryMuttonG = isDog ? 270 * scaleFactor : 105 * scaleFactor;
+      const theoryChickenG = isDog ? 135 * scaleFactor : 65 * scaleFactor;
       const theoryCurdG = isDog ? 150 * scaleFactor : 0;
       const theoryVegG = isDog ? 400 * scaleFactor : 0;
       
