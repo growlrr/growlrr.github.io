@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Growlrr Stress Test v8.2.1</title>
+  <title>Growlrr Stress Test v8.2.2</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -32,8 +32,8 @@
           <i data-lucide="activity" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v8.2.1</h1>
-          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v8.2.0 &bull; Science v8.1.1 &bull; Protocol v8.2.0</div>
+          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v8.2.2</h1>
+          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v8.2.2 &bull; Science v8.1.1 &bull; Protocol v8.2.2</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -166,7 +166,7 @@
             </div>
             <div>
             <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
-            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v8.2.0 dosings</p>
+            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v8.2.2 dosings</p>
             </div>
         </div>
 
@@ -197,7 +197,7 @@
             </div>
             <div class="bg-emerald-900/10 p-5 rounded-2xl border border-emerald-800/30">
             <div class="text-emerald-500 mb-2"><i data-lucide="activity" class="w-5 h-5"></i></div>
-            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v8.2.0 Engine Sync</div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v8.2.2 Engine Sync</div>
             <p class="text-[12px] text-slate-300 leading-relaxed">
                 Sardine meal, eggshell powder (dog), and bovine tallow are live in the engine. Sardine adds marine Ca, DHA, EPA, VitD, and iodine. Eggshell replaces bone MCHA in DogCore — near-zero P, high Ca, clean label.
             </p>
@@ -502,7 +502,7 @@
       bom: {
         catcore: {
           units_per_day: 4,
-          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:60.0 }, bsfl: { dose_mg_per_unit:620.0 }, algal_oil_powder: { dose_mg_per_unit:280.0 }, chicken_liver_powder: { dose_mg_per_unit:360.0 }, buffalo_liver_powder: { dose_mg_per_unit:40.0 }, sardine_meal: { dose_mg_per_unit:440.0 }, lecithin: { dose_mg_per_unit:80.0 }, bone_mcha: { dose_mg_per_unit:300.0 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:620.0 }, ca_citrate_malate: { dose_mg_per_unit:100.0 }, msm: { dose_mg_per_unit:60.0 }, taurine_pure: { dose_mg_per_unit:8.0 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.008 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:21.072 } }
+          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:60.0 }, bsfl: { dose_mg_per_unit:620.0 }, algal_oil_powder: { dose_mg_per_unit:280.0 }, chicken_liver_powder: { dose_mg_per_unit:360.0 }, buffalo_liver_powder: { dose_mg_per_unit:70.0 }, sardine_meal: { dose_mg_per_unit:440.0 }, lecithin: { dose_mg_per_unit:80.0 }, bone_mcha: { dose_mg_per_unit:300.0 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:620.0 }, ca_citrate_malate: { dose_mg_per_unit:100.0 }, msm: { dose_mg_per_unit:30.0 }, taurine_pure: { dose_mg_per_unit:8.0 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.008 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:21.072 } }
         },
         dogcore: {
           units_per_day: 10,
@@ -660,8 +660,8 @@
           : Math.pow(state.weight / config.anchorWeight, 0.75);
 
       // 4. Base Continuous Targets
-      const theoryMuttonG = isDog ? 270 * scaleFactor : 105 * scaleFactor;
-      const theoryChickenG = isDog ? 135 * scaleFactor : 65 * scaleFactor;
+      const theoryMuttonG = isDog ? 250 * scaleFactor : 65 * scaleFactor;
+      const theoryChickenG = isDog ? 135 * scaleFactor : 100 * scaleFactor;
       const theoryCurdG = isDog ? 150 * scaleFactor : 0;
       const theoryVegG = isDog ? 400 * scaleFactor : 0;
       
