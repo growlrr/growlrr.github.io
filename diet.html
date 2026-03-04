@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Growlrr Stress Test v8.2.2</title>
+  <title>Growlrr Stress Test v8.2.5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -32,8 +32,8 @@
           <i data-lucide="activity" class="w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v8.2.2</h1>
-          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v8.2.2 &bull; Science v8.1.1 &bull; Protocol v8.2.2</div>
+          <h1 class="text-xl font-bold tracking-tight">Growlrr Stress Test v8.2.5</h1>
+          <div class="text-[11px] text-emerald-500 uppercase tracking-wider font-mono mt-0.5">BOM v8.2.5 &bull; Science v8.1.1 &bull; Protocol v8.2.2</div>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -63,6 +63,7 @@
             <i data-lucide="scale" class="w-5 h-5 text-emerald-500"></i>
             <span class="text-[14px]">Target Weight Class</span>
             </div>
+            <div class="text-[10px] text-red-500 font-mono mb-1">⚠ Adult maintenance only · not for puppies/kittens/pregnant/lactating</div>
             <div class="text-3xl font-black text-emerald-400"><span id="weight-display">5</span> <span class="text-lg text-slate-500">kg</span></div>
         </div>
         <input 
@@ -94,7 +95,7 @@
             <div class="relative z-10">
             <h3 class="text-[12px] font-bold text-slate-500 uppercase tracking-wider mb-4">Metabolic Balance</h3>
             <div class="flex justify-between items-end mb-1">
-                <span class="text-slate-300 font-semibold text-[14px]">Modified Kleiber Base</span>
+                <span class="text-slate-300 font-semibold text-[14px]" id="mer-model-label">Metabolic Model</span>
                 <span id="mer-display" class="text-xl font-bold text-white">
                 <!-- Populated by JS -->
                 </span>
@@ -149,9 +150,15 @@
         <div class="px-6 py-4 border-b border-slate-700 flex items-center justify-between bg-slate-900/50">
             <div class="flex items-center gap-2">
             <i data-lucide="clipboard-list" class="text-emerald-500 w-5 h-5"></i>
-            <h3 class="font-bold text-white text-[14px]">Calculated Daily Grocery List</h3>
+            <h3 class="font-bold text-white text-[14px]">Calculated Daily Grocery List <span class="text-slate-600 text-[10px] font-mono ml-1">110% NRC target</span></h3>
             </div>
-            <div id="reset-overrides-container"></div>
+            <div class="flex items-center gap-4">
+              <div id="grocery-kcal-badge" class="flex items-baseline gap-1"></div>
+              <div id="reset-overrides-container"></div>
+            </div>
+        </div>
+        <div id="mer-slider-container" class="px-6 py-4 border-b border-slate-700/50 bg-slate-900/30">
+            <!-- Populated by JS -->
         </div>
         <div id="grocery-list-container" class="divide-y divide-slate-700/50">
             <!-- Populated by JS -->
@@ -165,8 +172,8 @@
             <i data-lucide="zap" class="w-6 h-6"></i>
             </div>
             <div>
-            <h2 class="text-xl font-bold">Nutritional Performance Matrix</h2>
-            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v8.2.2 dosings</p>
+            <h2 class="text-xl font-bold">Nutritional Performance Matrix <button id="sort-nrc-btn" onclick="toggleNrcSort()" class="text-[10px] text-slate-500 hover:text-slate-300 font-mono px-2 py-0.5 bg-slate-800 border border-slate-700 rounded ml-2 align-middle transition-colors">↓ sort %NRC</button></h2>
+            <p class="text-slate-400 text-[13px]">Real-time dynamic verification against exact BOM v8.2.5 dosings</p>
             </div>
         </div>
 
@@ -197,9 +204,9 @@
             </div>
             <div class="bg-emerald-900/10 p-5 rounded-2xl border border-emerald-800/30">
             <div class="text-emerald-500 mb-2"><i data-lucide="activity" class="w-5 h-5"></i></div>
-            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v8.2.2 Engine Sync</div>
+            <div class="text-[12px] font-bold uppercase tracking-wider mb-2 text-emerald-200">BOM v8.2.5 Engine Sync</div>
             <p class="text-[12px] text-slate-300 leading-relaxed">
-                Sardine meal, eggshell powder (dog), and bovine tallow are live in the engine. Sardine adds marine Ca, DHA, EPA, VitD, and iodine. Eggshell replaces bone MCHA in DogCore — near-zero P, high Ca, clean label.
+                Standardized bulk specifications applied. Thiamine and Potassium Iodide now utilize triturated mass (10% and 0.1% respectively) rather than pure active mass to match production scale constraints.
             </p>
             </div>
             <div class="bg-blue-900/10 p-5 rounded-2xl border border-blue-800/30">
@@ -234,18 +241,37 @@
 
         <!-- BOM Formulation Display (Protected Content) -->
         <section id="secure-bom-section" class="bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-700 hidden">
-        <div class="flex items-center gap-3 mb-6">
-            <div class="bg-slate-900 border border-slate-700 p-2 rounded-xl text-slate-400">
-            <i data-lucide="microscope" class="w-6 h-6"></i>
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+              <div class="bg-slate-900 border border-slate-700 p-2 rounded-xl text-slate-400">
+                <i data-lucide="microscope" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-white">Formulation Master List</h2>
+                <p id="bom-title-display" class="text-slate-400 text-[13px]">Unit size: 4000 mg (CatCore)</p>
+              </div>
             </div>
-            <div>
-            <h2 class="text-xl font-bold text-white">BOM Formulation (% Unit Mass)</h2>
-            <p id="bom-title-display" class="text-slate-400 text-[13px]">Unit size: 4000 mg (CatCore)</p>
-            </div>
+            <!-- Top Right Export shortcut -->
+            <button id="quick-export-btn" onclick="exportFullReportCSV()" class="hidden text-[11px] px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold shadow transition-all flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i> <span>Export Record</span></button>
         </div>
         
-        <div id="bom-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <div id="bom-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Populated by JS -->
+        </div>
+
+        <!-- Admin: BOM Editor -->
+        <div id="admin-debug-block" class="hidden mt-8 space-y-4 border-t-2 border-slate-700 pt-6">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[12px] font-bold text-amber-400 uppercase tracking-wider">&#9881; Admin: Edit Unit Formulation (%w/w)</span>
+            <div class="flex gap-2">
+              <button onclick="applyBomEdits()" class="text-[11px] px-3 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-emerald-200 rounded font-bold transition-colors">&#10003; Apply Edits</button>
+            </div>
+          </div>
+          <div id="bom-editor-container" class="font-mono text-[11px] space-y-1"></div>
+          <div id="bom-total-display" class="text-[11px] font-mono text-slate-500 mt-2"></div>
+          
+          <!-- Dedicated container for debug equations so it doesn't overwrite the buttons -->
+          <div id="admin-debug-text" class="mt-6 border-t border-slate-700/50 pt-4"></div>
         </div>
         </section>
     </div>
@@ -407,6 +433,10 @@
         if (inputHash === HASH_CDMO || inputHash === HASH_ADMIN) {
             document.getElementById('auth-lock').classList.add('hidden');
             document.getElementById('secure-bom-section').classList.remove('hidden');
+            if (inputHash === HASH_ADMIN) {
+              document.getElementById('admin-debug-block').classList.remove('hidden');
+              document.getElementById('quick-export-btn').classList.remove('hidden');
+            }
             errorMsg.classList.add('hidden');
             render(); // Ensure BOM reflects current species toggle state on reveal
         } else {
@@ -464,56 +494,59 @@
     // --- EMBEDDED DATA ---
     const DD = {
       nrc: {
-        cat_adult: { nutrients: { protein_g:5.0, fat_g:2.5, calcium_mg:180.0, phosphorus_mg:160.0, magnesium_mg:25.0, sodium_mg:85.0, potassium_mg:330.0, iron_mg:2.5, copper_mg:0.3, zinc_mg:1.8, manganese_mg:0.3, iodine_ug:35.0, selenium_ug:19.0, vitamin_a_ug:63.0, vitamin_d_ug:0.44, vitamin_e_mg:2.5, thiamine_b1_mg:0.33, riboflavin_b2_mg:0.45, pantothenic_b5_mg:0.4, pyridoxine_b6_mg:0.16, folate_b9_ug:47.0, cobalamin_b12_ug:1.4, choline_mg:85.0, taurine_mg:22.5, arginine_mg:250.0, lysine_mg:170.0, methionine_mg:170.0, dha_mg:50.0, epa_mg:25.0 } },
-        dog_adult: { nutrients: { protein_g:50.0, fat_g:14.0, calcium_mg:1400.0, phosphorus_mg:1000.0, magnesium_mg:150.0, sodium_mg:400.0, potassium_mg:1100.0, iron_mg:7.6, copper_mg:1.5, zinc_mg:9.0, manganese_mg:1.2, iodine_ug:220.0, selenium_ug:95.0, vitamin_a_ug:379.0, vitamin_d_ug:3.4, vitamin_e_mg:8.0, thiamine_b1_mg:2.25, riboflavin_b2_mg:1.3, pantothenic_b5_mg:4.0, pyridoxine_b6_mg:0.38, folate_b9_ug:68.0, cobalamin_b12_ug:8.8, choline_mg:425.0, taurine_mg:0, arginine_mg:1040.0, lysine_mg:870.0, methionine_mg:480.0, dha_mg:100.0, epa_mg:50.0 } }
+        cat_adult: { nutrients: { protein_g:5.0, fat_g:2.5, calcium_mg:180.0, phosphorus_mg:160.0, magnesium_mg:25.0, sodium_mg:85.0, potassium_mg:330.0, chloride_mg:240.0, iron_mg:2.5, copper_mg:0.3, zinc_mg:1.8, manganese_mg:0.3, iodine_ug:35.0, selenium_ug:19.0, vitamin_a_ug:63.0, vitamin_d_ug:0.44, vitamin_e_mg:2.5, thiamine_b1_mg:0.33, riboflavin_b2_mg:0.45, pantothenic_b5_mg:0.4, pyridoxine_b6_mg:0.16, folate_b9_ug:47.0, cobalamin_b12_ug:1.4, choline_mg:85.0, taurine_mg:22.5, arginine_mg:250.0, lysine_mg:170.0, methionine_mg:170.0, dha_mg:50.0, epa_mg:25.0 } },
+        dog_adult: { nutrients: { protein_g:50.0, fat_g:14.0, calcium_mg:1400.0, phosphorus_mg:1000.0, magnesium_mg:150.0, sodium_mg:400.0, potassium_mg:1100.0, chloride_mg:900.0, iron_mg:7.6, copper_mg:1.5, zinc_mg:9.0, manganese_mg:1.2, iodine_ug:220.0, selenium_ug:95.0, vitamin_a_ug:379.0, vitamin_d_ug:3.4, vitamin_e_mg:8.0, thiamine_b1_mg:2.25, riboflavin_b2_mg:1.3, pantothenic_b5_mg:4.0, pyridoxine_b6_mg:0.38, folate_b9_ug:68.0, cobalamin_b12_ug:8.8, choline_mg:425.0, taurine_mg:0, arginine_mg:1040.0, lysine_mg:870.0, methionine_mg:480.0, dha_mg:100.0, epa_mg:50.0 } }
       },
-      hrf: { vitamin_a:0.82, vitamin_d:0.85, vitamin_e:0.8, thiamine_b1:0.0, riboflavin_b2:0.85, pantothenic_b5:0.8, pyridoxine_b6:0.8, folate_b9:0.68, cobalamin_b12:0.75, iron:0.97, copper:0.97, zinc:0.97, selenium:0.93, potassium:0.96, sodium:0.96, magnesium:0.97, phosphorus:0.97, calcium:0.97, taurine:0.0, arginine:0.85, lysine:0.85, methionine:0.85, choline:0.9 },
+      hrf: { vitamin_a:0.82, vitamin_d:0.85, vitamin_e:0.8, thiamine_b1:0.0, riboflavin_b2:0.85, pantothenic_b5:0.8, pyridoxine_b6:0.8, folate_b9:0.68, cobalamin_b12:0.75, iron:0.97, copper:0.97, zinc:0.97, selenium:0.93, potassium:0.96, sodium:0.96, chloride:0.96, magnesium:0.97, phosphorus:0.97, calcium:0.97, taurine:0.0, arginine:0.85, lysine:0.85, methionine:0.85, choline:0.9 },
       ingredients: {
-        mutton_boneless: { kcal_per_100g:122, nutrients_per_100g: { protein_g:20.5, fat_g:4.5, vitamin_a_ug:2.0, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.22, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.35, folate_b9_ug:5.0, cobalamin_b12_ug:1.5, iron_mg:2.8, copper_mg:0.15, zinc_mg:4.5, selenium_ug:8.0, phosphorus_mg:185.0, potassium_mg:385.0, sodium_mg:75.0, magnesium_mg:22.0, taurine_mg:50.0, arginine_mg:1380.0, lysine_mg:1820.0, methionine_mg:540.0, la_mg:160, iodine_ug:5.0 } },
-        chicken_breast: { kcal_per_100g:110, nutrients_per_100g: { protein_g:22.5, fat_g:2.5, vitamin_a_ug:8.0, thiamine_b1_mg:0.08, riboflavin_b2_mg:0.12, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.6, folate_b9_ug:4.0, cobalamin_b12_ug:0.3, iron_mg:0.85, copper_mg:0.05, zinc_mg:0.8, selenium_ug:18.0, phosphorus_mg:200.0, potassium_mg:340.0, sodium_mg:65.0, magnesium_mg:25.0, arginine_mg:1400.0, lysine_mg:1900.0, methionine_mg:590.0, la_mg:570, iodine_ug:7.0 } },
-        egg_whole: { kcal_per_100g:143, nutrients_per_100g: { protein_g:13.0, fat_g:10.5, vitamin_a_ug:140.0, vitamin_d_ug:1.1, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.42, pantothenic_b5_mg:1.4, pyridoxine_b6_mg:0.14, folate_b9_ug:44.0, cobalamin_b12_ug:1.2, choline_mg:294.0, iron_mg:1.8, copper_mg:0.08, zinc_mg:1.1, selenium_ug:27.0, phosphorus_mg:195.0, potassium_mg:130.0, sodium_mg:140.0, magnesium_mg:12.0, arachidonic_acid_mg:150.0, arginine_mg:820.0, lysine_mg:910.0, methionine_mg:390.0, la_mg:1188, iodine_ug:28.0 } },
-        curd_dahi: { kcal_per_100g:61, nutrients_per_100g: { protein_g:3.5, fat_g:4.0, vitamin_a_ug:30.0, riboflavin_b2_mg:0.18, pantothenic_b5_mg:0.3, folate_b9_ug:12.0, cobalamin_b12_ug:0.35, calcium_mg:120.0, phosphorus_mg:95.0, potassium_mg:140.0, sodium_mg:45.0, magnesium_mg:12.0, selenium_ug:2.5, arginine_mg:120.0, lysine_mg:270.0, methionine_mg:80.0, la_mg:60, iodine_ug:5.0 } },
-        steamed_veg_mix: { kcal_per_100g:35, nutrients_per_100g: { vitamin_a_ug:0.0, folate_b9_ug:13.5, pyridoxine_b6_mg:0.09, potassium_mg:215.0, magnesium_mg:11.5, iron_mg:0.38, copper_mg:0.04, zinc_mg:0.17, selenium_ug:0.4, calcium_mg:28.0, phosphorus_mg:32.0, la_mg:50 } },
-        bovine_tallow: { kcal_per_100g:902, nutrients_per_100g: { fat_g:100.0, vitamin_a_ug:0.0, vitamin_d_ug:0.0, vitamin_e_mg:2.7, la_mg:3100 } },
-        glycerine_usp: { kcal_per_100g:312, nutrients_per_100g: { la_mg:0 } },
-        silicates: { kcal_per_100g:0, nutrients_per_100g: { la_mg:0 } },
-        antioxidant_blend: { kcal_per_100g:50, nutrients_per_100g: { vitamin_e_mg:0, la_mg:0 } },
-        carrier_blend: { kcal_per_100g:380, nutrients_per_100g: { la_mg:0 } },
-        buffalo_liver_powder: { kcal_per_100g:450, nutrients_per_100g: { protein_g:78.0, fat_g:12.0, calcium_mg:110.0, phosphorus_mg:1556.0, magnesium_mg:72.0, iron_mg:26.4, copper_mg:58.0, zinc_mg:18.0, selenium_ug:100.0, manganese_mg:0.8, iodine_ug:4.0, vitamin_a_ug:34000.0, vitamin_d_ug:4.8, vitamin_e_mg:1.6, thiamine_b1_mg:0.72, riboflavin_b2_mg:11.2, pantothenic_b5_mg:23.6, pyridoxine_b6_mg:4.2, folate_b9_ug:1160.0, cobalamin_b12_ug:260.0, choline_mg:1332.0, taurine_mg:180.0, la_mg:520 } },
-        chicken_liver_powder: { kcal_per_100g:380, nutrients_per_100g: { protein_g:67.6, fat_g:12.0, calcium_mg:48.0, phosphorus_mg:1188.0, magnesium_mg:80.0, iron_mg:45.6, copper_mg:2.0, zinc_mg:15.6, selenium_ug:120.0, manganese_mg:1.2, vitamin_a_ug:17930.0, vitamin_d_ug:5.2, vitamin_e_mg:2.4, thiamine_b1_mg:1.12, riboflavin_b2_mg:7.0, pantothenic_b5_mg:27.0, pyridoxine_b6_mg:3.4, folate_b9_ug:2352.0, cobalamin_b12_ug:66.4, choline_mg:1160.0, taurine_mg:240.0, la_mg:1600, iodine_ug:152.0 } },
-        bsfl: { kcal_per_100g:270, nutrients_per_100g: { protein_g:42.0, fat_g:15.0, thiamine_b1_mg:0.25, riboflavin_b2_mg:1.8, folate_b9_ug:40.0, cobalamin_b12_ug:0.0, iron_mg:5.0, copper_mg:0.8, zinc_mg:11.0, manganese_mg:14.5, selenium_ug:12, calcium_mg:900.0, phosphorus_mg:900.0, magnesium_mg:80.0, la_mg:1200 } },
-        egg_yolk_powder: { kcal_per_100g:669, nutrients_per_100g: { protein_g:34.0, fat_g:60.0, vitamin_a_ug:765.0, vitamin_d_ug:5.4, vitamin_e_mg:5.5, thiamine_b1_mg:0.19, riboflavin_b2_mg:1.08, pantothenic_b5_mg:5.2, pyridoxine_b6_mg:0.35, folate_b9_ug:146.0, cobalamin_b12_ug:3.1, choline_mg:1190.0, iron_mg:6.0, copper_mg:0.47, zinc_mg:3.9, selenium_ug:55.0, la_mg:7080, iodine_ug:48.0 } },
-        algal_oil_powder: { kcal_per_100g:225, nutrients_per_100g: { fat_g:25.0, dha_mg:20000.0, epa_mg:1000.0, la_mg:0 } },
-        lecithin: { kcal_per_100g:405, nutrients_per_100g: { fat_g:45.0, choline_mg:3975.0, la_mg:24750 } },
-        ca_lactate_gluconate: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:13000.0, la_mg:0 } },
-        ca_citrate_malate: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:24000.0, la_mg:0 } },
-        bone_mcha: { kcal_per_100g:0, nutrients_per_100g: { calcium_mg:22500.0, phosphorus_mg:11000.0, magnesium_mg:800.0, protein_g:22.0, iron_mg:0.5, zinc_mg:0.4, copper_mg:0.05, la_mg:0 } },
-        potassium_iodide: { kcal_per_100g:0, nutrients_per_100g: { iodine_ug:76450000.0, la_mg:0 } },
-        taurine_pure: { kcal_per_100g:0, nutrients_per_100g: { taurine_mg:100000.0, la_mg:0 } },
-        vitamin_e_natural: { kcal_per_100g:0, nutrients_per_100g: { vitamin_e_mg:100000.0, la_mg:0 } },
-        thiamine_hcl: { kcal_per_100g:0, nutrients_per_100g: { thiamine_b1_mg:100000.0, la_mg:0 } },
-        cholecalciferol_d3: { kcal_per_100g:0, nutrients_per_100g: { vitamin_d_ug:2500000.0, la_mg:0 } },
-        msm: { kcal_per_100g:0, nutrients_per_100g: { sulphur_mg:34040, la_mg:0 } },
-        mos: { kcal_per_100g:0, nutrients_per_100g: {} },
-        yucca_schidigera: { kcal_per_100g:0, nutrients_per_100g: {} },
-        sardine_meal: { kcal_per_100g:250, nutrients_per_100g: { protein_g:65.0, fat_g:12.0, calcium_mg:1530.0, phosphorus_mg:1960.0, magnesium_mg:45.0, iron_mg:3.2, zinc_mg:2.8, selenium_ug:65.0, vitamin_a_ug:80.0, vitamin_d_ug:22.0, vitamin_e_mg:2.5, iodine_ug:115.0, dha_mg:1200.0, epa_mg:1000.0, la_mg:450.0, choline_mg:120.0, arginine_mg:4200.0, lysine_mg:5800.0, methionine_mg:2100.0 } },
-        eggshell_powder: { kcal_per_100g:0, nutrients_per_100g: { protein_g:2.0, fat_g:0.0, calcium_mg:38000.0, phosphorus_mg:100.0, magnesium_mg:140.0, potassium_mg:80.0, sodium_mg:50.0, la_mg:0 } }
+        mutton_boneless: { stdName: "Mutton (Boneless)", spec: "Steamed meat pool", kcal_per_100g:122, nutrients_per_100g: { protein_g:20.5, fat_g:4.5, vitamin_a_ug:2.0, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.22, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.35, folate_b9_ug:5.0, cobalamin_b12_ug:1.5, iron_mg:2.8, copper_mg:0.15, zinc_mg:4.5, selenium_ug:8.0, phosphorus_mg:185.0, potassium_mg:385.0, sodium_mg:75.0, chloride_mg:105.0, magnesium_mg:22.0, taurine_mg:50.0, arginine_mg:1380.0, lysine_mg:1820.0, methionine_mg:540.0, la_mg:160, iodine_ug:5.0 } },
+        chicken_breast: { stdName: "Chicken Breast", spec: "Steamed meat pool", kcal_per_100g:110, nutrients_per_100g: { protein_g:22.5, fat_g:2.5, vitamin_a_ug:8.0, thiamine_b1_mg:0.08, riboflavin_b2_mg:0.12, pantothenic_b5_mg:0.8, pyridoxine_b6_mg:0.6, folate_b9_ug:4.0, cobalamin_b12_ug:0.3, iron_mg:0.85, copper_mg:0.05, zinc_mg:0.8, selenium_ug:25.0, phosphorus_mg:200.0, potassium_mg:340.0, sodium_mg:65.0, chloride_mg:85.0, magnesium_mg:25.0, arginine_mg:1400.0, lysine_mg:1900.0, methionine_mg:590.0, la_mg:570, iodine_ug:7.0 } },
+        egg_whole: { stdName: "Whole Egg", spec: "Boiled", kcal_per_100g:143, nutrients_per_100g: { protein_g:13.0, fat_g:10.5, vitamin_a_ug:140.0, vitamin_d_ug:1.1, thiamine_b1_mg:0.12, riboflavin_b2_mg:0.42, pantothenic_b5_mg:1.4, pyridoxine_b6_mg:0.14, folate_b9_ug:44.0, cobalamin_b12_ug:1.2, choline_mg:294.0, iron_mg:1.8, copper_mg:0.08, zinc_mg:1.1, selenium_ug:27.0, phosphorus_mg:195.0, potassium_mg:130.0, sodium_mg:140.0, chloride_mg:219.0, magnesium_mg:12.0, arachidonic_acid_mg:150.0, arginine_mg:820.0, lysine_mg:910.0, methionine_mg:390.0, la_mg:1188, iodine_ug:28.0 } },
+        curd_dahi: { stdName: "Curd (Dahi)", spec: "Dairy", kcal_per_100g:61, nutrients_per_100g: { protein_g:3.5, fat_g:4.0, vitamin_a_ug:30.0, riboflavin_b2_mg:0.18, pantothenic_b5_mg:0.3, folate_b9_ug:12.0, cobalamin_b12_ug:0.35, calcium_mg:120.0, phosphorus_mg:95.0, potassium_mg:140.0, sodium_mg:45.0, chloride_mg:69.0, magnesium_mg:12.0, selenium_ug:2.5, arginine_mg:120.0, lysine_mg:270.0, methionine_mg:80.0, la_mg:60, iodine_ug:5.0 } },
+        steamed_veg_mix: { stdName: "Steamed Veg Mix", spec: "White/Red Pumpkin/Amaranthus", kcal_per_100g:22, nutrients_per_100g: { vitamin_a_ug:148.0, folate_b9_ug:28.0, riboflavin_b2_mg:0.09, thiamine_b1_mg:0.03, pyridoxine_b6_mg:0.07, potassium_mg:198.0, magnesium_mg:20.5, iron_mg:1.05, copper_mg:0.07, zinc_mg:0.25, selenium_ug:0.3, calcium_mg:107.0, phosphorus_mg:38.0, la_mg:30 , chloride_mg:25.0 } },
+        sardine_whole: { stdName: "Sardine (Whole)", spec: "Whole Prey", kcal_per_100g:208, nutrients_per_100g: { protein_g:25.0, fat_g:11.0, vitamin_d_ug:4.8, riboflavin_b2_mg:0.23, pantothenic_b5_mg:0.64, cobalamin_b12_ug:8.9, calcium_mg:380.0, phosphorus_mg:490.0, selenium_ug:52.0, iodine_ug:40.0, taurine_mg:120.0, dha_mg:1480.0, la_mg:220 } },
+        
+        // --- BOM INGREDIENTS ---
+        bovine_tallow: { stdName: "Bovine Tallow (Refined)", spec: "Refined Edible Grade Lipid", kcal_per_100g:902, nutrients_per_100g: { fat_g:100.0, vitamin_a_ug:0.0, vitamin_d_ug:0.0, vitamin_e_mg:2.7, la_mg:3100 } },
+        bsfl: { stdName: "BSFL (Full Fat Meal)", spec: "Whole Insect Protein Meal", kcal_per_100g:270, nutrients_per_100g: { protein_g:42.0, fat_g:15.0, thiamine_b1_mg:0.25, riboflavin_b2_mg:1.8, folate_b9_ug:40.0, iron_mg:5.0, copper_mg:0.8, zinc_mg:11.0, manganese_mg:14.5, selenium_ug:12, calcium_mg:900.0, phosphorus_mg:900.0, magnesium_mg:80.0, la_mg:1200 } },
+        sardine_meal: { stdName: "Sardine Meal (60% Pro)", spec: "Low-Ash Marine Protein Concentrate", kcal_per_100g:250, nutrients_per_100g: { protein_g:65.0, fat_g:12.0, calcium_mg:1530.0, phosphorus_mg:1960.0, magnesium_mg:45.0, iron_mg:3.2, zinc_mg:2.8, selenium_ug:65.0, vitamin_a_ug:80.0, vitamin_d_ug:22.0, vitamin_e_mg:2.5, iodine_ug:115.0, dha_mg:1200.0, epa_mg:1000.0, la_mg:45, sodium_mg:558.0, chloride_mg:860.0, choline_mg:120.0, arginine_mg:4200.0, lysine_mg:5800.0, methionine_mg:2100.0 } },
+        chicken_liver_powder: { stdName: "Chicken Liver Powder (SD)", spec: "Spray-Dried Monogastric Extract", kcal_per_100g:380, nutrients_per_100g: { protein_g:67.6, fat_g:12.0, calcium_mg:48.0, phosphorus_mg:1188.0, magnesium_mg:80.0, iron_mg:45.6, copper_mg:2.0, zinc_mg:15.6, selenium_ug:120.0, manganese_mg:1.2, vitamin_a_ug:17930.0, vitamin_d_ug:5.2, vitamin_e_mg:2.4, thiamine_b1_mg:1.12, riboflavin_b2_mg:7.0, pantothenic_b5_mg:27.0, pyridoxine_b6_mg:3.4, folate_b9_ug:2352.0, cobalamin_b12_ug:66.4, choline_mg:1160.0, taurine_mg:240.0, la_mg:1600, iodine_ug:152.0 } },
+        ca_lactate_gluconate: { stdName: "Calcium Lactate Gluconate", spec: "USP Pharmaceutical Grade", kcal_per_100g:0, nutrients_per_100g: { calcium_mg:13000.0, la_mg:0 } },
+        algal_oil_powder: { stdName: "Algal Oil (10% SD)", spec: "Microencapsulated (Maltodextrin)", kcal_per_100g:225, nutrients_per_100g: { fat_g:25.0, dha_mg:20000.0, epa_mg:1000.0, la_mg:0 } },
+        bone_mcha: { stdName: "Bone MCHA", spec: "Microcrystalline Hydroxyapatite", kcal_per_100g:0, nutrients_per_100g: { calcium_mg:22500.0, phosphorus_mg:11000.0, magnesium_mg:800.0, protein_g:22.0, iron_mg:0.5, zinc_mg:0.4, copper_mg:0.05, la_mg:0 } },
+        green_lipped_mussel: { stdName: "Green-Lipped Mussel", spec: "Perna canaliculus Freeze-Dried", kcal_per_100g:280, nutrients_per_100g: { protein_g:60.0, fat_g:8.0, dha_mg:500.0, epa_mg:200.0, la_mg:300, calcium_mg:230.0, phosphorus_mg:650.0, magnesium_mg:75.0, zinc_mg:3.0, manganese_mg:2.0, selenium_ug:4.0, iron_mg:5.0, sodium_mg:290.0, potassium_mg:420.0 } },
+        ca_citrate_malate: { stdName: "Calcium Citrate Malate", spec: "USP Micronized Powder", kcal_per_100g:0, nutrients_per_100g: { calcium_mg:24000.0, la_mg:0 } },
+        mcc: { stdName: "MCC (Avicel PH-101)", spec: "Microcrystalline Cellulose NF (Sink)", kcal_per_100g:380, nutrients_per_100g: { la_mg:0 } },
+        glycerine_usp: { stdName: "Glycerine USP (Veg)", spec: "99.7% Vegetable Origin USP", kcal_per_100g:312, nutrients_per_100g: { la_mg:0 } },
+        lecithin: { stdName: "Lecithin (Sunflower)", spec: "Food Grade De-oiled Phospholipids", kcal_per_100g:405, nutrients_per_100g: { fat_g:45.0, choline_mg:3975.0, la_mg:24750 } },
+        astaxanthin: { stdName: "Astaxanthin (1.5% Active)", spec: "H. pluvialis Standardized Biomass", kcal_per_100g:380, nutrients_per_100g: { protein_g:45.0, fat_g:15.0, la_mg:1200, vitamin_e_mg:0.0 } },
+        antioxidant_blend: { stdName: "Antioxidant Blend", spec: "Proprietary Lipid Stabilizer", kcal_per_100g:50, nutrients_per_100g: { vitamin_e_mg:0, la_mg:0 } },
+        vitamin_e_sd50: { stdName: "dl-alpha-Vit E (50% SD)", spec: "Starch-Encapsulated (50% Active)", kcal_per_100g:0, nutrients_per_100g: { vitamin_e_mg:50000.0, la_mg:0 } },
+        thiamine_hcl: { stdName: "Thiamine HCl (10% SD)", spec: "Maltodextrin-Encapsulated (10% Active)", kcal_per_100g:0, nutrients_per_100g: { thiamine_b1_mg:10000.0, la_mg:0 } },
+        potassium_iodide: { stdName: "Potassium Iodide (0.1%)", spec: "Standardized 0.1% Trituration", kcal_per_100g:0, nutrients_per_100g: { iodine_ug:76450.0, la_mg:0 } },
+        magnesium_stearate: { stdName: "Magnesium Stearate (Veg)", spec: "Vegetable Derived NF Excipient", kcal_per_100g:0, nutrients_per_100g: { magnesium_mg:4200.0, la_mg:0 } },
+        buffalo_liver_powder: { stdName: "Buffalo Liver Powder (SD)", spec: "Spray-Dried Ruminant Extract", kcal_per_100g:450, nutrients_per_100g: { protein_g:78.0, fat_g:12.0, calcium_mg:110.0, phosphorus_mg:1556.0, magnesium_mg:72.0, iron_mg:26.4, copper_mg:58.0, zinc_mg:18.0, selenium_ug:100.0, manganese_mg:0.8, iodine_ug:4.0, vitamin_a_ug:34000.0, vitamin_d_ug:4.8, vitamin_e_mg:1.6, thiamine_b1_mg:0.72, riboflavin_b2_mg:11.2, pantothenic_b5_mg:23.6, pyridoxine_b6_mg:4.2, folate_b9_ug:1160.0, cobalamin_b12_ug:260.0, choline_mg:1332.0, taurine_mg:180.0, la_mg:520 } },
+        eggshell_powder: { stdName: "Eggshell Powder", spec: "Natural Calcitic Matrix", kcal_per_100g:0, nutrients_per_100g: { protein_g:2.0, fat_g:0.0, calcium_mg:38000.0, phosphorus_mg:100.0, magnesium_mg:140.0, potassium_mg:80.0, sodium_mg:50.0, la_mg:0 } },
+        magnesium_bisglycinate: { stdName: "Magnesium Bisglycinate", spec: "Fully Chelated Amino Acid Chelate", kcal_per_100g:0, nutrients_per_100g: { magnesium_mg:10000.0, la_mg:0 } },
+        taurine_pure: { stdName: "Taurine (Pure USP)", spec: "99% Crystalline Amino Acid", kcal_per_100g:0, nutrients_per_100g: { taurine_mg:100000.0, la_mg:0 } },
+        lysine_hcl: { stdName: "Lysine HCl", spec: "99% Crystalline Amino Acid", kcal_per_100g:0, nutrients_per_100g: { lysine_mg:80000.0, chloride_mg:19400.0, la_mg:0 } },
+        selenium_yeast: { stdName: "Selenium Yeast (2000ppm)", spec: "DOGCORE_ONLY", kcal_per_100g:325, nutrients_per_100g: { selenium_ug:200000.0, protein_g:45.0 } }
       },
       bom: {
         catcore: {
           units_per_day: 4,
-          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:60.0 }, bsfl: { dose_mg_per_unit:620.0 }, algal_oil_powder: { dose_mg_per_unit:280.0 }, chicken_liver_powder: { dose_mg_per_unit:360.0 }, buffalo_liver_powder: { dose_mg_per_unit:70.0 }, sardine_meal: { dose_mg_per_unit:440.0 }, lecithin: { dose_mg_per_unit:80.0 }, bone_mcha: { dose_mg_per_unit:300.0 }, mos: { dose_mg_per_unit:28.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:620.0 }, ca_citrate_malate: { dose_mg_per_unit:100.0 }, msm: { dose_mg_per_unit:30.0 }, taurine_pure: { dose_mg_per_unit:8.0 }, vitamin_e_natural: { dose_mg_per_unit:2.8 }, thiamine_hcl: { dose_mg_per_unit:0.12 }, potassium_iodide: { dose_mg_per_unit:0.008 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:21.072 } }
+          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, bsfl: { dose_mg_per_unit:640.0 }, sardine_meal: { dose_mg_per_unit:400.0 }, chicken_liver_powder: { dose_mg_per_unit:400.0 }, ca_lactate_gluconate: { dose_mg_per_unit:400.0 }, algal_oil_powder: { dose_mg_per_unit:280.0 }, bone_mcha: { dose_mg_per_unit:320.0 }, green_lipped_mussel: { dose_mg_per_unit:140.0 }, ca_citrate_malate: { dose_mg_per_unit:188.71 }, lysine_hcl: { dose_mg_per_unit:100.0 }, mcc: { dose_mg_per_unit:80.09 }, glycerine_usp: { dose_mg_per_unit:80.0 }, lecithin: { dose_mg_per_unit:80.0 }, astaxanthin: { dose_mg_per_unit:74.4 }, antioxidant_blend: { dose_mg_per_unit:60.0 }, vitamin_e_sd50: { dose_mg_per_unit:5.6 }, thiamine_hcl: { dose_mg_per_unit:1.20 }, potassium_iodide: { dose_mg_per_unit:12.00 }, magnesium_stearate: { dose_mg_per_unit:20.0 }, buffalo_liver_powder: { dose_mg_per_unit:70.0 }, taurine_pure: { dose_mg_per_unit:8.0 } }
         },
         dogcore: {
           units_per_day: 10,
-          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, glycerine_usp: { dose_mg_per_unit:80.0 }, antioxidant_blend: { dose_mg_per_unit:80.0 }, bsfl: { dose_mg_per_unit:840.0 }, algal_oil_powder: { dose_mg_per_unit:274.0 }, chicken_liver_powder: { dose_mg_per_unit:191.2 }, buffalo_liver_powder: { dose_mg_per_unit:134.0 }, sardine_meal: { dose_mg_per_unit:740.0 }, lecithin: { dose_mg_per_unit:80.0 }, eggshell_powder: { dose_mg_per_unit:280.0 }, mos: { dose_mg_per_unit:20.0 }, yucca_schidigera: { dose_mg_per_unit:20.0 }, ca_lactate_gluconate: { dose_mg_per_unit:40.0 }, ca_citrate_malate: { dose_mg_per_unit:280.0 }, msm: { dose_mg_per_unit:32.0 }, taurine_pure: { dose_mg_per_unit:5.6 }, vitamin_e_natural: { dose_mg_per_unit:3.6 }, thiamine_hcl: { dose_mg_per_unit:0.36 }, potassium_iodide: { dose_mg_per_unit:0.024 }, carrier_blend: { dose_mg_per_unit:240.0 }, silicates: { dose_mg_per_unit:19.216 } }
+          ingredients: { bovine_tallow: { dose_mg_per_unit:640.0 }, bsfl: { dose_mg_per_unit:840.0 }, sardine_meal: { dose_mg_per_unit:740.0 }, chicken_liver_powder: { dose_mg_per_unit:191.2 }, ca_lactate_gluconate: { dose_mg_per_unit:140.54 }, algal_oil_powder: { dose_mg_per_unit:274.0 }, green_lipped_mussel: { dose_mg_per_unit:78.712 }, ca_citrate_malate: { dose_mg_per_unit:281.292 }, mcc: { dose_mg_per_unit:73.04 }, glycerine_usp: { dose_mg_per_unit:80.0 }, lecithin: { dose_mg_per_unit:80.0 }, astaxanthin: { dose_mg_per_unit:56.024 }, antioxidant_blend: { dose_mg_per_unit:80.0 }, vitamin_e_sd50: { dose_mg_per_unit:7.2 }, thiamine_hcl: { dose_mg_per_unit:3.60 }, potassium_iodide: { dose_mg_per_unit:24.00 }, magnesium_stearate: { dose_mg_per_unit:18.216 }, buffalo_liver_powder: { dose_mg_per_unit:185.0 }, eggshell_powder: { dose_mg_per_unit:168.46 }, magnesium_bisglycinate: { dose_mg_per_unit:32.0 }, taurine_pure: { dose_mg_per_unit:5.6 }, selenium_yeast: { dose_mg_per_unit:1.0 } }
         }
       }
     };
 
     const HRF_MAP = {
       calcium_mg:'calcium', phosphorus_mg:'phosphorus', magnesium_mg:'magnesium',
-      sodium_mg:'sodium', potassium_mg:'potassium', iron_mg:'iron', copper_mg:'copper',
+      sodium_mg:'sodium', potassium_mg:'potassium', chloride_mg:'chloride', iron_mg:'iron', copper_mg:'copper',
       zinc_mg:'zinc', selenium_ug:'selenium', vitamin_a_ug:'vitamin_a', vitamin_d_ug:'vitamin_d',
       vitamin_e_mg:'vitamin_e', thiamine_b1_mg:'thiamine_b1', riboflavin_b2_mg:'riboflavin_b2',
       pantothenic_b5_mg:'pantothenic_b5', pyridoxine_b6_mg:'pyridoxine_b6',
@@ -521,10 +554,117 @@
       taurine_mg:'taurine', arginine_mg:'arginine', lysine_mg:'lysine', methionine_mg:'methionine'
     };
 
+    // SCIENCE_CONSTANTS v8.2.5
+    // Energy:    dog 110xBW^0.64, cat 100xBW^0.67
+    // Blocks:    dog (BW/20)^0.75 nested M_bonus, cat (BW/4)^0.67 no bonus
+    // Nutrients: nrcBase x (BW/anchorBW)^nutrientExp -- decoupled from kcal
     const SCIENCE_CONSTANTS = {
-      dog: { coefficient: 110, exponent: 0.64, anchorWeight: 32 },
-      cat: { coefficient: 75, exponent: 0.75, anchorWeight: 5 }
+      dog: {
+        coefficient: 98, exponent: 0.64,
+        anchorBW: 20, nutrientExp: 0.64,
+        blockAnchorUnits: 10, blockAnchorBW: 20, blockExp: 0.64
+      },
+      cat: {
+        coefficient: 100, exponent: 0.67,
+        anchorBW: 4, nutrientExp: 0.67,
+        blockAnchorUnits: 4, blockAnchorBW: 4, blockExp: 0.67
+      }
     };
+
+    const ROUND_BIAS = 0.65; // rounds up if frac(raw) > 0.35 -- conservative
+
+    const FUZZY_AXES = {
+      activity: {
+        label: 'Activity',
+        options: {
+          dog: [
+            { label: 'Lazy',        delta:  0.00 },
+            { label: 'Somewhat',    delta:  0.14 },
+            { label: 'Active',      delta:  0.36 },
+            { label: 'Working',     delta:  0.76 }
+          ],
+          cat: [
+            { label: 'Lazy',        delta: -0.20 },
+            { label: 'Somewhat',    delta: -0.10 },
+            { label: 'Active',      delta:  0.00 }
+          ]
+        }
+      },
+      season: {
+        label: 'Season',
+        options: {
+          dog: [
+            { label: 'Hot Summer',  delta: -0.05 },
+            { label: 'Ambient',     delta:  0.00 },
+            { label: 'Cold Winter', delta:  0.10 }
+          ],
+          cat: [
+            { label: 'Hot Summer',  delta: -0.03 },
+            { label: 'Ambient',     delta:  0.00 },
+            { label: 'Cold Winter', delta:  0.07 }
+          ]
+        }
+      },
+      condition: {
+        label: 'Condition',
+        options: {
+          dog: [
+            { label: 'Chonky',      delta: -0.15 },
+            { label: 'Somewhat',    delta: -0.07 },
+            { label: 'Normal',      delta:  0.00 },
+            { label: 'Lean',        delta:  0.05 }
+          ],
+          cat: [
+            { label: 'Chonky',      delta: -0.20 },
+            { label: 'Somewhat',    delta: -0.10 },
+            { label: 'Normal',      delta:  0.00 },
+            { label: 'Lean',        delta:  0.05 }
+          ]
+        }
+      },
+      location: {
+        label: 'Environment',
+        options: {
+          dog: [
+            { label: 'Indoors',     delta:  0.00 },
+            { label: 'Yard Access', delta:  0.04 },
+            { label: 'Outdoors',    delta:  0.08 }
+          ],
+          cat: [
+            { label: 'Indoors',     delta:  0.00 },
+            { label: 'Balcony',     delta:  0.05 },
+            { label: 'Outdoors',    delta:  0.10 }
+          ]
+        }
+      },
+      neuter: {
+        label: 'Status',
+        options: {
+          dog: [
+            { label: 'Neutered',    delta:  0.00 },
+            { label: 'Intact',      delta:  0.10 }
+          ],
+          cat: [
+            { label: 'Neutered',    delta:  0.00 },
+            { label: 'Intact',      delta:  0.15 }
+          ]
+        }
+      }
+    };
+
+    window.FUZZY_AXES = FUZZY_AXES;
+    const MER_CLAMP = { dog: [0.75, 3.0], cat: [0.70, 1.70] };
+
+    function computeM(species) {
+      let M = 1.0;
+      for (const [axisKey, axis] of Object.entries(FUZZY_AXES)) {
+        const opts = axis.options[species];
+        const idx = state.sliders[axisKey];
+        M += opts[Math.min(idx, opts.length - 1)].delta;
+      }
+      const [lo, hi] = MER_CLAMP[species];
+      return Math.min(hi, Math.max(lo, M));
+    }
 
     const nutrientRowsConfig = [
       { key: 'kcal', label: 'Energy (MER)', unit: 'kcal' },
@@ -533,6 +673,9 @@
       { key: 'calcium_mg', label: 'Calcium', unit: 'mg' },
       { key: 'phosphorus_mg', label: 'Phosphorus', unit: 'mg' },
       { key: 'magnesium_mg', label: 'Magnesium', unit: 'mg' },
+      { key: 'sodium_mg', label: 'Sodium', unit: 'mg' },
+      { key: 'potassium_mg', label: 'Potassium', unit: 'mg' },
+      { key: 'chloride_mg', label: 'Chloride', unit: 'mg' },
       { key: 'zinc_mg', label: 'Zinc', unit: 'mg' },
       { key: 'copper_mg', label: 'Copper', unit: 'mg' },
       { key: 'iron_mg', label: 'Iron', unit: 'mg' },
@@ -542,18 +685,27 @@
       { key: 'vitamin_a_ug', label: 'Vitamin A', unit: 'µg' },
       { key: 'vitamin_d_ug', label: 'Vitamin D3', unit: 'µg' },
       { key: 'vitamin_e_mg', label: 'Vitamin E', unit: 'mg' },
-      { key: 'thiamine_b1_mg', label: 'Thiamine (B1)', unit: 'mg' },
+      { key: 'thiamine_b1_mg', label: 'Thiamine B1', unit: 'mg' },
+      { key: 'riboflavin_b2_mg', label: 'Riboflavin B2', unit: 'mg' },
+      { key: 'pantothenic_b5_mg', label: 'Pantothenic B5', unit: 'mg' },
+      { key: 'pyridoxine_b6_mg', label: 'Pyridoxine B6', unit: 'mg' },
+      { key: 'folate_b9_ug', label: 'Folate B9', unit: 'µg' },
+      { key: 'cobalamin_b12_ug', label: 'Cobalamin B12', unit: 'µg' },
       { key: 'choline_mg', label: 'Choline', unit: 'mg' },
       { key: 'taurine_mg', label: 'Taurine', unit: 'mg' },
       { key: 'dha_mg', label: 'DHA', unit: 'mg' }
     ];
 
+    window.nutrientRowsConfig_export = nutrientRowsConfig;
     // --- STATE ---
     let state = {
       species: 'cat',
       weight: 5,
       blockModifier: 0,
       eggMod: 0,
+      // cat defaults: lazy(-0.10) + neutered(-0.10) = M~0.80 = ~220kcal at 4kg (apartment reality)
+      // dog defaults: all 0 = M=1.0 = NRC intact-active 20kg anchor
+      sliders: { activity: 2, season: 1, condition: 2, location: 1, neuter: 1 }, // NRC dog anchor: M=1.50 → 1000 kcal=1.0 → 253 kcal at 4kg (Active=NRC ref)
       groceryMods: { mutton_boneless: 1, chicken_breast: 1, curd_dahi: 1, steamed_veg_mix: 1 }
     };
 
@@ -572,7 +724,13 @@
     // --- ACTIONS ---
     window.setSpecies = (newSpecies) => {
       state.species = newSpecies;
-      state.weight = newSpecies === 'dog' ? 20 : 5;
+      state.weight = newSpecies === 'dog' ? 20 : 4;
+      // Snap sliders to NRC anchor on species change
+      state.sliders = newSpecies === 'dog'
+        ? { activity: 2, season: 1, condition: 2, location: 0, neuter: 0 } // NRC dog anchor: M=1.50 → 1000 kcal at 20kg
+        : { activity: 2, season: 1, condition: 2, location: 1, neuter: 1 }; // NRC cat anchor: M=1.0 → 253 kcal
+      state.blockModifier = 0;
+      state.eggMod = 0;
       
       // Update toggle UI
       document.getElementById('btn-dog').className = `flex items-center gap-2 px-6 py-2 rounded-full transition-all ${state.species === 'dog' ? 'bg-slate-800 text-white shadow-sm border border-slate-700' : 'text-slate-400 hover:text-slate-200'}`;
@@ -608,9 +766,31 @@
       render();
     };
 
+    window.setSlider = (axis, val) => {
+      state.sliders[axis] = parseInt(val);
+      render();
+    };
+
+    let nrcSortAscPct = false;
+    window.toggleNrcSort = () => {
+      nrcSortAscPct = !nrcSortAscPct;
+      document.getElementById('sort-nrc-btn').textContent = nrcSortAscPct ? '↑ unsort' : '↓ sort %NRC';
+      const ind = document.getElementById('sort-nrc-indicator');
+      if (ind) { ind.classList.toggle('hidden', !nrcSortAscPct); }
+      render();
+    };
+
+    window.resetItemMod = (id) => {
+      state.groceryMods[id] = 1;
+      render();
+    };
+
     window.resetVariance = () => {
       state.blockModifier = 0;
       state.eggMod = 0;
+      state.sliders = state.species === 'dog'
+        ? { activity: 2, season: 1, condition: 2, location: 1, neuter: 1 }
+        : { activity: 2, season: 1, condition: 2, location: 0, neuter: 0 };
       state.groceryMods = { mutton_boneless: 1, chicken_breast: 1, curd_dahi: 1, steamed_veg_mix: 1 };
       render();
     };
@@ -621,17 +801,23 @@
       const config = SCIENCE_CONSTANTS[state.species];
       const nrcKey = isDog ? 'dog_adult' : 'cat_adult';
       const nrcBase = DD.nrc[nrcKey].nutrients;
-      
-      // 1. Modified Kleiber MER Calculation
-      const mer = config.coefficient * Math.pow(state.weight, config.exponent);
-      const targetKcal = mer * 1.10; // 10% Design Buffer
-      
-      // 2. Block Scaling
-      const theoryUnits = isDog 
-        ? 10 * Math.pow(state.weight / config.anchorWeight, 0.64)
-        : 4 * Math.pow(state.weight / config.anchorWeight, 0.75);
-      const actualUnits = Math.floor(theoryUnits + 0.65);
-      const finalUnits = Math.max(0, actualUnits + state.blockModifier);
+
+      // 1. Energy — Heusner 0.64 (dog) / NRC 0.67 (cat), fuzzy M, 10% protocol buffer
+      const mer = config.coefficient * Math.pow(state.weight, config.exponent); // MER1 base
+      const M = computeM(state.species);
+      const targetKcal = mer * M * 1.10; // 110% NRC target: steaming-loss + grocery cut variance buffer
+      const nrcTargetKcal = mer * M; // pure NRC MEm for % denominator
+
+      // 2. Block Scaling v8.2.5
+      // Dog: (10 + M_bonus) x (BW/20)^0.75  — M_bonus nested for allometric proportionality
+      // Cat: 4 x (BW/4)^0.67  — no M_bonus, chassis constant
+      const M_bonus = isDog
+        ? (M >= 2.1 ? 3 : M >= 1.8 ? 2 : M >= 1.5 ? 1 : M <= 0.78 ? 2 : M <= 0.85 ? 1 : state.weight <= 4 ? 2 : state.weight <= 8 ? 1 : 0)
+        : 0; // low-M dogs get +1-2 supplement units (dense nutrition for reduced food volume)
+      const baseRaw = config.blockAnchorUnits * Math.pow(state.weight / config.blockAnchorBW, config.blockExp);
+      const blockAnchor = config.blockAnchorUnits + M_bonus;
+      const rawUnits = blockAnchor * Math.pow(state.weight / config.blockAnchorBW, config.blockExp);
+      const finalUnits = Math.max(0, Math.floor(rawUnits + ROUND_BIAS) + state.blockModifier);
       
       // Dynamic Block Content & Kcal Calculator
       const spKey = isDog ? 'dogcore' : 'catcore';
@@ -654,32 +840,51 @@
       
       const blockEnergy = finalUnits * blockKcalPerUnit;
 
-      // 3. Allometric Scaling Factors
-      const scaleFactor = isDog 
-          ? (mer / 1000) 
-          : Math.pow(state.weight / config.anchorWeight, 0.75);
+      // 3. Allometric Scaling Factors — grocery base scales with BW allometry
+      const scaleFactor = isDog
+          ? (mer / 666.4) // dog: grocery proportional to MER1 base at 20kg (98×20^0.64=666.4)
+          : Math.pow(state.weight / config.blockAnchorBW, 0.67);
 
       // 4. Base Continuous Targets
-      const theoryMuttonG = isDog ? 250 * scaleFactor : 65 * scaleFactor;
-      const theoryChickenG = isDog ? 135 * scaleFactor : 100 * scaleFactor;
-      const theoryCurdG = isDog ? 150 * scaleFactor : 0;
-      const theoryVegG = isDog ? 400 * scaleFactor : 0;
+      const theoryMuttonG = isDog ? 290 * scaleFactor : 70 * scaleFactor;
+      const theoryChickenG = isDog ? 90 * scaleFactor : 60 * scaleFactor;
+
+      // Satiety compensation (v8.2.5):
+      // Dogs notice fullness via stomach distention, not just kcal.
+      // When M < 1.0 (low activity/hot/chonky) or hot season, boost veg+curd
+      // to maintain stomach volume. Proportional to BW for 20kg+ dogs.
+      const isSummer = state.sliders.season === 0; // Hot Summer = index 0
+      const satietyBoost = isDog
+        ? Math.min(1.6, Math.max(1.0,
+            (M < 1.0 ? (1.0 / M) : 1.0) * // low-M: inverse boost
+            (isSummer ? 1.15 : 1.0) * // summer: extra 15%
+            (state.weight >= 20 ? 1.1 : 1.0)          // 20kg+: extra 10%
+          ))
+        : 1.0;
+      const theoryCurdG = isDog ? 150 * scaleFactor * satietyBoost : 0;
+      const theoryVegG  = isDog ? 368 * scaleFactor * satietyBoost : 0;
       
       const theoryMuttonKcal = (theoryMuttonG / 100) * DD.ingredients.mutton_boneless.kcal_per_100g;
       const theoryChickenKcal = (theoryChickenG / 100) * DD.ingredients.chicken_breast.kcal_per_100g;
       const theoryMeatKcal = theoryMuttonKcal + theoryChickenKcal;
-      const theoryCurdKcal = isDog ? (theoryCurdG / 100) * DD.ingredients.curd_dahi.kcal_per_100g : 0;
-      const theoryVegKcal = isDog ? (theoryVegG / 100) * DD.ingredients.steamed_veg_mix.kcal_per_100g : 0;
+      const theoryCurdKcal = (theoryCurdG / 100) * DD.ingredients.curd_dahi.kcal_per_100g;
+      const theoryVegKcal = (theoryVegG / 100) * DD.ingredients.steamed_veg_mix.kcal_per_100g;
 
-      // 5. Egg Ceiling Logic
-      const theoryEggs = isDog ? 4 * scaleFactor : 0.5 * scaleFactor;
-      const roundedEggs = Math.ceil(theoryEggs * 4) / 4; 
+      // 5. Egg Ratchet Logic (v8.2.5)
+      // Floor = allometric base: 4 × (BW/20)^0.75 for dogs, 0.5 for cats
+      // Ratchets UP if M > 1.5, never DOWN below floor — chassis protection
+      const eggFloor = isDog
+        ? 4 * Math.pow(state.weight / 20, 0.75)
+        : 0.5 * Math.pow(state.weight / 4, 0.67);
+      const eggScale = (isDog && M > 1.5) ? (M / 1.5) : 1.0;
+      const theoryEggs = eggFloor * eggScale;
+      const roundedEggs = Math.ceil(theoryEggs * 4) / 4;
       const finalEggs = Math.max(0, roundedEggs + state.eggMod);
       const actualEggGrams = finalEggs * 50;
       const actualEggKcal = (actualEggGrams / 100) * DD.ingredients.egg_whole.kcal_per_100g;
 
       // 6. Meat Pool Re-scaling
-      const targetMeatKcal = Math.max(0, targetKcal - blockEnergy - actualEggKcal - theoryCurdKcal - theoryVegKcal);
+      const targetMeatKcal = Math.max(0, targetKcal - blockEnergy - actualEggKcal - theoryCurdKcal - theoryVegKcal); // targetKcal already includes 1.10 buffer // 110% buffer: steaming loss + grocery cut variance (total raw display = 110% of MER target) — ensures total raw display = 110% of MER target
       const meatCorrection = theoryMeatKcal > 0 ? targetMeatKcal / theoryMeatKcal : 0;
 
       const finalMuttonG = theoryMuttonG * meatCorrection;
@@ -689,16 +894,16 @@
       let groceryList = [];
       if (isDog) {
         groceryList = [
-          { id: 'mutton_boneless', label: 'Mutton (Boneless)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
-          { id: 'chicken_breast', label: 'Chicken Breast', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
+          { id: 'mutton_boneless', label: 'Mutton (Boneless, steamed)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
+          { id: 'chicken_breast', label: 'Chicken Breast (steamed)', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
           { id: 'egg_whole', label: 'Whole Egg', g: actualEggGrams, count: finalEggs, isEgg: true }, 
           { id: 'curd_dahi', label: 'Curd (Dahi)', g: theoryCurdG, baseG: theoryCurdG },
-          { id: 'steamed_veg_mix', label: 'Steamed Veg Mix', g: theoryVegG, baseG: theoryVegG }
+          { id: 'steamed_veg_mix', label: 'Veg Mix – White Pumpkin·Red Pumpkin·Amaranthus (2:1:1)', g: theoryVegG, baseG: theoryVegG }
         ];
       } else {
         groceryList = [
-          { id: 'mutton_boneless', label: 'Mutton (Boneless)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
-          { id: 'chicken_breast', label: 'Chicken Breast', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
+          { id: 'mutton_boneless', label: 'Mutton (Boneless, steamed)', g: finalMuttonG, baseG: theoryMuttonG, isMeat: true },
+          { id: 'chicken_breast', label: 'Chicken Breast (steamed)', g: finalChickenG, baseG: theoryChickenG, isMeat: true },
           { id: 'egg_whole', label: 'Whole Egg', g: actualEggGrams, count: finalEggs, isEgg: true }
         ];
       }
@@ -710,6 +915,8 @@
         return sum + ((item.g * modifier) / 100 * DD.ingredients[item.id].kcal_per_100g);
       }, 0);
       const deliveryTotalKcal = deliveryGroceryKcal + blockEnergy;
+      const meatRawKcal = groceryList.filter(i => i.id === "mutton_boneless" || i.id === "chicken_breast").reduce((s, i) => s + (i.g / 100) * DD.ingredients[i.id].kcal_per_100g, 0);
+      const estimatedDeliveredKcal = Math.round(targetKcal); // = 110% of NRC target
 
       Object.keys(nrcBase).forEach(key => {
         let grocerySum = 0;
@@ -729,12 +936,40 @@
         totals[key] = grocerySum + blockSum;
       });
 
-      totals['kcal'] = deliveryTotalKcal;
+      totals['kcal'] = estimatedDeliveredKcal; // 110% NRC buffer — cooked grocery + block
+      // Omega totals — la_mg/dha_mg/epa_mg not in nrcBase keys, sum separately
+      let _laSum = 0, _dhaSum = 0, _epaSum = 0;
+      groceryList.forEach(function(item) {
+        var ing = DD.ingredients[item.id];
+        if (!ing) return;
+        var grams = item.isEgg ? item.count * 50 : item.g;
+        _laSum  += (grams / 100) * (ing.nutrients_per_100g.la_mg  || 0);
+        _dhaSum += (grams / 100) * (ing.nutrients_per_100g.dha_mg || 0);
+        _epaSum += (grams / 100) * (ing.nutrients_per_100g.epa_mg || 0);
+      });
+      Object.entries(bomObj).forEach(function(entry) {
+        var ingId = entry[0], bdata = entry[1];
+        var ing = DD.ingredients[ingId];
+        if (!ing) return;
+        var dose_g = (bdata.dose_mg_per_unit / 100000) * finalUnits;
+        _laSum  += dose_g * (ing.nutrients_per_100g.la_mg  || 0);
+        _dhaSum += dose_g * (ing.nutrients_per_100g.dha_mg || 0);
+        _epaSum += dose_g * (ing.nutrients_per_100g.epa_mg || 0);
+      });
+      totals.la_mg = _laSum;
+      totals.dha_mg = _dhaSum;
+      totals.epa_mg = _epaSum;
+      
 
       return {
-        mer, targetKcal, finalUnits, blockEnergy, groceryList, totals,
-        deliveryGroceryKcal, deliveryTotalKcal, theoryEggs, blockContentPerUnit
+        mer, M, M_bonus, targetKcal, nrcTargetKcal, finalUnits, blockEnergy, groceryList, totals,
+        deliveryGroceryKcal, deliveryTotalKcal, theoryEggs, blockContentPerUnit,
+        rawUnits, baseRaw, nutrientMultiplier: Math.pow(state.weight / config.anchorBW, config.nutrientExp), estimatedDeliveredKcal
       };
+    }
+
+    function undoBtn(id) {
+      return '<button data-id="' + id + '" onclick="resetItemMod(this.dataset.id)" class="ml-1 px-1.5 py-1 text-slate-600 hover:text-slate-400 rounded transition-colors text-[11px]" title="Reset to auto">&#8635;</button>';
     }
 
     function render() {
@@ -750,10 +985,13 @@
       const isAmber = Math.abs(stats.deliveryTotalKcal - stats.targetKcal) > stats.targetKcal * 0.1;
       document.getElementById('mer-display').className = `text-xl font-bold ${isAmber ? 'text-amber-400' : 'text-white'}`;
       
-      // Clearly display Delivered / Base
-      document.getElementById('mer-display').innerHTML = `${Math.round(stats.deliveryTotalKcal)} <small class="text-slate-500 font-medium">/ ${Math.round(stats.mer)} kcal</small>`;
+      // Clearly display Delivered / MER Target
+      document.getElementById('mer-display').innerHTML = `${Math.round(stats.nrcTargetKcal)} <small class="text-slate-500 font-medium">kcal</small>`;
       
-      document.getElementById('mer-formula-display').innerHTML = `<span>MER = ${config.coefficient} &times; W<sup class="text-[10px] ml-[1px]">${config.exponent}</sup></span>`;
+      document.getElementById('mer-model-label').innerText = isDog ? 'Mod. Manners-McCrea (1991) Allometric' : 'MER (NRC 2006)';
+      document.getElementById('mer-formula-display').innerHTML = isDog
+        ? `<span>MER = ${stats.M.toFixed(2)}×(98×BW<sup class="text-[10px]">0.64</sup>) = ${Math.round(stats.nrcTargetKcal)} kcal</span>`
+        : `<span>MER = ${stats.M.toFixed(2)}×(100×BW<sup class="text-[10px]">0.67</sup>) = ${Math.round(stats.nrcTargetKcal)} kcal</span>`;
 
       // Progress Bar
       const blockPct = (stats.blockEnergy / stats.deliveryTotalKcal) * 100;
@@ -764,12 +1002,12 @@
       `;
       document.getElementById('energy-breakdown-display').innerHTML = `
         <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]"></div> Blocks (${Math.round(stats.blockEnergy)} kcal)</div>
-        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div> Grocery (${Math.round(stats.deliveryGroceryKcal)} kcal)</div>
+        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.8)]"></div> Grocery (steamed) &rarr; ~${stats.estimatedDeliveredKcal} kcal <span class="text-slate-600 text-[10px]">(110% NRC buffer)</span></div>
       `;
 
       // Block Units
       document.getElementById('units-display').innerText = stats.finalUnits;
-      document.getElementById('mass-display').innerText = `Scale: ${Math.round(4000 * stats.finalUnits) / 1000}g Total Mass`;
+      document.getElementById('mass-display').innerHTML = `${(4 * stats.finalUnits).toFixed(1)}g &nbsp;<span class="text-blue-400 font-bold">${Math.round(stats.blockEnergy)} kcal</span>`;
 
       // Reset Button
       const hasOverrides = Object.values(state.groceryMods).some(v => v !== 1) || state.eggMod !== 0 || state.blockModifier !== 0;
@@ -779,11 +1017,110 @@
         </button>
       ` : '';
 
+      // 5-axis fuzzy MER sliders
+      function buildSlider(axisKey) {
+        const axis = FUZZY_AXES[axisKey];
+        const opts = axis.options[state.species];
+        const idx = state.sliders[axisKey];
+        const n = opts.length - 1;
+        const mid = Math.round(n / 2);
+        const ticksHtml = opts.map((o, i) => {
+          const pct = n === 0 ? 50 : (i / n) * 100;
+          const show = true;
+          const isActive = i === idx;
+          return `<span style="position:absolute;left:${pct}%;transform:translateX(-50%)"
+            class="text-[10px] transition-all whitespace-nowrap ${isActive ? 'text-blue-400 font-bold' : 'text-slate-600'}">${show ? o.label : ''}</span>`;
+        }).join('');
+        return `
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">${axis.label}</span>
+              <span class="text-[11px] text-blue-400 font-mono">${opts[idx].label} <span class="text-slate-600">${opts[idx].delta >= 0 ? '+' : ''}${opts[idx].delta.toFixed(2)}</span></span>
+            </div>
+            <input type="range" min="0" max="${n}" value="${idx}" step="1"
+              oninput="setSlider('${axisKey}', this.value)"
+              class="w-full h-1.5 rounded-full accent-blue-500 bg-slate-700 cursor-pointer">
+            <div style="position:relative;height:16px;margin-top:2px">${ticksHtml}</div>
+          </div>`;
+      }
+
+      const highActivityNote = stats.M >= 2.0 ? `
+        <div class="mt-3 px-4 py-2.5 rounded-xl border bg-amber-900/20 border-amber-700/40 text-amber-200 text-[12px] leading-relaxed">
+          High-activity ${isDog ? 'dog' : 'cat'}: consider whole-prey rotation 3–4×/week (pressure-cooked sardines/anchovies) — intact-bone Ca:P, DHA, taurine for working muscle.
+        </div>` : '';
+
+      const lifestageWarning = '';
+
+      document.getElementById('mer-slider-container').innerHTML = `
+        <div class="flex gap-6 flex-wrap">
+          <div class="flex-1 min-w-[260px]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em]">Fuzzy MER Factor</span>
+              <span class="text-[12px] font-mono text-blue-400 font-bold">M = ${stats.M.toFixed(2)} · ${Math.round(stats.nrcTargetKcal)} kcal NRC</span>
+            </div>
+            ${Object.keys(FUZZY_AXES).map(k => buildSlider(k)).join('')}
+            <div class="text-[10px] text-slate-700 font-mono mt-1">Block dose scales with BW · nrc_1–26 anchored to NRC 2006, scaled allometrically</div>
+            ${highActivityNote}
+          </div>
+          <div class="mt-2">${lifestageWarning}</div>
+        </div>`;
+
+      // Admin debug block
+      const adminBlock = document.getElementById('admin-debug-block');
+      if (adminBlock && !adminBlock.classList.contains('hidden')) {
+        renderBomEditor();
+        renderBlockTable();
+        const nm = stats.nutrientMultiplier;
+        let dbg = '<div class="font-mono text-[11px] space-y-1 text-slate-400">';
+        dbg += '<div class="flex items-center justify-between mb-2"><span class="text-slate-500 uppercase tracking-wider font-bold text-[11px]">Admin Debug v8.2.5</span></div>';
+        for (const [k, axis] of Object.entries(FUZZY_AXES)) {
+          const opts = axis.options[state.species];
+          const i = state.sliders[k];
+          dbg += `<div><span class="text-slate-600 w-24 inline-block">${axis.label}:</span> ${opts[i].label} Δ${opts[i].delta >= 0 ? '+' : ''}${opts[i].delta.toFixed(2)}</div>`;
+        }
+        const rawSum = Object.entries(FUZZY_AXES).reduce((s,[k,a]) => s + a.options[state.species][state.sliders[k]].delta, 0);
+        dbg += `<div class="border-t border-slate-700 mt-2 pt-2"><span class="text-slate-600 w-24 inline-block">Σ deltas:</span> raw ${rawSum.toFixed(3)} → clamped M = <span class="text-blue-400">${stats.M.toFixed(3)}</span></div>`;
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">MER₁ base:</span> ${isDog?"98":"100"}×${state.weight}^${isDog?"0.64":"0.67"} = ${Math.round(stats.mer)} kcal</div>`;
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">×M×1.10:</span> ${Math.round(stats.targetKcal)} kcal</div>`;
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">rawUnits:</span> ${stats.baseRaw.toFixed(3)} → +M_bonus(${stats.M_bonus}) → floor=${stats.finalUnits - state.blockModifier}</div>`;
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">nutrient×:</span> (${state.weight}/${isDog?20:4})^${isDog?'0.64':'0.67'} = ${nm.toFixed(3)}</div>`;
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">Delivered:</span> ${Math.round(stats.estimatedDeliveredKcal)} kcal (${Math.round(stats.estimatedDeliveredKcal/stats.nrcTargetKcal*100)}% NRC)</div>`;
+        const anchorKcal = isDog ? 1000*Math.pow(state.weight/20,0.64) : 250*Math.pow(state.weight/4,0.67);
+        const anchorDelta = Math.round(stats.targetKcal - anchorKcal);
+        dbg += `<div><span class="text-slate-600 w-24 inline-block">NRC anchor:</span> ${Math.round(anchorKcal)} kcal → Δ = ${anchorDelta>=0?'+':''}${anchorDelta} kcal</div>`;
+        dbg += '</div>';
+        
+        // Safely insert debug text into its own container instead of overwriting the whole admin block
+        const debugTextContainer = document.getElementById('admin-debug-text');
+        if (debugTextContainer) {
+            debugTextContainer.innerHTML = dbg;
+        }
+      }
+
+      // White pumpkin optional note for cats
+      if (!isDog) {
+        const wpNote = document.getElementById('cat-optional-note');
+        if (wpNote) wpNote.classList.remove('hidden');
+      } else {
+        const wpNote = document.getElementById('cat-optional-note');
+        if (wpNote) wpNote.classList.add('hidden');
+      }
+
+      // Grocery header kcal badge
+      document.getElementById('grocery-kcal-badge').innerHTML = `
+        <span class="text-blue-400 font-black">${Math.round(stats.estimatedDeliveredKcal - stats.blockEnergy)}</span>
+        <span class="text-slate-600 text-[11px] mx-1">+</span>
+        <span class="text-slate-500 text-[11px]">${Math.round(stats.blockEnergy)} (${stats.finalUnits}u)</span>
+        <span class="text-slate-600 text-[11px] mx-1">=</span>
+        <span class="text-white font-bold">${Math.round(stats.estimatedDeliveredKcal)} kcal</span>
+      `;
+
       // Grocery List
       let groceryHtml = '';
       stats.groceryList.forEach(item => {
         const currentMod = item.isEgg ? 1 : (state.groceryMods[item.id] || 1);
         const modifiedGrams = item.g * currentMod;
+        const itemKcal = (modifiedGrams / 100) * (DD.ingredients[item.id]?.kcal_per_100g || 0);
         
         groceryHtml += `
           <div class="px-6 py-5 flex justify-between items-center group hover:bg-slate-700/50 transition-colors">
@@ -793,8 +1130,8 @@
                 ${item.isMeat ? `<span class="text-[9px] uppercase tracking-wider bg-slate-700/80 border border-slate-600 text-slate-400 px-1.5 py-0.5 rounded font-bold">Auto-Scaled</span>` : ''}
               </div>
               ${item.isEgg 
-                ? `<div class="text-[12px] text-slate-500 mt-1">Continuous theory: ${stats.theoryEggs.toFixed(2)} eggs</div>`
-                : `<div class="text-[12px] text-slate-500 mt-1">Allometric base target: ${Math.round(item.baseG)}g</div>`
+                ? `<div class="text-[12px] text-slate-500 mt-1">Continuous theory: ${stats.theoryEggs.toFixed(2)} eggs &nbsp;<span class="text-slate-600">${Math.round(itemKcal)} kcal</span></div>`
+                : `<div class="text-[12px] text-slate-500 mt-1">Allometric base: ${Math.round(item.baseG)}g &nbsp;<span class="text-slate-600">${Math.round(itemKcal)} kcal</span></div>`
               }
             </div>
             
@@ -811,6 +1148,7 @@
                   <button onclick="updateGroceryMod('${item.id}', -0.1)" class="px-2 py-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded shadow-sm transition-colors text-[12px] font-bold">-10%</button>
                   <span class="w-12 text-center text-[12px] font-mono font-bold text-slate-300">${Math.round(currentMod * 100)}%</span>
                   <button onclick="updateGroceryMod('${item.id}', 0.1)" class="px-2 py-1 hover:bg-slate-800 text-slate-400 hover:text-white rounded shadow-sm transition-colors text-[12px] font-bold">+10%</button>
+                  ${currentMod !== 1 ? undoBtn(item.id) : ""}
                 </div>
                 `
               }
@@ -828,16 +1166,29 @@
 
       // Nutrient Table
       let tableHtml = '';
-      nutrientRowsConfig.forEach(row => {
-        const val = stats.totals[row.key];
-        if (val === undefined) return;
+      // Sort rows if active
+      const sortedRows = nrcSortAscPct
+        ? [...nutrientRowsConfig].sort((a, b) => {
+            const nrcA = a.key === 'kcal' ? stats.nrcTargetKcal : (DD.nrc[nrcKey].nutrients[a.key] || 0) * stats.nutrientMultiplier;
+            const nrcB = b.key === 'kcal' ? stats.nrcTargetKcal : (DD.nrc[nrcKey].nutrients[b.key] || 0) * stats.nutrientMultiplier;
+            const pctA = nrcA > 0 ? (stats.totals[a.key] || 0) / nrcA : 0;
+            const pctB = nrcB > 0 ? (stats.totals[b.key] || 0) / nrcB : 0;
+            return pctB - pctA;
+          })
+        : nutrientRowsConfig;
+      let nRowNum = 0;
+      sortedRows.forEach(row => {
+        nRowNum++;
+        let val = stats.totals[row.key];
+        const bComplexKeys = ['thiamine_b1_mg','riboflavin_b2_mg','pantothenic_b5_mg','pyridoxine_b6_mg','folate_b9_ug','cobalamin_b12_ug','choline_mg'];
+        if (val === undefined) { if (bComplexKeys.includes(row.key)) { val = 0; } else return; }
         
         const isKcal = row.key === 'kcal';
-        const nrcBase = isKcal ? (isDog ? 1000 : 250) : DD.nrc[nrcKey].nutrients[row.key];
-        const anchorKcal = isDog ? 1000 : 250;
-        const weightRatio = stats.mer / anchorKcal;
-        
-        const dynamicTarget = nrcBase * weightRatio;
+        const nrcBase = isKcal ? stats.targetKcal : DD.nrc[nrcKey].nutrients[row.key];
+        // v8.2.5 FIX: nrc_1-26 anchored to NRC reference animal by BW allometry ONLY.
+        // Not scaled by kcal or M. A lazy 20kg dog needs same Zinc as active 20kg dog.
+        // Dog: nrcBase x (BW/20)^0.75  Cat: nrcBase x (BW/4)^0.67
+        const dynamicTarget = isKcal ? stats.nrcTargetKcal : nrcBase * stats.nutrientMultiplier;
         const pct = dynamicTarget ? (val / dynamicTarget) * 100 : 0;
 
         const blockVal = isKcal ? stats.blockEnergy : stats.finalUnits * (stats.blockContentPerUnit[row.key] || 0);
@@ -846,7 +1197,7 @@
         tableHtml += `
           <tr class="group hover:bg-slate-800/50 transition-colors ${isKcal ? 'bg-slate-800/30' : ''}">
             <td class="py-4 px-2">
-              <div class="font-bold text-[14px] ${isKcal ? 'text-emerald-400' : 'text-slate-200'}">${row.label}</div>
+              <div class="font-bold text-[14px] ${isKcal ? 'text-emerald-400' : 'text-slate-200'}">${row.label}</div><div class="text-[9px] text-slate-700 font-mono">n_${nRowNum}</div>
               <div class="text-[11px] text-slate-500 uppercase tracking-tight">${row.unit} / day</div>
             </td>
             <td class="py-4">
@@ -859,7 +1210,7 @@
             <td class="py-4 text-center">
               ${nrcBase > 0 ? `
                  <div class="inline-block px-3 py-1 rounded-md text-[11px] font-black ${pct >= 100 ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/50' : 'bg-red-900/30 text-red-400 border border-red-800/50'}">
-                   ${Math.round(pct)}% ${isKcal ? 'MER' : 'NRC'}
+                   ${Math.round(pct)}% ${isKcal ? 'target' : 'NRC'}
                  </div>
               ` : `
                  <div class="inline-block px-3 py-1 rounded-md text-[11px] font-black bg-slate-800 text-slate-400 border border-slate-700">
@@ -878,9 +1229,36 @@
           </tr>
         `;
       });
+      // Ratio rows: mineral antagonists, FA ratios
+      const t = stats.totals;
+      const ratioCaP  = (t.calcium_mg && t.phosphorus_mg) ? (t.calcium_mg / t.phosphorus_mg).toFixed(2) : 'n/a';
+      const ratioZnCu = (t.zinc_mg && t.copper_mg) ? (t.zinc_mg / t.copper_mg).toFixed(1) : 'n/a';
+      const ratioNaK  = (t.sodium_mg && t.potassium_mg) ? (t.sodium_mg / t.potassium_mg).toFixed(2) : 'n/a';
+      const ratioCaMg = (t.calcium_mg && t.magnesium_mg) ? (t.calcium_mg / t.magnesium_mg).toFixed(1) : 'n/a';
+      const ratioO6O3 = (t.la_mg && (t.dha_mg || t.epa_mg)) ? (t.la_mg / ((t.dha_mg || 0) + (t.epa_mg || 0))).toFixed(1) : 'n/a';
+      const ratioRows = [
+        { label: 'Ca:P',        val: ratioCaP,  ref: '1.1–2.0', ok: parseFloat(ratioCaP)  >= 1.1 && parseFloat(ratioCaP)  <= 2.0 },
+        { label: 'Zn:Cu',       val: ratioZnCu, ref: '<15:1',   ok: parseFloat(ratioZnCu) < 15 },
+        { label: 'Na:K',        val: ratioNaK,  ref: '0.2–0.9', ok: parseFloat(ratioNaK) >= 0.2 && parseFloat(ratioNaK) <= 0.9 },
+        { label: 'Ca:Mg',       val: ratioCaMg, ref: '<20:1',   ok: parseFloat(ratioCaMg) < 20 },
+        { label: '\u03c96:\u03c93 (LA:DHA+EPA)', val: ratioO6O3, ref: '<8:1 (5:1 target)', ok: parseFloat(ratioO6O3) < 8 },
+      ];
+      let ratioHtml = '<tr class="bg-slate-800/60"><td colspan="4" class="py-2 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mineral Antagonist &amp; FA Ratios <span class=\'font-normal text-slate-600\'>nrc_1\u201326 anchored to NRC 2006, scaled allometrically</span></td></tr>';
+      ratioRows.forEach(function(r) {
+        var okClass = r.ok ? 'text-emerald-400' : 'text-amber-400';
+        var badgeClass = r.ok ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/50' : 'bg-amber-900/30 text-amber-400 border border-amber-800/50';
+        var mark = r.ok ? '\u2713' : '\u26a0';
+        ratioHtml += '<tr class="hover:bg-slate-800/30 transition-colors">' +
+          '<td class="py-3 px-4 font-medium text-slate-300">' + r.label + '</td>' +
+          '<td class="py-3 px-4 text-center font-mono font-bold ' + okClass + '">' + r.val + '</td>' +
+          '<td class="py-3 px-4 text-center text-slate-500 text-[11px]">' + r.ref + '</td>' +
+          '<td class="py-3 px-4 text-center"><span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold ' + badgeClass + '">' + mark + '</span></td>' +
+          '</tr>';
+      });
+      tableHtml += ratioHtml;
       document.getElementById('nutrient-table-body').innerHTML = tableHtml;
 
-      // BOM Display
+      // --- ADVANCED BOM DISPLAY ---
       const spKey = isDog ? 'dogcore' : 'catcore';
       document.getElementById('bom-title-display').innerText = `Unit size: 4000 mg (${isDog ? 'DogCore' : 'CatCore'})`;
       
@@ -894,14 +1272,23 @@
 
       let bomHtml = '';
       bomData.forEach(item => {
+        const ing = DD.ingredients[item.id] || {};
+        const stdName = ing.stdName || item.id.replace(/_/g, ' ');
+        const spec = ing.spec || 'Standard grade';
+        
         bomHtml += `
-          <div class="flex justify-between items-center p-3 rounded-lg bg-slate-900/50 border border-slate-700/50">
-            <span class="text-[13px] font-medium text-slate-300 truncate mr-2" title="${item.id}">
-              ${item.id.replace(/_/g, ' ')}
-            </span>
-            <div class="text-right shrink-0">
-              <div class="text-[13px] font-bold text-white">${formatScientific(item.pct)}%</div>
-              <div class="text-[11px] text-slate-500">${formatScientific(item.mg)} mg</div>
+          <div class="flex flex-col p-3 rounded-xl bg-slate-900/50 border border-slate-700/50 hover:bg-slate-800 transition-colors">
+            <div class="flex justify-between items-start mb-1 gap-2">
+              <span class="text-[13px] font-bold text-slate-200 leading-tight">
+                ${stdName}
+              </span>
+              <div class="text-right shrink-0">
+                <div class="text-[13px] font-black text-emerald-400">${item.pct.toFixed(4)}%</div>
+              </div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-slate-500 mt-1">
+              <span class="italic max-w-[70%] leading-tight text-slate-400">${spec}</span>
+              <span class="font-mono text-slate-500 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">${formatScientific(item.mg)} mg</span>
             </div>
           </div>
         `;
@@ -917,7 +1304,200 @@
       lucide.createIcons();
     }
 
-    // --- INIT ---
+    // ── ADMIN BOM EDITOR ────────────────────────────────────────────────────
+    function renderBomEditor() {
+      const spKey = state.species === 'dog' ? 'dogcore' : 'catcore';
+      const bomObj = DD.bom[spKey].ingredients;
+      const unitSize = 4000;
+      let html = '';
+      let totalPct = 0;
+      for (const [key, data] of Object.entries(bomObj)) {
+        const pct = (data.dose_mg_per_unit / unitSize * 100).toFixed(4); // Upgraded to 4 decimals for precision editing
+        totalPct += parseFloat(pct);
+        html += `<div class="flex items-center gap-2 py-0.5">
+          <span class="w-44 text-slate-400 truncate" title="${key}">${DD.ingredients[key]?.stdName || key.replace(/_/g,' ')}</span>
+          <input type="number" step="0.0001" min="0" max="100" value="${pct}"
+            data-ing="${key}"
+            onchange="updateBomPctDisplay()"
+            class="w-20 bg-slate-900 border border-slate-700 rounded px-1.5 py-0.5 text-white text-[11px] font-mono">
+          <span class="text-slate-600 text-[10px]">%w/w = ${data.dose_mg_per_unit.toFixed(2)}mg</span>
+        </div>`;
+      }
+      const ed = document.getElementById('bom-editor-container');
+      if (ed) ed.innerHTML = html;
+      const td = document.getElementById('bom-total-display');
+      if (td) td.innerHTML = `Total: <span class="${Math.abs(totalPct-100)<0.05?'text-emerald-400':'text-amber-400'}">${totalPct.toFixed(4)}%</span> w/w (${(totalPct/100*unitSize).toFixed(1)}mg/${unitSize}mg)`;
+    }
+
+    function updateBomPctDisplay() {
+      const inputs = document.querySelectorAll('#bom-editor-container input[data-ing]');
+      let total = 0;
+      inputs.forEach(inp => total += parseFloat(inp.value||0));
+      const td = document.getElementById('bom-total-display');
+      if (td) td.innerHTML = `Total: <span class="${Math.abs(total-100)<0.05?'text-emerald-400':'text-amber-400'}">${total.toFixed(4)}%</span> w/w`;
+    }
+
+    window.applyBomEdits = function() {
+      const spKey = state.species === 'dog' ? 'dogcore' : 'catcore';
+      const bomObj = DD.bom[spKey].ingredients;
+      const inputs = document.querySelectorAll('#bom-editor-container input[data-ing]');
+      inputs.forEach(inp => {
+        const key = inp.getAttribute('data-ing');
+        if (bomObj[key]) {
+          bomObj[key].dose_mg_per_unit = parseFloat(inp.value) / 100 * 4000;
+        }
+      });
+      render();
+      renderBomEditor();
+    };
+
+    window.exportFullReportCSV = function() {
+      const stats = calculateStats();
+      const isDog = state.species === 'dog';
+      const nrcKey = isDog ? 'dog_adult' : 'cat_adult';
+      const nm = stats.nutrientMultiplier;
+      const rows = [];
+      
+      rows.push(['GROWLRR FULL SYSTEM REPORT', new Date().toISOString()]);
+      rows.push([]);
+      
+      // 1. Core Profile
+      rows.push(['=== CORE PROFILE ===']);
+      rows.push(['Species', state.species]);
+      rows.push(['Target Weight', state.weight + ' kg']);
+      rows.push([]);
+      
+      // 2. Fuzzy Modifiers
+      rows.push(['=== FUZZY MODIFIERS ===']);
+      rows.push(['Axis', 'Selected Label', 'Delta']);
+      Object.keys(window.FUZZY_AXES || {}).forEach(k => {
+        const axis = window.FUZZY_AXES[k];
+        const opt = axis.options[state.species][state.sliders[k]];
+        rows.push([axis.label, opt.label, opt.delta]);
+      });
+      rows.push([]);
+
+      // 3. Metabolic Outputs
+      rows.push(['=== METABOLIC BALANCE ===']);
+      rows.push(['MER Model', isDog ? 'Mod. Manners-McCrea (1991) Allometric' : 'MER (NRC 2006)']);
+      rows.push(['M Factor', stats.M.toFixed(3)]);
+      rows.push(['Base MER (kcal)', Math.round(stats.mer)]);
+      rows.push(['NRC Target (kcal)', Math.round(stats.nrcTargetKcal), 'MER x M']);
+      rows.push(['110% Buffer Target (kcal)', Math.round(stats.targetKcal)]);
+      rows.push(['Delivered Total (kcal)', Math.round(stats.estimatedDeliveredKcal)]);
+      rows.push([]);
+
+      // 4. Block Info
+      rows.push(['=== CORE BLOCKS ===']);
+      rows.push(['Base Raw Units', stats.baseRaw.toFixed(3)]);
+      rows.push(['M_bonus', stats.M_bonus]);
+      rows.push(['Manual Modifier', state.blockModifier]);
+      rows.push(['Final Units Delivered', stats.finalUnits]);
+      rows.push(['Total Block Mass (g)', (4 * stats.finalUnits).toFixed(1)]);
+      rows.push(['Total Block Kcal', Math.round(stats.blockEnergy)]);
+      rows.push([]);
+
+      // 5. Grocery List
+      rows.push(['=== GROCERY LIST ===']);
+      rows.push(['Ingredient', 'Base Theory (g/eggs)', 'Modifier applied', 'Final Delivered (g/eggs)', 'Kcal']);
+      stats.groceryList.forEach(item => {
+        const mod = item.isEgg ? state.eggMod : (state.groceryMods[item.id] || 1);
+        const theory = item.isEgg ? stats.theoryEggs : item.baseG;
+        const delivered = item.isEgg ? item.count : (item.g * (state.groceryMods[item.id] || 1));
+        const kcal = (item.isEgg ? delivered * 50 : delivered) / 100 * (DD.ingredients[item.id]?.kcal_per_100g || 0);
+        const unit = item.isEgg ? 'eggs' : 'g';
+        rows.push([item.label, theory.toFixed(2) + ' ' + unit, item.isEgg ? (mod > 0 ? '+'+mod : mod) : Math.round(mod*100)+'%', delivered.toFixed(2) + ' ' + unit, Math.round(kcal)]);
+      });
+      rows.push([]);
+
+      // 6. Nutritional Matrix
+      rows.push(['=== NUTRITIONAL MATRIX ===']);
+      rows.push(['Nutrient', 'Unit', 'Delivered', 'Target', '% Target', '% From Blocks']);
+      const nrcBase = DD.nrc[nrcKey].nutrients;
+      for (const row of window.nutrientRowsConfig_export || []) {
+        const val = stats.totals[row.key] || 0;
+        const target = row.key === 'kcal' ? stats.nrcTargetKcal : (nrcBase[row.key] || 0) * nm;
+        const pct = target > 0 ? (val / target * 100).toFixed(1) + '%' : 'N/A';
+        const bval = row.key === 'kcal' ? stats.blockEnergy : stats.finalUnits * (stats.blockContentPerUnit[row.key] || 0);
+        const bpct = val > 0 ? (bval / val * 100).toFixed(1) + '%' : '0%';
+        rows.push([row.label, row.unit, val.toFixed?val.toFixed(3):val, target.toFixed?target.toFixed(3):target, pct, bpct]);
+      }
+      rows.push([]);
+
+      // 7. Ratios
+      rows.push(['=== RATIOS ===']);
+      const t = stats.totals;
+      const ratioCaP  = (t.calcium_mg && t.phosphorus_mg) ? (t.calcium_mg / t.phosphorus_mg).toFixed(3) : 'n/a';
+      const ratioZnCu = (t.zinc_mg && t.copper_mg) ? (t.zinc_mg / t.copper_mg).toFixed(2) : 'n/a';
+      const ratioNaK  = (t.sodium_mg && t.potassium_mg) ? (t.sodium_mg / t.potassium_mg).toFixed(3) : 'n/a';
+      const ratioCaMg = (t.calcium_mg && t.magnesium_mg) ? (t.calcium_mg / t.magnesium_mg).toFixed(2) : 'n/a';
+      const ratioO6O3 = (t.la_mg && (t.dha_mg || t.epa_mg)) ? (t.la_mg / ((t.dha_mg || 0) + (t.epa_mg || 0))).toFixed(2) : 'n/a';
+      rows.push(['Ca:P', ratioCaP, 'Target: 1.1-2.0']);
+      rows.push(['Zn:Cu', ratioZnCu, 'Target: <15']);
+      rows.push(['Na:K', ratioNaK, 'Target: 0.2-0.9']);
+      rows.push(['Ca:Mg', ratioCaMg, 'Target: <20']);
+      rows.push(['o6:o3', ratioO6O3, 'Target: <8']);
+      rows.push([]);
+
+      // 8. BOM Details
+      rows.push(['=== BOM FORMULATION ===']);
+      rows.push(['Ingredient (Standardized SKU)', 'Material Specification / Grade', 'mg/unit', '% w/w']);
+      const spKey = isDog ? 'dogcore' : 'catcore';
+      for (const [k, d] of Object.entries(DD.bom[spKey].ingredients)) {
+        const ing = DD.ingredients[k] || {};
+        const stdName = ing.stdName || k;
+        const spec = ing.spec || 'Standard grade';
+        rows.push([stdName, spec, d.dose_mg_per_unit.toFixed(2), (d.dose_mg_per_unit/4000*100).toFixed(4) + '%']);
+      }
+      rows.push([]);
+      
+      // 9. Debug / Equations
+      rows.push(['=== DEBUG & EQUATIONS ===']);
+      rows.push(['Equation Dog Energy', '98 * BW^0.64 * M']);
+      rows.push(['Equation Cat Energy', '100 * BW^0.67 * M']);
+      rows.push(['Equation Dog Blocks', '10 * (BW/20)^0.75 + M_bonus']);
+      rows.push(['Equation Cat Blocks', '4 * (BW/4)^0.67']);
+      rows.push(['Nutrient Scaling Multiplier', nm.toFixed(4)]);
+
+      const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; 
+      a.download = 'growlrr_full_report_' + state.species + '_' + state.weight + 'kg.csv';
+      a.click(); 
+      URL.revokeObjectURL(url);
+    };
+
+    // ── BLOCK TABLE DISPLAY ───────────────────────────────────────────────────
+    function renderBlockTable() {
+      const isDog = state.species === 'dog';
+      if (!isDog) return;
+      const admin = document.getElementById('admin-debug-block');
+      if (!admin || admin.classList.contains('hidden')) return;
+      let tbl = '<div class="mt-4"><div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Block Count Table (Somewhat Active, M=1.28)</div>';
+      tbl += '<table class="text-[10px] font-mono w-full"><thead><tr class="text-slate-600"><th class="text-left py-0.5">BW</th><th>MER</th><th>NRC</th><th>Units</th></tr></thead><tbody>';
+      const bws = [2,3,4,5,6,8,10,12,15,20,25,30,35,40,50,60];
+      bws.forEach(bw => {
+        const mer = 98*Math.pow(bw,0.64);
+        const M = 1.28;
+        const bwBonus = bw<=4 ? 2 : bw<=8 ? 1 : 0;
+        const raw = 10 * Math.pow(bw/20, 0.75);
+        const u = Math.max(1, Math.floor(raw+0.65)+bwBonus);
+        const isAnchor = bw===20;
+        tbl += '<tr class="'+(isAnchor?'text-emerald-400 font-bold':'text-slate-400')+'">';
+        tbl += '<td class="py-0.5">'+bw+'kg</td><td class="text-center">'+Math.round(mer)+'</td><td class="text-center">'+Math.round(mer*M)+'</td><td class="text-center text-white">'+u+'u</td></tr>';
+      });
+      tbl += '</tbody></table></div>';
+      // Append to admin block
+      const existing = document.getElementById('block-table-inner');
+      if (!existing) {
+        const div = document.createElement('div'); div.id='block-table-inner'; div.innerHTML=tbl;
+        admin.appendChild(div);
+      } else { existing.innerHTML=tbl; }
+    }
+
+    // ── INIT ─────────────────────────────────────────────────────────────────
     // Make sure toggle buttons are properly highlighted on load
     window.setSpecies(state.species); 
     // Initial Render
