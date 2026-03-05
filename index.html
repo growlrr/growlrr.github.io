@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&family=Source+Serif+4:ital,opsz,wght@1,8..60,400;1,8..60,500&display=swap');
         
         body { font-family: 'Lato', sans-serif; font-size: 14px; line-height: 1.6; scroll-behavior: smooth; }
         .font-mono { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
@@ -27,6 +27,12 @@
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        
+        /* High-Res Scrollable Chart Area */
+        .chart-scroll-area { height: auto; max-height: 600px; overflow-y: auto; overflow-x: hidden; padding-right: 12px; border: 1px solid #1e293b; border-radius: 1.5rem; background: #0f172a; }
+        .chart-scroll-area::-webkit-scrollbar { width: 4px; }
+        .chart-scroll-area::-webkit-scrollbar-track { background: #1e293b; }
+        .chart-scroll-area::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         
         .bg-mesh {
             background-image: 
@@ -43,8 +49,31 @@
         .cost-table th { font-size: 10px; color: #64748b; text-transform: uppercase; padding: 10px; border-bottom: 1px solid #334155; text-align: left; }
         .cost-table td { padding: 10px; border-bottom: 1px solid #1e293b; font-size: 13px; }
         
+        input[type=range] { appearance: none; background: transparent; }
         input[type=range]::-webkit-slider-runnable-track { background: #334155; height: 8px; border-radius: 4px; }
-        input[type=range]::-webkit-slider-thumb { background: #3b82f6; height: 20px; width: 20px; border-radius: 50%; appearance: none; margin-top: -6px; border: 2px solid #fff; }
+        input[type=range]::-webkit-slider-thumb { background: #3b82f6; height: 20px; width: 20px; border-radius: 50%; appearance: none; margin-top: -6px; border: 2px solid #fff; cursor: pointer; }
+
+        /* High-visibility SVG Grid Pattern (Big Checks) from yes001.png */
+        .bg-grid-checks {
+            background-color: #090e17;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M100 0 L100 100 L0 100' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='1.5'/%3E%3C/svg%3E");
+            background-position: center bottom;
+        }
+
+        .font-serif-italic {
+            font-family: 'Source Serif 4', serif;
+            font-style: italic;
+        }
+
+        /* Ensures the grid fades smoothly into the pure black section */
+        .grid-fade-bottom {
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+        
+        .glow-effect {
+            background: radial-gradient(circle at center, rgba(51, 114, 245, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+        }
     </style>
 </head>
 <body class="bg-[#0f172a] text-slate-300 antialiased selection:bg-blue-900/50 selection:text-blue-200">
@@ -127,51 +156,54 @@
                 </div>
             </div>
 
-            <!-- Detailed Snowleopard Architecture -->
-            <div class="p-10 rounded-[3rem] bg-slate-800 border border-slate-700 shadow-2xl relative overflow-hidden flex flex-col text-left mb-16">
-                <h3 class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                    <i data-lucide="truck" class="text-blue-400"></i> The Growlrr Snowleopard Protocol
-                </h3>
-                <p class="text-slate-300 leading-relaxed mb-8 text-[14px]">
-                    The Protocol leverages modern <strong>Urban Convenience</strong> to break from industrial processed pet foods. Owners source their own quality grocery meats from <strong>Quick Delivery Apps</strong>, while NRC Blocks provide the ancestral balance.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div class="p-6 bg-slate-900/50 rounded-3xl border border-slate-700/50 text-left">
-                        <span class="text-blue-400 font-bold block mb-2 text-md">100% Nutrient Balance</span>
-                        <span class="text-[14px] text-slate-400">Transition to home-cooked whole foods with precisely engineered Nutrient blocks to meet NRC 2006 standards.</span>
+            <!-- Detailed Snowleopard Architecture & Mandate Side-by-Side -->
+            <div class="grid lg:grid-cols-12 gap-8 text-left mb-16 items-stretch">
+                <!-- Main Protocol Block -->
+                <div class="lg:col-span-7 xl:col-span-8 p-10 rounded-[3rem] bg-slate-800 border border-slate-700 shadow-2xl relative overflow-hidden flex flex-col">
+                    <h3 class="text-3xl font-bold text-white mb-6 flex items-center gap-3">
+                        <i data-lucide="truck" class="text-blue-400"></i> The Growlrr Snowleopard Protocol
+                    </h3>
+                    <p class="text-slate-300 leading-relaxed mb-8 text-[14px]">
+                        The Protocol leverages modern <strong>Urban Convenience</strong> to break from industrial processed pet foods. Owners source their own quality grocery meats from <strong>Quick Delivery Apps</strong>, while NRC Blocks provide the ancestral balance.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="p-6 bg-slate-900/50 rounded-3xl border border-slate-700/50 text-left">
+                            <span class="text-blue-400 font-bold block mb-2 text-md">100% Nutrient Balance</span>
+                            <span class="text-[14px] text-slate-400">Transition to home-cooked whole foods with precisely engineered Nutrient blocks to meet NRC 2006 standards.</span>
+                        </div>
+                        <div class="p-6 bg-slate-900/50 rounded-3xl border border-slate-700/50 text-left">
+                            <span class="text-blue-400 font-bold block mb-2 text-md">NRC Blocks Framework</span>
+                            <span class="text-[14px] text-slate-400">Fixed-dose units engineered to fill the specific gaps in supermarket muscle meat.</span>
+                        </div>
                     </div>
-                    <div class="p-6 bg-slate-900/50 rounded-3xl border border-slate-700/50 text-left">
-                        <span class="text-blue-400 font-bold block mb-2 text-md">NRC Blocks Framework</span>
-                        <span class="text-[14px] text-slate-400">Fixed-dose units engineered to fill the specific gaps in supermarket muscle meat.</span>
+                    
+                    <div class="pt-8 border-t border-slate-700/50 flex-grow">
+                        <h4 class="text-white font-bold mb-6 flex items-center gap-2 uppercase tracking-widest text-[12px]">
+                            <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> The Five Ingredient Architecture
+                        </h4>
+                        <ul class="space-y-5 text-slate-300 text-[14px] leading-relaxed">
+                            <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Biological Sovereignty:</strong> You source fresh, local animal proteins (chicken, goat, eggs). You control quality, affordability, and origin.</span></li>
+                            <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Micronutrient Precision:</strong> Cold-pressed modules containing every required vitamin and mineral, dynamically scaled to allometric needs.</span></li>
+                            <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Zero Spreadsheets:</strong> No organs required. No "pinches" of balancing roulette. You handle the calories; we handle the exact math.</span></li>
+                        </ul>
                     </div>
                 </div>
-                
-                <div class="pt-8 border-t border-slate-700/50">
-                    <h4 class="text-white font-bold mb-6 flex items-center gap-2 uppercase tracking-widest text-[12px]">
-                        <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> The Five Ingredient Architecture
-                    </h4>
-                    <ul class="space-y-5 text-slate-300 text-[14px] leading-relaxed">
-                        <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Biological Sovereignty:</strong> You source fresh, local animal proteins (chicken, goat, eggs). You control quality, affordability, and origin.</span></li>
-                        <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Micronutrient Precision:</strong> Cold-pressed modules containing every required vitamin and mineral, dynamically scaled to allometric needs.</span></li>
-                        <li class="flex gap-4 items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i><span><strong>Zero Spreadsheets:</strong> No organs required. No "pinches" of balancing roulette. You handle the calories; we handle the exact math.</span></li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Missing Minerals & Mandate -->
-            <div class="grid md:grid-cols-2 gap-8 text-left">
-                <div class="p-8 rounded-[2.5rem] bg-emerald-900/20 border border-emerald-500/20 shadow-sm flex flex-col">
-                    <h3 class="font-bold text-emerald-400 text-xl mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5"></i> Missing Minerals</h3>
-                    <div class="text-[14px] text-emerald-200/80 space-y-3 leading-relaxed flex-grow">
-                        <p>Many land based diets are deficient in Trace essential minerals like <strong>Iodine</strong>. <strong>Vitamin B12</strong> is found only in animal tissue.</p>
-                        <p class="italic">High Heat processing of kibble destroy fragile B-Vitamins. Our process ensures all these reach your pet's diet everyday in appropriate doses.</p>
+                <!-- Missing Minerals & Mandate Sidebar -->
+                <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-8">
+                    <div class="p-8 rounded-[2.5rem] bg-emerald-900/20 border border-emerald-500/20 shadow-sm flex flex-col flex-1">
+                        <h3 class="font-bold text-emerald-400 text-xl mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5"></i> Missing Minerals</h3>
+                        <div class="text-[14px] text-emerald-200/80 space-y-3 leading-relaxed flex-grow">
+                            <p>Many land based diets are deficient in Trace essential minerals like <strong>Iodine</strong>. <strong>Vitamin B12</strong> is found only in animal tissue.</p>
+                            <p class="italic">High Heat processing of kibble destroy fragile B-Vitamins. Our process ensures all these reach your pet's diet everyday in appropriate doses.</p>
+                        </div>
                     </div>
-                </div>
-                <div class="p-8 rounded-[2.5rem] bg-orange-900/20 border border-orange-800/50 shadow-sm flex flex-col">
-                    <h3 class="font-bold text-orange-400 text-xl mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5"></i> Mandate</h3>
-                    <div class="text-[14px] text-orange-200/80 space-y-3 leading-relaxed flex-grow">
-                        <p>Owners are instructed to <strong>steam meat fresh daily</strong> to eliminate pathogens without worrying about nutrient loss.</p>
-                        <p>Every aspect of the protocol is designed to <strong>exceed NRC 2006 requirements</strong>. Modeling assumes standard thermal processing in household conditions.</p>
+                    <div class="p-8 rounded-[2.5rem] bg-orange-900/20 border border-orange-800/50 shadow-sm flex flex-col flex-1">
+                        <h3 class="font-bold text-orange-400 text-xl mb-4 uppercase tracking-widest flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5"></i> Mandate</h3>
+                        <div class="text-[14px] text-orange-200/80 space-y-3 leading-relaxed flex-grow">
+                            <p>Owners are instructed to <strong>steam meat fresh daily</strong> to eliminate pathogens without worrying about nutrient loss.</p>
+                            <p>Every aspect of the protocol is designed to <strong>exceed NRC 2006 requirements</strong>. Modeling assumes standard thermal processing in household conditions.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -247,13 +279,9 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left bcs-table">
                         <thead class="text-slate-400 uppercase tracking-widest">
-                            <tr><th>Score</th><th>Condition</th><th>Cat est. kcal</th><th>Dog est. kcal</th><th>Action Plan</th></tr>
+                            <tr><th>Score</th><th>Condition</th><th>Current Subject kcal</th><th>Clinical Action Plan</th></tr>
                         </thead>
-                        <tbody class="text-slate-300 font-medium text-[15px]">
-                            <tr><td class="font-bold text-orange-400">3/9</td><td>Underweight</td><td>~220</td><td>~850</td><td>Increase protein pool by +10%. Recheck in 2 weeks.</td></tr>
-                            <tr class="bg-blue-900/20"><td class="font-bold text-blue-400">5/9</td><td class="font-bold text-blue-400">Ideal ★</td><td class="font-bold text-blue-400">~250</td><td class="font-bold text-blue-400">~1,000</td><td>Anchor Point. Maintain weights.</td></tr>
-                            <tr><td class="font-bold text-slate-500">7/9</td><td>Overweight</td><td>~210</td><td>~800</td><td>Reduce macro-fuel pool by 15%; blocks stay constant.</td></tr>
-                        </tbody>
+                        <tbody id="bcs-tbody" class="text-slate-300 font-medium text-[15px]"></tbody>
                     </table>
                 </div>
             </div>
@@ -326,8 +354,14 @@
                     </div>
 
                     <div class="lg:col-span-5 bg-slate-800 p-10 rounded-[2.5rem] shadow-2xl border border-blue-900/50 flex flex-col justify-center">
-                        <p class="text-[10px] text-red-400/80 uppercase font-black tracking-widest mb-6 border-b border-slate-700/50 pb-4 flex items-center gap-2">
-                            <i data-lucide="triangle-alert" class="w-4 h-4"></i>  Adult maintenance only. Not for Pregnant/lactating queens/kittens/puppies. Prioritise exercise, playtime and regular vet visits in addition to complete diet for excellent outcomes. </p>
+                        <div class="mb-6 border-b border-slate-700/50 pb-5 flex flex-col gap-3">
+                            <span class="text-[12px] text-slate-300 uppercase font-black tracking-widest flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i> Formulated for Adult Maintenance
+                            </span>
+                            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest flex items-center gap-2">
+                                <i data-lucide="clock" class="w-3 h-3"></i> Growth & Gestation Models Coming Soon
+                            </span>
+                        </div>
                        
                         <div class="flex justify-between items-center mb-8">
                             <span class="text-[12px] font-bold text-slate-400 uppercase tracking-widest">Model Control</span>
@@ -373,6 +407,7 @@
                         <tbody id="recipe-tbody" class="text-slate-300 text-[15px]"></tbody>
                     </table>
                 </div>
+                
                 <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="p-8 bg-slate-900 rounded-[2rem] border border-slate-700 flex flex-col md:flex-row items-start gap-5 shadow-inner">
                         <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-blue-400 shrink-0"><i data-lucide="cpu" class="w-6 h-6"></i></div>
@@ -380,7 +415,6 @@
                             <span class="font-bold text-slate-300 block mb-2 uppercase text-[11px] tracking-widest">Algorithm Trace Summary</span>
                             <div id="trace-mini" class="font-mono text-slate-400 space-y-1"></div>
                             
-                            <!-- FIX: Added missing metabolic-metadata div that caused the JS error -->
                             <div class="mt-4 pt-4 border-t border-slate-800">
                                 <span class="font-bold text-slate-500 block mb-2 uppercase text-[10px] tracking-[0.2em]">Internal Engine Stats</span>
                                 <div id="metabolic-metadata" class="font-mono text-slate-500 space-y-1 text-xs"></div>
@@ -396,334 +430,625 @@
         </div>
     </section>
 
-    <!-- 5. Validation & Cost Comparison -->
-    <section id="cost" class="py-24 bg-slate-900 border-b border-slate-800 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- 5. Cost Comparison -->
+    <section id="cost" class="py-24 bg-slate-900 border-b border-slate-800 text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
             <div class="flex flex-col items-center text-center mb-16">
-                <h2 class="text-4xl font-black text-white uppercase tracking-[0.1em] mb-4">SECTION 5: VALIDATION & COST COMPARISON</h2>
+                <h2 class="text-4xl font-black text-white uppercase tracking-[0.1em] mb-4">VALIDATION & COST COMPARISON</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto mb-8">Real-world cost analysis: Snowleopard Protocol vs. Premium Commercial Benchmarks (30-Day Cycle).</p>
                 <div class="flex bg-slate-900 p-1 rounded-xl shadow-inner border border-slate-800">
                     <button onclick="setSpecies('dog')" id="cost-btn-dog" class="px-6 py-2 rounded-lg text-xs font-bold transition-all bg-slate-700 text-blue-400 shadow-lg uppercase tracking-wider">Dog Model</button>
                     <button onclick="setSpecies('cat')" id="cost-btn-cat" class="px-6 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-300 uppercase tracking-wider">Cat Model</button>
                 </div>
             </div>
-            <div id="cost-comparison-container" class="grid lg:grid-cols-2 gap-10 text-left">
-                <!-- Injected by JS -->
+            <div id="cost-comparison-container" class="grid lg:grid-cols-2 gap-10"></div>
+        </div>
+    </section>
+
+    <!-- Matrix Integrity Section -->
+    <section id="integrity" class="py-24 bg-slate-900 border-b border-slate-800 text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-white mb-4 tracking-tight uppercase tracking-[0.2em]">Matrix Integrity</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">Meeting the NRC baseline is the floor, not the ceiling. We engineer with clinical-grade, highly bioavailable functional ingredients to push companion health beyond basic survival.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-blue-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-900/30 flex items-center justify-center mb-6 text-blue-400 border border-blue-500/20"><i data-lucide="bone" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">Triple-Chelate Calcium</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Abandoning cheap limestone. We use <strong>Lactate Gluconate</strong>, <strong>Citrate Malate</strong>, and <strong>Bone MCHA</strong> to seamlessly lock the Ca:P ratio with maximum bioavailability.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-emerald-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-900/30 flex items-center justify-center mb-6 text-emerald-400 border border-emerald-500/20"><i data-lucide="droplets" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">Pristine Marine DHA</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Microencapsulated <strong>10% Algal Oil</strong> and de-oiled <strong>Sardine Meal</strong> provide a heavy-metal-free, unoxidized Omega-3 bridge for cognitive and structural health.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-rose-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-900/30 flex items-center justify-center mb-6 text-rose-400 border border-rose-500/20"><i data-lucide="heart" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">Dual Liver API</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Standardized <strong>Bovine</strong> (B12, Cu, Vit A) and <strong>Chicken Liver</strong> (B2, Selenium) powders ensure fragile trace micronutrients are delivered in their natural biological context.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-amber-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-900/30 flex items-center justify-center mb-6 text-amber-400 border border-amber-500/20"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">BSFL Prebiotic Chitin</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Defatted <strong>Black Soldier Fly Larvae</strong> acts as the ultimate manganese source while providing an immunomodulatory prebiotic fiber for rapid gut biome resetting.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-purple-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-900/30 flex items-center justify-center mb-6 text-purple-400 border border-purple-500/20"><i data-lucide="activity" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">Chondro-Protection</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Cold-processed <strong>New Zealand Green-Lipped Mussel</strong> (<i>Perna canaliculus</i>) delivers native glucosamine and chondroitin to reinforce joint scaffold integrity.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="p-8 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm flex flex-col hover:border-teal-500/50 transition-colors text-left">
+                    <div class="w-12 h-12 rounded-2xl bg-teal-900/30 flex items-center justify-center mb-6 text-teal-400 border border-teal-500/20"><i data-lucide="sparkles" class="w-6 h-6"></i></div>
+                    <h4 class="font-bold text-white text-xl mb-3">Cellular Defense Matrix</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">Natural <strong>Astaxanthin</strong> and Rosemary/Tocopherol extracts aggressively neutralize free radicals, protecting both the subject's cells and the formulation's fragile lipids.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Flex Rotation -->
-    <section class="py-24 bg-[#0f172a] border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-left">
-            <h2 class="text-3xl font-black text-white mb-4 tracking-tight uppercase">Flex Rotation (Freedom within Framework)</h2>
-            <p class="text-slate-400 text-lg leading-relaxed max-w-4xl font-light">Optional protein swaps are restricted to 1-2x per week to ensure clinical stability.</p>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8 text-left">
-            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500">
-                <h4 class="font-bold text-white text-xl mb-3">Chicken Heart</h4>
-                <p class="text-sm text-slate-400 leading-relaxed mb-6">Muscle meat rich in CoQ10 and bioavailable taurine. Primed for satiety and cardiac health.</p>
-                <div class="text-[11px] font-bold text-blue-300 bg-blue-900/50 px-3 py-1 rounded-full inline-block uppercase tracking-widest">No liver same day</div>
-            </div>
-            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500">
-                <h4 class="font-bold text-white text-xl mb-3">Chicken Gizzard</h4>
-                <p class="text-sm text-slate-400 leading-relaxed mb-6">Connective tissue muscle. Provides proline and hydroxyproline for joint cartilage.</p>
-                <div class="text-[11px] font-bold text-slate-300 bg-slate-700 px-3 py-1 rounded-full inline-block uppercase tracking-widest">Trim excess fat</div>
-            </div>
-            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500">
-                <h4 class="font-bold text-white text-xl mb-3">Sardine / Anchovy</h4>
-                <p class="text-sm text-slate-400 leading-relaxed mb-6">Whole fish, pressure cooked for 20 minutes to soften bones. Authentic marine DHA/EPA.</p>
-                <div class="text-[11px] font-bold text-red-300 bg-red-900/40 px-3 py-1 rounded-full inline-block uppercase tracking-widest">No River Fish</div>
+    <!-- Flex Rotation Section -->
+    <section class="py-24 bg-[#0f172a] border-b border-slate-800 text-left">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-white mb-6 tracking-tight uppercase flex flex-wrap items-center gap-x-3 gap-y-2">
+                Flex Rotation <span class="text-blue-500">Freedom within Framework</span>
+            </h2>
+            <div class="text-slate-400 text-lg leading-relaxed max-w-4xl font-light space-y-4">
+                <p>Variety is the essence of life. As obligate and facultative carnivores, our subjects are primed to seek variety for nutrition, satiety, and joy. We provide a framework where this is not unbound.</p>
+                <p>Optional swaps are restricted to <strong class="text-slate-200 font-medium">1-2x per week</strong>. When flex is not necessary, the baseline is sufficient to meet 100% of needs.</p>
             </div>
         </div>
-    </section>
-
-    <!-- Matrix Integrity Cards -->
-    <section id="integrity" class="py-24 bg-slate-900 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
-            <h2 class="text-4xl font-extrabold text-white mb-10 tracking-tight text-center uppercase tracking-[0.2em]">Matrix Integrity (BOM v9.0.0)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div class="p-10 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm">
-                    <h4 class="font-bold text-blue-400 text-xl mb-6 border-b pb-4 border-slate-700">Triple Calcium</h4>
-                    <p class="text-sm text-slate-400 leading-relaxed"><strong>Lactate Gluconate</strong>, <strong>Citrate Malate</strong>, and <strong>Bone MCHA</strong> / <strong>Eggshell Powder</strong>. Locks Ca:P while correcting grocery imbalances.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-8 mb-16">
+            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500 group flex flex-col">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-bold text-white text-xl group-hover:text-blue-400 transition-colors">Chicken Heart</h4>
+                    <i data-lucide="heart-pulse" class="w-6 h-6 text-slate-500 group-hover:text-blue-400 transition-colors"></i>
                 </div>
-                <div class="p-10 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm">
-                    <h4 class="font-bold text-blue-400 text-xl mb-6 border-b pb-4 border-slate-700">Dual Liver API</h4>
-                    <p class="text-sm text-slate-400 leading-relaxed"><strong>Bovine Liver</strong> (B12, Cu, Vit A) and <strong>Chicken Liver</strong> (B2, Selenium) ensure micronutrients are provided in natural context.</p>
+                <p class="text-[14px] text-slate-400 leading-relaxed mb-6 flex-grow">Muscle meat rich in CoQ10 and bioavailable taurine. Primed for satiety and cardiac health.</p>
+                <div class="mt-auto self-start text-[11px] font-bold text-slate-300 bg-slate-700/50 px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-600/50">Swap 10% Chicken Breast</div>
+            </div>
+            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500 group flex flex-col">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-bold text-white text-xl group-hover:text-blue-400 transition-colors">Chicken Gizzard</h4>
+                    <i data-lucide="dumbbell" class="w-6 h-6 text-slate-500 group-hover:text-blue-400 transition-colors"></i>
                 </div>
-                <div class="p-10 rounded-[2.5rem] bg-slate-800 border border-slate-700 shadow-sm">
-                    <h4 class="font-bold text-blue-400 text-xl mb-6 border-b pb-4 border-slate-700">BSFL Chitin</h4>
-                    <p class="text-sm text-slate-400 leading-relaxed">Highest manganese source in companion nutrition. Chitin serves as a unique prebiotic fiber for immunomodulatory support.</p>
+                <p class="text-[14px] text-slate-400 leading-relaxed mb-6 flex-grow">Connective tissue muscle. Provides proline and hydroxyproline for joint cartilage.</p>
+                <div class="mt-auto self-start text-[11px] font-bold text-slate-300 bg-slate-700/50 px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-600/50">Swap 10-20% Chicken Breast</div>
+            </div>
+            <div class="p-10 bg-slate-800 rounded-[2.5rem] border border-slate-700 shadow-sm transition-all hover:border-blue-500 group flex flex-col">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-bold text-white text-xl group-hover:text-blue-400 transition-colors">Sardine / Anchovy</h4>
+                    <i data-lucide="fish" class="w-6 h-6 text-slate-500 group-hover:text-blue-400 transition-colors"></i>
+                </div>
+                <p class="text-[14px] text-slate-400 leading-relaxed mb-6 flex-grow">Whole fish, pressure cooked for 20 minutes to soften bones. Authentic marine DHA/EPA.</p>
+                <div class="mt-auto flex gap-2 flex-wrap">
+                    <div class="text-[11px] font-bold text-slate-300 bg-slate-700/50 px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-600/50">Swap 10-20% Chicken Breast</div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Performance Validation Chart -->
-    <section id="performance" class="py-24 relative overflow-hidden dark-mesh text-white border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-left">
-            <h2 class="text-4xl font-extrabold mb-16 tracking-tight uppercase tracking-[0.2em] text-center">Performance Validation</h2>
-            <div class="bg-slate-800/80 backdrop-blur-xl p-12 rounded-[3rem] border border-slate-700 shadow-2xl overflow-hidden">
-                <div class="flex justify-between items-center mb-10">
-                    <h4 class="text-[12px] font-bold text-blue-400 uppercase tracking-[0.3em]">NRC 2006 Coverage (% Delivery)</h4>
-                    <div class="flex gap-6 text-[11px] font-bold uppercase tracking-wider">
-                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-slate-500"></span> Grocery</div>
-                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-blue-500"></span> NRC Blocks</div>
-                    </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Block 1: Supplements & Wholesome Diet -->
+                <div class="p-8 bg-blue-900/10 border border-blue-800/30 rounded-[2rem] shadow-inner flex flex-col text-left transition-colors hover:bg-blue-900/20">
+                    <div class="mb-4 text-blue-400"><i data-lucide="info" class="w-6 h-6"></i></div>
+                    <p class="text-[14px] text-blue-200/90 leading-relaxed font-medium">
+                        You don't need to buy more supplements or treats. Your pet's needs are going to be met by these rich and varied whole foods and our carefully formulated NRC blocks.
+                    </p>
                 </div>
                 
-                <!-- FIX: Re-structured this div so Chart.js can read a clean height without tailwind max-h conflicts -->
-                <div class="max-h-[600px] overflow-y-auto custom-scroll pr-4 rounded-xl border border-slate-700/50 p-2">
-                    <div style="position: relative; height: 1200px; width: 100%;">
+                <!-- Block 2: Holistic Health -->
+                <div class="p-8 bg-emerald-900/10 border border-emerald-800/30 rounded-[2rem] shadow-inner flex flex-col text-left transition-colors hover:bg-emerald-900/20">
+                    <div class="mb-4 text-emerald-400"><i data-lucide="activity" class="w-6 h-6"></i></div>
+                    <p class="text-[14px] text-emerald-200/90 leading-relaxed font-medium">
+                        Prioritise exercise, playtime and regular vet visits in addition to complete diet for excellent outcomes.
+                    </p>
+                </div>
+
+                <!-- Block 3: Protocol Violations -->
+                <div class="p-8 bg-rose-900/10 border border-rose-800/30 rounded-[2rem] shadow-inner flex flex-col text-left transition-colors hover:bg-rose-900/20">
+                    <div class="mb-4 flex items-center gap-3">
+                        <i data-lucide="triangle-alert" class="w-6 h-6 text-rose-400"></i>
+                        <span class="text-rose-400 font-bold uppercase tracking-widest text-xs">Protocol Violations</span>
+                    </div>
+                    <p class="text-[13px] text-rose-200/90 mb-3 font-medium">These inclusions violate the snowleopard protocol:</p>
+                    <ol class="text-[13px] text-rose-200/70 leading-relaxed space-y-1.5 list-decimal pl-4 font-light">
+                        <li>Bones - Raw or Cooked.</li>
+                        <li>Raw meat or fish.</li>
+                        <li>Organ meats not included in the protocol.</li>
+                        <li>River fish.</li>
+                        <li>Salt, Salted fishes, meats.</li>
+                        <li>Swapping meat for cereals/starch vegetables.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Validation -->
+    <section id="performance" class="py-24 bg-[#0f172a] text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-left">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div class="flex flex-col gap-5">
+                    <div>
+                        <h2 class="text-3xl font-black text-white uppercase tracking-tight">Performance Validation</h2>
+                        <p class="text-slate-500 mt-2">Cumulative delivery vs. NRC 2006 Baseline (Report Sync 2026.03.05).</p>
+                    </div>
+                    <div class="flex bg-slate-900 p-1 rounded-xl shadow-inner border border-slate-800 w-fit">
+                        <button onclick="setSpecies('dog')" id="perf-btn-dog" class="px-5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-700 text-blue-400 shadow-sm uppercase tracking-wider">Dog Model</button>
+                        <button onclick="setSpecies('cat')" id="perf-btn-cat" class="px-5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-300 uppercase tracking-wider">Cat Model</button>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3 md:items-end">
+                    <div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-slate-500"></span> Grocery Basis</div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-blue-500"></span> NRC Block Boost</div>
+                    </div>
+                    <div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                        <div class="flex items-center gap-2"><span class="w-4 border-b-2 border-dashed border-slate-400/60"></span> 100%NRC</div>
+                        <div class="flex items-center gap-2"><span class="w-4 border-b-2 border-dashed border-emerald-500/60"></span> 110%NRC</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 p-6 md:p-12 rounded-[3rem] border border-slate-700 shadow-2xl relative">
+                <!-- Restored Scrollable Chart Area -->
+                <div class="chart-scroll-area custom-scroll mb-8">
+                    <div style="height: 1400px; width: 100%;">
                         <canvas id="perfChart"></canvas>
                     </div>
                 </div>
-                
+
+                <!-- Compact Formulation Ratios Note -->
+                <div class="bg-slate-900/50 p-6 rounded-[2rem] border border-slate-700/50 text-left">
+                    <div class="mb-4 border-b border-slate-700/50 pb-3 flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i data-lucide="microscope" class="text-emerald-400 w-4 h-4"></i> Formulation Ratios
+                        </h3>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Clinical Monitoring</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="text-slate-500 uppercase tracking-[0.1em] text-[9px] border-b border-slate-700/50">
+                                <tr>
+                                    <th class="pb-2 font-medium">Ratio</th>
+                                    <th class="pb-2 font-medium">Safe Range</th>
+                                    <th class="pb-2 font-medium">Growlrr Target</th>
+                                    <th class="pb-2 font-medium">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ratios-tbody" class="text-slate-300">
+                                <!-- Injected dynamically via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-[#0f172a] py-16 border-t border-slate-800 text-center">
+    <!-- TRANSITION CTA SECTION (Integrated from Canvas) -->
+    <section class="relative bg-grid-checks pt-32 pb-20 overflow-hidden border-t border-slate-800">
+        <!-- Mask overlay to blend the grid -->
+        <div class="absolute inset-0 grid-fade-bottom pointer-events-none"></div>
+        
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <h2 class="text-4xl md:text-6xl font-bold text-white tracking-tight leading-[1.1] mb-8">
+                Ready to Transition to <br class="hidden md:block" />
+                <span class="text-[#7ba4ee] font-serif-italic font-medium">
+                    Scientific <span class="whitespace-nowrap">Fresh Feeding</span>
+                </span>?
+            </h2>
+            <p class="text-[#8b95a5] text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12">
+                Join thousands of pet owners who have eliminated industrial deficits and reclaimed their pet's vitality.
+            </p>
+
+            <div class="relative inline-block group">
+                <div class="absolute inset-0 glow-effect blur-3xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <a href="https://www.growlrr.com/diet" target="_blank" class="relative inline-flex items-center justify-center gap-3 bg-[#3372f5] hover:bg-[#2563eb] text-white text-lg font-semibold py-5 px-12 rounded-xl transition-all duration-300 shadow-[0_0_30px_rgba(51,114,245,0.25)]">
+                    Build Your First Plan 
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 py-16 text-center border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-8 mb-20 text-left">
+                <div class="md:col-span-6 lg:col-span-5">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-9 h-9 bg-[#3372f5] rounded-md flex items-center justify-center">
+                            <i data-lucide="shield-check" class="text-white w-5 h-5"></i>
+                        </div>
+                        <span class="text-2xl font-black tracking-widest uppercase italic text-white">Growlrr<span class="text-[#3372f5]">.</span></span>
+                    </div>
+                    <p class="text-[#8b95a5] text-sm leading-relaxed max-w-sm">
+                        Leading the transition from industrial processing to bio-appropriate allometric nutrition for dogs and cats. Scientifically grounded. Emotionally driven.
+                    </p>
+                </div>
+                <div class="md:col-span-6 lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                    <div class="flex flex-col gap-4">
+                        <h4 class="text-[10px] font-bold tracking-[0.2em] uppercase text-white mb-2">Framework</h4>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">NRC 2006 Standards</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Metabolic Scaling</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Bioavailability</a>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h4 class="text-[10px] font-bold tracking-[0.2em] uppercase text-white mb-2">Resources</h4>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Expert Support</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Veterinary Portal</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Whitepapers</a>
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <h4 class="text-[10px] font-bold tracking-[0.2em] uppercase text-white mb-2">Legal</h4>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Terms of Service</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Privacy Policy</a>
+                        <a href="javascript:void(0)" class="text-sm text-[#8b95a5] hover:text-white transition-colors">Protocol Licensing</a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <p class="text-slate-500 text-[11px] uppercase tracking-[0.5em] font-bold">GROWLRR FOODS • ENGINE v11.0 • BOM v9.0.0</p>
     </footer>
 
     <script>
+        // CSV DATA SYNC (LOCKED)
+        // Full 26-item datasets restored
+        const REPORT_DATA = {
+            dog: [
+                { l: "Protein", t: 272.6, b: 10.6 }, { l: "Fat", t: 363.4, b: 11.2 },
+                { l: "Vitamin A", t: 487.2, b: 58.1 }, { l: "Manganese (Mn)", t: 135.8, b: 100.0 },
+                { l: "Calcium", t: 178.7, b: 75.5 }, { l: "Phosphorus", t: 178.9, b: 18.1 },
+                { l: "Vitamin E", t: 499.3, b: 100.0 }, { l: "Vitamin B6", t: 524.4, b: 7.9 },
+                { l: "Vitamin B12", t: 146.9, b: 51.5 }, { l: "DHA", t: 396.9, b: 100.0 },
+                { l: "Zinc", t: 231.3, b: 10.3 }, { l: "Iron", t: 262.6, b: 11.8 },
+                { l: "Copper", t: 151.8, b: 57.5 }, { l: "Iodine", t: 137.3, b: 71.0 },
+                { l: "Selenium", t: 141.8, b: 24.7 }, { l: "Magnesium", t: 185.9, b: 22.0 },
+                { l: "Potassium", t: 254.3, b: 0.2 }, { l: "Sodium", t: 172.4, b: 7.0 },
+                { l: "Chloride", t: 123.7, b: 6.3 }, { l: "Folate B9", t: 355.9, b: 32.1 },
+                { l: "Pantothenic B5", t: 161.0, b: 16.3 }, { l: "Riboflavin B2", t: 197.9, b: 22.1 },
+                { l: "Thiamine B1", t: 178.9, b: 100.0 }, { l: "Choline", t: 147.2, b: 15.4 },
+                { l: "Linoleic Acid", t: 150.0, b: 15.0 }, { l: "Arginine", t: 250.0, b: 10.0 }
+            ],
+            cat: [
+                { l: "Protein", t: 900.7, b: 15.0 }, { l: "Fat", t: 447.7, b: 10.0 },
+                { l: "Vitamin A", t: 663.3, b: 45.0 }, { l: "Manganese (Mn)", t: 155.9, b: 100.0 },
+                { l: "Calcium", t: 407.5, b: 85.0 }, { l: "Phosphorus", t: 374.0, b: 25.0 },
+                { l: "DHA", t: 268.0, b: 100.0 }, { l: "Vitamin E", t: 452.1, b: 100.0 },
+                { l: "Zinc", t: 359.9, b: 12.0 }, { l: "Iron", t: 204.6, b: 20.0 },
+                { l: "Taurine", t: 161.5, b: 100.0 }, { l: "Cobalamin B12", t: 246.5, b: 60.0 },
+                { l: "Magnesium", t: 242.2, b: 30.0 }, { l: "Sodium", t: 193.9, b: 15.0 },
+                { l: "Potassium", t: 199.0, b: 2.0 }, { l: "Chloride", t: 128.9, b: 12.0 },
+                { l: "Vitamin D3", t: 155.1, b: 60.0 }, { l: "Copper", t: 145.8, b: 55.0 },
+                { l: "Riboflavin B2", t: 125.3, b: 45.0 }, { l: "Pantothenic B5", t: 475.5, b: 20.0 },
+                { l: "Pyridoxine B6", t: 441.2, b: 10.0 }, { l: "Folate B9", t: 117.3, b: 30.0 },
+                { l: "Thiamine B1", t: 153.8, b: 100.0 }, { l: "Choline", t: 121.3, b: 20.0 },
+                { l: "Selenium", t: 170.9, b: 40.0 }, { l: "Iodine", t: 165.6, b: 75.0 }
+            ]
+        };
+
+        const SCIENCE_CONSTANTS = {
+            dog: { coef: 98, exp: 0.64, anchorBW: 20, blockAnchorUnits: 10, blockExp: 0.75, multiplier: 1.50 },
+            cat: { coef: 100, exp: 0.67, anchorBW: 4, blockAnchorUnits: 4, blockExp: 0.67, multiplier: 1.00 }
+        };
+
         let state = { species: 'dog', weight: 20 };
         let merChart, perfChart;
 
-        const ENGINE = {
-            dog: { coef: 98, exp: 0.64, anchorWt: 20, anchorUnits: 11, M_anchor: 1.50, blockDensity: 147/11, groceryBase: { mutton: 305, chicken: 95, curd: 165, veg: 405 } },
-            cat: { coef: 100, exp: 0.67, anchorWt: 4, anchorUnits: 4, M_anchor: 1.00, blockDensity: 50/4, groceryBase: { mutton: 89, chicken: 76, curd: 0, veg: 0 } }
-        };
+        function calculateStats() {
+            const isDog = state.species === 'dog';
+            const cfg = SCIENCE_CONSTANTS[state.species];
+            const w = state.weight;
+            const rer = cfg.coef * Math.pow(w, cfg.exp);
+            const mer = rer * cfg.multiplier;
+            const targetKcal = mer * 1.10;
+            const scaleFactor = rer / (cfg.coef * Math.pow(cfg.anchorBW, cfg.exp));
+            
+            const bwBonus = isDog ? (w <= 4 ? 2 : w <= 8 ? 1 : 0) : 0;
+            const rawUnits = cfg.blockAnchorUnits * Math.pow(w / cfg.anchorBW, cfg.blockExp);
+            const finalUnits = Math.max(1, Math.floor(rawUnits + 0.65) + bwBonus);
+
+            let muttonG, chickenG, eggG, curdG, vegG, blockKcal;
+            if(isDog) {
+                muttonG = 340.30 * scaleFactor; chickenG = 90.03 * scaleFactor;
+                eggG = 4.0 * Math.pow(w/20, 0.75); curdG = 165.06 * scaleFactor;
+                vegG = 404.94 * scaleFactor; blockKcal = 110 * scaleFactor;
+            } else {
+                muttonG = 115.61 * scaleFactor; chickenG = 60.00 * scaleFactor;
+                eggG = 0.5 * Math.pow(w/4, 0.67); curdG = 0; vegG = 0; blockKcal = 36 * scaleFactor;
+            }
+            
+            const eggRounded = Math.ceil(eggG * 4) / 4;
+            return { rer, mer, targetKcal, finalUnits, muttonG, chickenG, eggRounded, curdG, vegG, scaleFactor, blockKcal };
+        }
 
         function renderEngine() {
+            const stats = calculateStats();
             const isDog = state.species === 'dog';
-            const cfg = ENGINE[state.species];
-            const w = state.weight;
-            
-            const mer = cfg.M_anchor * cfg.coef * Math.pow(w, cfg.exp);
-            const targetKcal = mer * 1.10;
+            const cfg = SCIENCE_CONSTANTS[state.species];
 
-            let M_bonus = 0;
-            if (isDog) {
-                if (w <= 4) M_bonus = 2;
-                else if (w <= 8) M_bonus = 1;
-            }
-            const blockAnchor = cfg.anchorUnits + M_bonus;
-            const rawUnits = blockAnchor * Math.pow(w / cfg.anchorWt, cfg.exp);
-            const finalUnits = Math.floor(rawUnits + 0.65);
-            const blockKcal = finalUnits * cfg.blockDensity;
-
-            const scaleFactor = isDog ? (cfg.coef * Math.pow(w, cfg.exp) / (98 * Math.pow(20, 0.64))) : Math.pow(w / cfg.anchorWt, cfg.exp);
-            const satietyBoost = (isDog && w >= 20) ? 1.1 : 1.0;
-
-            const theoryMuttonG = cfg.groceryBase.mutton * scaleFactor;
-            const theoryChickenG = cfg.groceryBase.chicken * scaleFactor;
-            const theoryCurdG = (cfg.groceryBase.curd * scaleFactor * satietyBoost);
-            const theoryVegG = (cfg.groceryBase.veg * scaleFactor * satietyBoost);
-            const theoryEggs = isDog ? 4 * Math.pow(w / 20, 0.75) : 0.5 * Math.pow(w / 4, 0.67);
-            const roundedEggs = Math.ceil(theoryEggs * 4) / 4;
-
-            const theoryMeatKcal = (theoryMuttonG / 100 * 122) + (theoryChickenG / 100 * 110);
-            const eggKcal = (roundedEggs * 50 / 100) * 143;
-            const curdKcal = (theoryCurdG / 100) * 61;
-            const vegKcal = (theoryVegG / 100) * 22;
-
-            const targetMeatKcal = Math.max(0, targetKcal - blockKcal - eggKcal - curdKcal - vegKcal);
-            const correction = theoryMeatKcal > 0 ? targetMeatKcal / theoryMeatKcal : 0;
-            
-            const finalMuttonG = theoryMuttonG * correction;
-            const finalChickenG = theoryChickenG * correction;
-
-            document.getElementById('target-kcal-badge').innerText = `${Math.round(targetKcal)} kcal`;
-            const totalMass = (finalUnits * 4) + finalMuttonG + finalChickenG + (roundedEggs * 50) + theoryCurdG + theoryVegG;
-            document.getElementById('target-mass-badge').innerText = `~${Math.round(totalMass)}g Total Mass`;
-            
-            document.getElementById('trace-mini').innerHTML = `
-                &bull; $MER = ${cfg.M_anchor.toFixed(2)} \\times (${cfg.coef}W^{${cfg.exp}}) = ${Math.round(mer)}$ kcal <br/>
-                &bull; Buffer Target: $${Math.round(targetKcal)}$ kcal (110\\% NRC) <br/>
-                &bull; Block Bridge: $${Math.round(blockKcal)}$ kcal
-            `;
-
-            // This line previously crashed the app because 'metabolic-metadata' was missing in HTML!
-            document.getElementById('metabolic-metadata').innerHTML = `
-                &bull; Scaling Factor: ${scaleFactor.toFixed(3)} <br/>
-                &bull; Egg Logic: ${roundedEggs.toFixed(2)} ea <br/>
-                &bull; Units Config: ${finalUnits} units
-            `;
+            document.getElementById('target-kcal-badge').innerText = `${Math.round(stats.targetKcal)} kcal`;
+            const totalMass = (stats.finalUnits * 4) + stats.muttonG + stats.chickenG + (stats.eggRounded * 50) + stats.curdG + stats.vegG;
+            document.getElementById('target-mass-badge').innerText = `~${Math.round(totalMass)}g Bowl Volume`;
 
             const recipe = [
-                { name: `${isDog ? 'DogCore' : 'CatCore'} NRC Blocks`, logic: 'Fixed Basis', val: `${finalUnits} units`, energy: `${Math.round(blockKcal)} kcal` },
-                { name: 'Fresh Mutton (Boneless)', logic: 'Reverse Pool', val: `${Math.round(finalMuttonG)} g`, energy: `${Math.round(finalMuttonG/100*122)} kcal` },
-                { name: 'Fresh Chicken Breast', logic: 'Reverse Pool', val: `${Math.round(finalChickenG)} g`, energy: `${Math.round(finalChickenG/100*110)} kcal` },
-                { name: 'Whole Egg', logic: 'Ratchet Step', val: `${roundedEggs.toFixed(2)} ea`, energy: `${Math.round(eggKcal)} kcal` }
+                { name: `${isDog ? 'DogCore' : 'CatCore'} Blocks`, logic: 'Mineral Basis', val: `${stats.finalUnits} units`, energy: `${Math.round(stats.blockKcal)} kcal` },
+                { name: 'Mutton (Boneless)', logic: 'Energy Sink', val: `${Math.round(stats.muttonG)} g`, energy: `${Math.round(stats.muttonG/100*122)} kcal` },
+                { name: 'Chicken Breast', logic: 'Linear Basis', val: `${Math.round(stats.chickenG)} g`, energy: `${Math.round(stats.chickenG/100*110)} kcal` },
+                { name: 'Whole Egg', logic: 'Ratchet Step', val: `${stats.eggRounded.toFixed(2)} ea`, energy: `${Math.round((stats.eggRounded*50)/100*143)} kcal` }
             ];
             if(isDog) {
-                recipe.push({ name: 'Fresh Curd (Dahi)', logic: 'Linear Base', val: `${Math.round(theoryCurdG)} g`, energy: `${Math.round(curdKcal)} kcal` });
-                recipe.push({ name: 'Steamed Veg Mix', logic: 'Fiber Anchor', val: `${Math.round(theoryVegG)} g`, energy: `${Math.round(vegKcal)} kcal` });
+                recipe.push({ name: 'Fresh Curd', logic: 'Linear Base', val: `${Math.round(stats.curdG)} g`, energy: `${Math.round(stats.curdG/100*61)} kcal` });
+                recipe.push({ name: 'Veg Mix', logic: 'Fiber Anchor', val: `${Math.round(stats.vegG)} g`, energy: `${Math.round(stats.vegG/100*22)} kcal` });
+            }
+            document.getElementById('recipe-tbody').innerHTML = recipe.map(r => `<tr class="hover:bg-slate-700/30"><td><span class="font-bold text-white text-lg">${r.name}</span></td><td class="text-[11px] font-mono text-slate-500 uppercase">${r.logic}</td><td class="text-right font-black text-white text-xl">${r.val}</td><td class="text-right font-black text-blue-400 text-xl">${r.energy}</td></tr>`).join('');
+
+            const formula = isDog ? `MER = 1.50 \\times (98W^{0.64}) = ${Math.round(stats.mer)}` : `MER = (NRC 2006) = ${Math.round(stats.mer)}`;
+            const traceMini = document.getElementById('trace-mini');
+            if (traceMini) {
+                traceMini.innerHTML = `
+                    &bull; $${formula}$ kcal <br/>
+                    &bull; 1.1x Target: $${Math.round(stats.targetKcal)}$ kcal <br/>
+                    &bull; Units: $${stats.finalUnits}$ @ ₹24
+                `;
+                if (window.renderMathInElement) renderMathInElement(traceMini, { delimiters: [{left: '$', right: '$', display: false}] });
             }
 
-            document.getElementById('recipe-tbody').innerHTML = recipe.map(r => `
-                <tr class="hover:bg-slate-700/30 transition-colors">
-                    <td class="font-bold text-white text-lg">${r.name}</td>
-                    <td class="text-[11px] font-mono text-slate-500 uppercase tracking-widest">${r.logic}</td>
-                    <td class="text-right font-black text-white text-xl">${r.val}</td>
-                    <td class="text-right font-black text-blue-400 text-xl">${r.energy}</td>
-                </tr>
-            `).join('');
+            const meta = document.getElementById('metabolic-metadata');
+            if (meta) {
+                meta.innerHTML = `Scale: ${stats.scaleFactor.toFixed(3)} &bull; Weight: ${state.weight}kg &bull; Mode: ${state.species.toUpperCase()}`;
+            }
+            
+            const advisory = document.getElementById('seasonal-advisory');
+            if (advisory) {
+                advisory.innerHTML = isDog ? "Dogs manage heat less efficiently than cats. In extreme summer heat, reduce the grocery meat pool by <strong>10%</strong> and supplement hydration. In severe winter cold, increase mutton pool by <strong>10%</strong>." : "Cats thermoregulate effectively up to 35–38°C. In extreme heat, reduce grocery pool by <strong>10%</strong> and increase hydration with home-made bone broth. In severe winter cold, increase fatty cuts by <strong>10%</strong>.";
+            }
 
-            const seasonalText = isDog
-                ? `Dogs manage heat less efficiently than cats. In extreme summer heat, reduce the grocery meat pool by <strong>10%</strong> and supplement hydration. In severe winter cold, increase mutton pool by <strong>10%</strong>.`
-                : `Cats thermoregulate effectively up to 35–38°C. In extreme heat, reduce grocery pool by <strong>10%</strong> and increase hydration with home-made bone broth. In severe winter cold, increase fatty cuts by <strong>10%</strong>.`;
-            document.getElementById('seasonal-advisory').innerHTML = seasonalText;
+            const bcsBody = document.getElementById('bcs-tbody');
+            if (bcsBody) {
+                bcsBody.innerHTML = `<tr><td class="font-bold text-orange-400">3/9</td><td>Underweight</td><td>${Math.round(stats.targetKcal * 1.15)} kcal</td><td>Increase mutton by +15%.</td></tr><tr class="bg-blue-900/20"><td class="font-bold text-blue-400">5/9</td><td class="font-bold text-blue-400">Ideal ★</td><td class="font-bold text-blue-400">${Math.round(stats.targetKcal)} kcal</td><td>Anchor Point. Maintain.</td></tr><tr><td class="font-bold text-slate-500">7/9</td><td>Overweight</td><td>${Math.round(stats.targetKcal * 0.85)} kcal</td><td>Reduce mutton by 15%.</td></tr>`;
+            }
 
-            if (window.renderMathInElement) renderMathInElement(document.getElementById('trace-mini'), { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}] });
-            updateChartData();
-            renderCostAnalysis();
+            updateCharts(stats);
+            renderCostAnalysis(stats);
+            lucide.createIcons();
         }
 
-        function renderCostAnalysis() {
+        function renderCostAnalysis(stats) {
             const isDog = state.species === 'dog';
-            const container = document.getElementById('cost-comparison-container');
+            const blockCost = 24;
+            const muttonPrice = (stats.muttonG/1000) * 850;
+            const chickenPrice = (stats.chickenG/1000) * 320;
+            const eggPrice = stats.eggRounded * 7;
+            const curdPrice = isDog ? (stats.curdG/1000) * 80 : 0;
+            const vegPrice = isDog ? (stats.vegG/1000) * 60 : 0;
+            const blockPriceTotal = stats.finalUnits * blockCost;
+            
+            const dailyTotal = muttonPrice + chickenPrice + eggPrice + curdPrice + vegPrice + blockPriceTotal;
+            const monthlyTotal = Math.round(dailyTotal * 30);
+            
+            const pouchKcal = 82;
+            const pouchPrice = 155;
+            const pouchesNeeded = stats.targetKcal / pouchKcal; 
+            const competitorMonthly = Math.round(pouchesNeeded * pouchPrice * 30);
+
+            let growlrrRows = `
+                <tr><td>Mutton</td><td>${Math.round(stats.muttonG)}g</td><td>₹${Math.round(muttonPrice * 30).toLocaleString()}</td></tr>
+                <tr><td>Chicken</td><td>${Math.round(stats.chickenG)}g</td><td>₹${Math.round(chickenPrice * 30).toLocaleString()}</td></tr>
+                <tr><td>Eggs</td><td>${stats.eggRounded.toFixed(2)} ea</td><td>₹${Math.round(eggPrice * 30).toLocaleString()}</td></tr>
+            `;
+            
             if (isDog) {
-                container.innerHTML = `
-                    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl">
-                        <h4 class="text-emerald-400 font-black uppercase text-xs mb-6 tracking-widest">Snowleopard Protocol (MER1)</h4>
-                        <table class="w-full cost-table text-left">
-                            <thead><tr><th>Item</th><th>Daily Amount</th><th>Daily Cost</th><th>Monthly (30d)</th></tr></thead>
-                            <tbody>
-                                <tr><td>Mutton</td><td>250g</td><td>₹112.50</td><td>₹3,375</td></tr>
-                                <tr><td>Chicken</td><td>135g</td><td>₹27.00</td><td>₹810</td></tr>
-                                <tr><td>Curd</td><td>150g</td><td>₹15.00</td><td>₹450</td></tr>
-                                <tr><td>Vegetables</td><td>400g</td><td>₹12.00</td><td>₹360</td></tr>
-                                <tr><td>Eggs</td><td>4 ea</td><td>₹28.00</td><td>₹840</td></tr>
-                                <tr><td>DogCore blocks</td><td>10 units</td><td>₹150.00</td><td>₹4,500</td></tr>
-                                <tr class="bg-slate-900/50 font-black text-white"><td>TOTAL</td><td></td><td>₹344.50</td><td>₹10,335</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="mt-6 text-[11px] text-slate-500 font-bold uppercase tracking-wider">Protein: 107g/day &bull; Cost per g protein: ₹3.22</div>
-                    </div>
-                    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl flex flex-col justify-between">
-                        <div>
-                            <h4 class="text-blue-400 font-black uppercase text-xs mb-6 tracking-widest">Premium Wet (e.g., Farmina N&D Prime)</h4>
-                            <table class="w-full cost-table text-left">
-                                <thead><tr><th>Metric</th><th>Snowleopard</th><th>Premium Wet</th><th>Diff</th></tr></thead>
-                                <tbody>
-                                    <tr><td>Monthly cost</td><td>₹10,335</td><td>~₹39,000</td><td class="text-emerald-400">-₹28,665</td></tr>
-                                    <tr><td>Daily protein</td><td class="text-emerald-400">107g</td><td>~100g</td><td class="text-emerald-400">+7%</td></tr>
-                                    <tr><td>Cost/g protein</td><td class="text-emerald-400">₹3.22</td><td>₹13.00</td><td class="text-emerald-400">-75%</td></tr>
-                                    <tr><td>Carbohydrates</td><td>&lt;5%</td><td>~5-10%</td><td>—</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="mt-6 p-4 bg-blue-900/20 rounded-xl text-xs text-blue-200 border border-blue-800/30 italic">Value proposition: Feeding a 20kg dog premium commercial wet food requires ~3.5 cans daily. Snowleopard delivers human-grade local meat at a fraction of the cost—because you aren't paying to ship water and tin cans across the globe.</p>
-                    </div>`;
-            } else {
-                container.innerHTML = `
-                    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl">
-                        <h4 class="text-rose-400 font-black uppercase text-xs mb-6 tracking-widest">Snowleopard Protocol (CatCore)</h4>
-                        <table class="w-full cost-table text-left">
-                            <thead><tr><th>Item</th><th>Daily Amount</th><th>Daily Cost</th><th>Monthly (30d)</th></tr></thead>
-                            <tbody>
-                                <tr><td>Mutton</td><td>89g</td><td>₹40.05</td><td>₹1,201</td></tr>
-                                <tr><td>Chicken</td><td>76g</td><td>₹15.20</td><td>₹456</td></tr>
-                                <tr><td>Eggs</td><td>0.5 ea</td><td>₹3.50</td><td>₹105</td></tr>
-                                <tr><td>CatCore blocks</td><td>4 units</td><td>₹60.00</td><td>₹1,800</td></tr>
-                                <tr class="bg-slate-900/50 font-black text-white"><td>TOTAL</td><td></td><td>₹118.75</td><td>₹3,562</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="mt-6 text-[11px] text-slate-500 font-bold uppercase tracking-wider">Protein: 41g/day &bull; Cost per g protein: ₹2.89</div>
-                    </div>
-                    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl flex flex-col justify-between">
-                        <div>
-                            <h4 class="text-blue-400 font-black uppercase text-xs mb-6 tracking-widest">Premium Wet (e.g., Farmina N&D / Tiki Cat)</h4>
-                            <table class="w-full cost-table text-left">
-                                <thead><tr><th>Metric</th><th>Snowleopard</th><th>Premium Wet</th><th>Diff</th></tr></thead>
-                                <tbody>
-                                    <tr><td>Monthly cost</td><td>₹3,562</td><td>₹7,650</td><td class="text-emerald-400">-₹4,088</td></tr>
-                                    <tr><td>Daily protein</td><td class="text-emerald-400">41g</td><td>30g</td><td class="text-emerald-400">+36%</td></tr>
-                                    <tr><td>Cost/g protein</td><td class="text-emerald-400">₹2.89</td><td>₹8.50</td><td class="text-emerald-400">-66%</td></tr>
-                                    <tr><td>Carbohydrates</td><td>&lt;5%</td><td>~20% (Starch)</td><td>—</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <p class="mt-6 p-4 bg-rose-900/20 rounded-xl text-xs text-rose-200 border border-rose-800/30 italic">Value proposition: For cats, Snowleopard matches high-hydration wet diets at 1/3rd the cost per gram of protein. You get pristine fresh meat while completely eliminating synthetic thickeners like carrageenan and gums.</p>
-                    </div>`;
+                growlrrRows += `
+                <tr><td>Curd</td><td>${Math.round(stats.curdG)}g</td><td>₹${Math.round(curdPrice * 30).toLocaleString()}</td></tr>
+                <tr>
+                    <td>Steamed Veg<br><span class="text-[9px] text-slate-500 font-normal normal-case tracking-normal">2:1:1 white pumpkin, yellow pumpkin, local amaranthus</span></td>
+                    <td>${Math.round(stats.vegG)}g</td>
+                    <td>₹${Math.round(vegPrice * 30).toLocaleString()}</td>
+                </tr>`;
             }
+
+            growlrrRows += `
+                <tr><td>NRC Blocks</td><td>${stats.finalUnits} u @ ₹${blockCost}</td><td>₹${Math.round(blockPriceTotal * 30).toLocaleString()}</td></tr>
+                <tr class="bg-slate-900/50 font-black text-white"><td>TOTAL</td><td></td><td>₹${monthlyTotal.toLocaleString()}</td></tr>
+            `;
+
+            document.getElementById('cost-comparison-container').innerHTML = `
+                <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl">
+                    <h4 class="text-emerald-400 font-black uppercase text-xs mb-6 tracking-widest">Growlrr Protocol (${state.species})</h4>
+                    <table class="w-full cost-table text-left">
+                        <thead><tr><th>Item</th><th>Daily Amount</th><th>Monthly (30d)</th></tr></thead>
+                        <tbody>
+                            ${growlrrRows}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <div class="bg-slate-800 p-8 rounded-[2.5rem] border border-slate-700 shadow-xl flex flex-col justify-between text-left h-full">
+                        <div>
+                            <h4 class="text-blue-400 font-black uppercase text-xs mb-2 tracking-widest">Premium Wet Food Pouch ‡</h4>
+                            <p class="text-[10px] text-slate-500 mb-6 font-medium">1. Royal Canin Adult Instinctive &bull; 2. Hill's Science Diet Adult &bull; 3. Purina Pro Plan Savor</p>
+                            <table class="w-full cost-table text-left">
+                                <thead><tr><th>Metric</th><th>Growlrr</th><th>Competitor</th><th>Diff</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Kcal Supply</td><td>${Math.round(stats.targetKcal)} kcal</td><td>${Math.round(pouchesNeeded*pouchKcal)} kcal</td><td>Synced</td></tr>
+                                    <tr><td>Daily Count</td><td>1 Bowl</td><td>${pouchesNeeded.toFixed(1)} Pouches</td><td>Industrial</td></tr>
+                                    <tr><td>Monthly cost</td><td>₹${monthlyTotal.toLocaleString()}</td><td>₹${competitorMonthly.toLocaleString()}</td><td class="text-emerald-400">Save ₹${(competitorMonthly-monthlyTotal).toLocaleString()}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="mt-6 p-4 bg-blue-900/20 rounded-xl text-[11px] text-blue-200 border border-blue-800/30 italic font-mono leading-relaxed opacity-80">
+                            <strong>Math Breakdown:</strong> A standard premium 85g wet pouch provides ~82 kcal and costs ₹155. To meet a daily target of ${Math.round(stats.targetKcal)} kcal, your ${state.species} requires ${pouchesNeeded.toFixed(1)} pouches per day (${pouchesNeeded.toFixed(1)} &times; ₹155 = ₹${Math.round(pouchesNeeded * pouchPrice)}/day).
+                        </p>
+                    </div>
+                    <div class="px-6 text-[10px] text-slate-600 font-mono tracking-widest leading-loose uppercase">
+                        ‡ comparison based on matching exact caloric requirements against a Premium Industry Composite across Indian retail labels (Amazon.in, HUFT, Supertails). Baseline composite utilized: ₹155 per 85g unit yielding 82 kcal. Accessed on March 5, 2026.
+                    </div>
+                </div>`;
         }
 
-        function updateChartData() {
-            if (!merChart) return;
-            const isDog = state.species === 'dog';
-            const cfg = ENGINE[state.species];
-            const weights = isDog ? Array.from({length: 60}, (_, i) => i + 2) : Array.from({length: 29}, (_, i) => 1 + (i * 0.5));
-            const anchorX = cfg.anchorWt; const anchorY = cfg.M_anchor * cfg.coef * Math.pow(anchorX, cfg.exp);
-
+        function updateCharts(stats) {
+            if (!merChart || !perfChart) return;
+            const cfg = SCIENCE_CONSTANTS[state.species];
+            const weights = Array.from({length: state.species === 'dog' ? 60 : 15}, (_, i) => i + (state.species === 'dog' ? 2 : 1));
+            const anchorKcal = cfg.multiplier * cfg.coef * Math.pow(cfg.anchorBW, cfg.exp);
+            
             merChart.data.labels = weights;
             merChart.data.datasets = [
-                { label: 'Growlrr 1.1x Target', data: weights.map(w => (cfg.M_anchor * cfg.coef * Math.pow(w, cfg.exp)) * 1.1), borderColor: '#3b82f6', tension: 0.4, pointRadius: weights.map(w => Math.abs(w - state.weight) < 0.25 ? 6 : 0), borderWidth: 4, fill: false },
-                { label: 'Linear Trap (Industry Error)', data: weights.map(w => (anchorY/anchorX) * w), borderColor: '#f97316', borderDash: [2,2], tension: 0, pointRadius: 0, borderWidth: 1.5, fill: false },
-                { label: 'Obesity Trap (1.4x MER)', data: weights.map(w => (cfg.M_anchor * cfg.coef * Math.pow(w, cfg.exp)) * 1.4), borderColor: '#ef4444', borderDash: [6,6], tension: 0.4, pointRadius: 0, borderWidth: 2, fill: false }
+                { label: 'Target (1.1x MER)', data: weights.map(w => (cfg.multiplier * cfg.coef * Math.pow(w, cfg.exp)) * 1.1), borderColor: '#3b82f6', tension: 0.4, borderWidth: 4, fill: false, pointRadius: weights.map(w => Math.abs(w - state.weight) < 0.2 ? 6 : 0), pointBackgroundColor: '#fff' }, 
+                { label: 'Linear Trap (Error)', data: weights.map(w => (anchorKcal / cfg.anchorBW) * w), borderColor: '#f97316', borderDash: [2, 2], borderWidth: 1.5, fill: false, pointRadius: 0 },
+                { label: 'Obesity Trap (1.4x MER)', data: weights.map(w => (cfg.multiplier * cfg.coef * Math.pow(w, cfg.exp)) * 1.4), borderColor: '#ef4444', borderDash: [6,6], tension: 0.4, pointRadius: 0, borderWidth: 2, fill: false }
+            ];
+            merChart.update('none');
+
+            // Dynamic X-Axis Scaling specific to species (Explicitly sets max)
+            perfChart.options.scales.x.max = state.species === 'dog' ? 600 : 1000;
+            
+            const raw = REPORT_DATA[state.species];
+            const sorted = raw.sort((a, b) => b.t - a.t);
+            perfChart.data.labels = sorted.map(i => i.l);
+            perfChart.data.datasets[0].data = sorted.map(i => i.t * (1 - i.b/100)); 
+            perfChart.data.datasets[1].data = sorted.map(i => i.t * (i.b/100));
+            perfChart.update();
+
+            const cap = document.getElementById('graph-caption-text');
+            if (cap) {
+                cap.innerText = state.species === 'dog' ? "Illustrates the Manners-McCrea law (98W^0.64) vs the Linear Trap. Standard guides recommend 4000 kcal for 80kg dogs, while allometry targets ~2600 kcal to prevent obesity." : "Plots the feline NRC (2006) MEm law (100W^0.67). Note the divergence of the Linear Trap for large cats. Decoupling fuel ensures micronutrient baseline stability.";
+            }
+        }
+
+        function renderRatios() {
+            const isDog = state.species === 'dog';
+            const ratios = [
+                { name: "Ca : P", range: "1.1 – 1.6", target: isDog ? "≥ 1.35" : "≥ 1.25", status: "OK" },
+                { name: "Zn : Cu", range: "7.0 – 15", target: "8.0 – 15", status: "OK" },
+                { name: "Zn : Fe", range: "0.5 – 4.0", target: "0.5 – 4.0", status: "OK" },
+                { name: "Fe : Cu", range: "3.0 – 20", target: "3.0 – 20", status: "OK" },
+                { name: "Ca : Mg", range: "5.0 – 20", target: "5.0 – 20", status: "OK" },
+                { name: "K : Na", range: "2.0 – 15", target: "2.0 – 15", status: "OK" },
+                { name: "Ω6 : Ω3", range: "4.0 – 9.0", target: "≤ 5.0 (4–8)", status: "OK" },
+                { name: "Vit E / PUFA", range: "> 0.6", target: "≥ 0.6 IU/g", status: "OK" }
             ];
 
-            if (isDog) {
-                document.getElementById('graph-caption-text').innerText = "Illustrates the Manners-McCrea law (98W^0.64) vs the Linear Trap. Standard guides recommend 4000 kcal for 80kg dogs, while allometry targets ~2600 kcal to prevent obesity.";
-            } else {
-                document.getElementById('graph-caption-text').innerText = "Plots the feline NRC (2006) MEm law (100W^0.67). Note the divergence of the Linear Trap for large cats. Decoupling fuel ensures micronutrient baseline stability.";
+            const tbody = document.getElementById('ratios-tbody');
+            if(tbody) {
+                tbody.innerHTML = ratios.map(r => `
+                    <tr class="border-b border-slate-800/50 last:border-0 hover:bg-slate-800 transition-colors">
+                        <td class="py-2 font-bold text-white text-[11px] font-sans tracking-wide">${r.name}</td>
+                        <td class="py-2 font-mono text-slate-400 text-[10px]">${r.range}</td>
+                        <td class="py-2 font-mono text-blue-400 font-bold text-[10px]">${r.target}</td>
+                        <td class="py-2">
+                            <span class="text-emerald-400 text-[9px] font-black tracking-widest uppercase inline-flex items-center gap-1 w-fit">
+                                <i data-lucide="check-circle-2" class="w-3 h-3"></i> ${r.status}
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+                // Re-initialize icons inside the dynamically injected table
+                if (window.lucide) lucide.createIcons();
             }
-            merChart.update('none');
-            document.getElementById('dog-engine-text').classList.toggle('hidden', !isDog);
-            document.getElementById('cat-engine-text').classList.toggle('hidden', isDog);
-            document.getElementById('engine-header').innerHTML = isDog ? `The "Obesity Trap" vs. <br/><span class="text-blue-400">Calibrated Allometry</span>` : `<span class="text-blue-400">Decoupling</span> Macro from Micro.`;
         }
 
         function initCharts() {
-            // Explicitly register annotation plugin for module-based environments
             if (window['chartjs-plugin-annotation']) {
                 Chart.register(window['chartjs-plugin-annotation']);
             }
-
-            const ctxMer = document.getElementById('merChart').getContext('2d');
-            merChart = new Chart(ctxMer, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 9 }, usePointStyle: true, boxWidth: 6 } }, tooltip: { backgroundColor: '#1e293b' } }, 
-                    scales: { 
-                        x: { title: { display: true, text: 'Mass (kg)', color: '#94a3b8' }, grid: { display: false }, ticks: { color: '#64748b' } }, 
-                        y: { type: 'logarithmic', title: { display: true, text: 'Energy (Kcal)', color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } } 
-                    } 
-                }
-            });
-
-            const ctxPerf = document.getElementById('perfChart').getContext('2d');
-            perfChart = new Chart(ctxPerf, { 
+            
+            merChart = new Chart(document.getElementById('merChart').getContext('2d'), { type: 'line', data: { labels: [], datasets: [] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 10 } } } }, scales: { x: { grid: { display: false }, ticks: { color: '#64748b' } }, y: { type: 'logarithmic', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } } } } });
+            
+            perfChart = new Chart(document.getElementById('perfChart').getContext('2d'), { 
                 type: 'bar', 
-                data: { labels: [], datasets: [{ label: 'Grocery', data: [], backgroundColor: '#64748b' }, { label: 'Blocks', data: [], backgroundColor: '#3b82f6' }] }, 
+                data: { labels: [], datasets: [{ label: 'Grocery Basis', backgroundColor: '#475569', barThickness: 12 }, { label: 'NRC Block Boost', backgroundColor: '#3b82f6', barThickness: 12 }] }, 
                 options: { 
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false, barThickness: 10,
-                    scales: { x: { stacked: true, min: 0, max: 900, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }, y: { stacked: true, grid: { display: false }, ticks: { color: '#e2e8f0', font: { size: 10 } } } }, 
-                    plugins: { legend: { display: false }, annotation: { annotations: { n100: { type: 'line', xMin: 100, xMax: 100, borderColor: 'rgba(255,255,255,0.3)', borderDash: [4, 4] }, n110: { type: 'line', xMin: 110, xMax: 110, borderColor: '#3b82f6', borderDash: [4, 4] } } } } 
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        x: { stacked: true, min: 0, max: 1000, ticks: { color: '#94a3b8', callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                        y: { stacked: true, ticks: { color: '#e2e8f0', font: { weight: 'bold', size: 11 } } } 
+                    }, 
+                    plugins: { 
+                        legend: { display: false }, 
+                        annotation: { 
+                            annotations: { 
+                                n100: { 
+                                    type: 'line', 
+                                    xMin: 100, 
+                                    xMax: 100, 
+                                    borderColor: 'rgba(156, 163, 175, 0.6)', 
+                                    borderDash: [4, 4], 
+                                    borderWidth: 1.5, 
+                                    label: { 
+                                        content: '100%NRC', 
+                                        display: true, 
+                                        position: 'start', 
+                                        backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+                                        color: 'rgba(156, 163, 175, 1)', 
+                                        font: { size: 10, family: 'JetBrains Mono', style: 'italic' }, 
+                                        xAdjust: 36, 
+                                        yAdjust: 10 
+                                    } 
+                                }, 
+                                n110: { 
+                                    type: 'line', 
+                                    xMin: 110, 
+                                    xMax: 110, 
+                                    borderColor: 'rgba(16, 185, 129, 0.6)', 
+                                    borderDash: [4, 4], 
+                                    borderWidth: 1.5, 
+                                    label: { 
+                                        content: '110%NRC', 
+                                        display: true, 
+                                        position: 'start', 
+                                        backgroundColor: 'rgba(15, 23, 42, 0.9)', 
+                                        color: 'rgba(16, 185, 129, 1)', 
+                                        font: { size: 10, family: 'JetBrains Mono', style: 'italic' }, 
+                                        xAdjust: 36, 
+                                        yAdjust: 35 
+                                    } 
+                                } 
+                            } 
+                        } 
+                    } 
                 } 
             });
         }
 
         window.setSpecies = (s) => {
-            state.species = s; state.weight = (s === 'dog' ? 20 : 4);
+            state.species = s; 
+            state.weight = (s === 'dog' ? 20 : 4);
             const slider = document.getElementById('weight-slider');
-            slider.min = s === 'dog' ? 2 : 1; slider.max = s === 'dog' ? 80 : 15; slider.value = state.weight;
-            document.getElementById('weight-display').innerText = state.weight;
+            if (slider) {
+                slider.min = s === 'dog' ? 2 : 1; 
+                slider.max = s === 'dog' ? 80 : 15; 
+                slider.value = state.weight;
+            }
+            if (document.getElementById('weight-display')) {
+                document.getElementById('weight-display').innerText = state.weight;
+            }
             
             const btnD = document.getElementById('btn-dog'), btnC = document.getElementById('btn-cat');
+            if (btnD && btnC) {
+                const active = "px-5 py-2 rounded-lg text-xs font-bold transition-all bg-slate-700 text-blue-400 shadow-sm";
+                const inactive = "px-5 py-2 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-300";
+                btnD.className = s === 'dog' ? active : inactive;
+                btnC.className = s === 'cat' ? active : inactive;
+            }
+
             const cBtnD = document.getElementById('chart-btn-dog'), cBtnC = document.getElementById('chart-btn-cat');
-            const active = "px-5 py-2 rounded-lg text-xs font-bold bg-slate-700 text-blue-400 shadow-lg";
-            const inactive = "px-5 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-300";
-            
-            btnD.className = s === 'dog' ? active : inactive; btnC.className = s === 'cat' ? active : inactive;
-            cBtnD.className = s === 'dog' ? active.replace('px-5', 'px-4').replace('text-xs', 'text-[10px]') : inactive.replace('px-5', 'px-4').replace('text-xs', 'text-[10px]');
-            cBtnC.className = s === 'cat' ? active.replace('px-5', 'px-4').replace('text-xs', 'text-[10px]') : inactive.replace('px-5', 'px-4').replace('text-xs', 'text-[10px]');
-            
+            if (cBtnD && cBtnC) {
+                const active = "px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all bg-slate-700 text-blue-400 shadow-sm uppercase";
+                const inactive = "px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all text-slate-500 hover:text-slate-300 uppercase";
+                cBtnD.className = s === 'dog' ? active : inactive;
+                cBtnC.className = s === 'cat' ? active : inactive;
+            }
+
             const costBtnD = document.getElementById('cost-btn-dog');
             const costBtnC = document.getElementById('cost-btn-cat');
             if (costBtnD && costBtnC) {
@@ -733,36 +1058,44 @@
                 costBtnC.className = s === 'cat' ? costActive : costInactive;
             }
 
+            const perfBtnD = document.getElementById('perf-btn-dog');
+            const perfBtnC = document.getElementById('perf-btn-cat');
+            if (perfBtnD && perfBtnC) {
+                const perfActive = "px-5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-700 text-blue-400 shadow-sm uppercase tracking-wider";
+                const perfInactive = "px-5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-slate-300 uppercase tracking-wider";
+                perfBtnD.className = s === 'dog' ? perfActive : perfInactive;
+                perfBtnC.className = s === 'cat' ? perfActive : perfInactive;
+            }
+
+            const dogEngineText = document.getElementById('dog-engine-text');
+            const catEngineText = document.getElementById('cat-engine-text');
+            if (dogEngineText) dogEngineText.classList.toggle('hidden', s !== 'dog');
+            if (catEngineText) catEngineText.classList.toggle('hidden', s !== 'cat');
+            
+            const engineHeader = document.getElementById('engine-header');
+            if (engineHeader) {
+                engineHeader.innerHTML = s === 'dog' ? `The "Obesity Trap" vs. <br/><span class="text-blue-400">Calibrated Allometry</span>` : `<span class="text-blue-400">Decoupling</span> Macro from Micro.`;
+            }
+
             const buildDietText = document.getElementById('build-diet-text');
             if (buildDietText) {
                 buildDietText.innerText = s === 'dog' ? "Build Your Dog's Diet" : "Build Your Cat's Diet";
             }
-
-            renderEngine(); renderPerfChart(s); lucide.createIcons();
+            
+            renderEngine();
+            renderRatios();
         };
 
         window.setWeight = (v) => { state.weight = parseFloat(v); document.getElementById('weight-display').innerText = state.weight; renderEngine(); };
+        
+        document.addEventListener("DOMContentLoaded", () => { 
+            initCharts(); 
+            setSpecies('dog'); 
+            lucide.createIcons(); 
+        });
 
-        function renderPerfChart(sp) {
-            if (!perfChart) return;
-            const isCat = sp === 'cat';
-            const raw = [
-                { l: 'Protein', g: isCat ? 780 : 210, b: isCat ? 62 : 39 }, { l: 'Fat', g: isCat ? 295 : 165, b: isCat ? 15 : 15 },
-                { l: 'B12', g: isCat ? 10 : 15, b: isCat ? 770 : 525 }, { l: 'Vit A', g: isCat ? 5 : 8, b: isCat ? 806 : 410 },
-                { l: 'DHA+EPA', g: isCat ? 0 : 0, b: isCat ? 476 : 720 }, { l: 'B2', g: isCat ? 15 : 20, b: isCat ? 460 : 611 },
-                { l: 'B6', g: isCat ? 10 : 10, b: isCat ? 500 : 430 }, { l: 'Vit E', g: isCat ? 2 : 3, b: isCat ? 452 : 450 },
-                { l: 'Calcium', g: isCat ? 8 : 11, b: isCat ? 371 : 155 }, { l: 'Iron', g: isCat ? 40 : 45, b: isCat ? 300 : 175 },
-                { l: 'Zinc', g: isCat ? 7 : 11, b: isCat ? 230 : 220 }, { l: 'Mn', g: isCat ? 2 : 5, b: isCat ? 208 : 180 },
-                { l: 'Taurine', g: isCat ? 35 : 0, b: isCat ? 100 : 100 }, { l: 'Iodine', g: isCat ? 0 : 0, b: isCat ? 145 : 130 }
-            ];
-            const sorted = raw.sort((a, b) => (b.g + b.b) - (a.g + a.b));
-            perfChart.data.labels = sorted.map(i => i.l);
-            perfChart.data.datasets[0].data = sorted.map(i => i.g);
-            perfChart.data.datasets[1].data = sorted.map(i => i.b);
-            perfChart.update();
-        }
 
-        document.addEventListener("DOMContentLoaded", () => { initCharts(); setSpecies('dog'); lucide.createIcons(); });
+        
     </script>
 </body>
 </html>
